@@ -1,0 +1,10 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
+
+dependencies {
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+	api "com.esotericsoftware.spine:spine-libgdx:$spineRuntimeVersion"
+	api "com.github.tommyettinger:regexodus:$regExodusVersion:sources"
+	api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
+}
