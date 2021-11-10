@@ -4,47 +4,54 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
 
 public class Worm {
+    private UIConfig uiConfig;
     private World world;
-    private Body floor;
+    private Array<Body> pen = new Array<>();
     private Array<Body> segs = new Array<>();
 
-    public Worm(World world) {
+    public Worm(UIConfig uiConfig, World world) {
+        this.uiConfig = uiConfig;
         this.world = world;
         makeDebugWorm();
-
     }
 
     private void makeDebugWorm() {
-        createFloor();
+        createPen();
         createObject();
-        createJoints();
+        createSegments();
     }
 
-    private void createFloor() {
-        // create a new body definition (type and location)
+    private void createPen() {
+        // Set pen positions.
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(500, 50);
+        // The floor.
+        bodyDef.position.set(uiConfig.penCenterX, uiConfig.penCenterY - uiConfig.penH / 2);
+        pen.add(world.createBody(bodyDef));
+        // The left wall.
+        bodyDef.position.set(uiConfig.penCenterX - uiConfig.penW / 2, uiConfig.penCenterY);
+        pen.add(world.createBody(bodyDef));
+        // The right wall.
+        bodyDef.position.set(uiConfig.penCenterX + uiConfig.penW / 2, uiConfig.penCenterY);
+        pen.add(world.createBody(bodyDef));
 
-        // add it to the world
-        floor = world.createBody(bodyDef);
-
-        // set the shape (here we use a box 50 meters wide, 1 meter tall )
+        // Set pen wall shape.
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(500, 10);  // FIXME: WHY IS IT SO LONG?
-
-        // create the physical object in our body)
-        // without this our body would just be data in the world
-        floor.createFixture(shape, 0.0f);
-
-        // we no longer use the shape object here so dispose of it.
+        // The floor.
+        shape.setAsBox(uiConfig.penW / 2, uiConfig.penThickness / 2);
+        pen.get(0).createFixture(shape, 0.0f);
+        // The left wall.
+        shape.setAsBox(uiConfig.penThickness / 2, uiConfig.penH / 2);
+        pen.get(1).createFixture(shape, 0.0f);
+        // The right wall.
+        shape.setAsBox(uiConfig.penThickness / 2, uiConfig.penH / 2);
+        pen.get(2).createFixture(shape, 0.0f);
         shape.dispose();
     }
 
@@ -76,7 +83,7 @@ public class Worm {
         }
     }
 
-    public void createJoints() {
+    public void createSegments() {
         DistanceJointDef distanceJointDef = new DistanceJointDef();
         distanceJointDef.bodyA = segs.get(0);
         distanceJointDef.bodyB= segs.get(1);

@@ -65,7 +65,7 @@ public class Main extends ApplicationAdapter {
 
         // Box2D section.
         world = new World(gameConfig.gravity, true);
-        worm = new Worm(world);
+        worm = new Worm(uiConfig, world);
     }
 
     @Override

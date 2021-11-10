@@ -13,10 +13,60 @@ public class UIConfig {
     public final float screenB = 0.2f;
     public final float screenA = 1f;
 
-    // Scene2D parameters.
-    public final String skinFile = "data/uiskin.json";
+    ////////////////////////////////////////////////////
+    // Scene2D parameters
+    ////////////////////////////////////////////////////
 
+    public final String skinFile = "data/uiskin.json";
     // Spine animation parameters.
+    public final HashMap<String, SpineActorConfig> spineActors = new HashMap<String, SpineActorConfig>() {{
+        put("character", new SpineActorConfig(
+            300, 576, 100, 0,
+            "character",
+            "spine/spineboy/export/spineboy.atlas",
+            "spine/spineboy/export/spineboy-ess.json",
+            "walk"));
+        put("background", new SpineActorConfig(
+                1024, 1024, 512, 0,
+            "background",
+            "spine/windmill/export/windmill.atlas",
+            "spine/windmill/export/windmill-ess.json",
+            "animation"));
+    }};
+    // Dialogue box parameters.
+    public final HashMap<String, DialogueConfig> dialogueActors = new HashMap<String, DialogueConfig>() {{
+        put("dialogue", new DialogueConfig(
+                700, -1, 200, 500,
+                "dialogue",
+                0));
+    }};
+
+    // Progress bar parameters.
+    public final HashMap<String, ProgressConfig> progressActors = new HashMap<String, ProgressConfig>() {{
+        put("timeTillNext", new ProgressConfig(
+                100, 10, 800, 200, "timeTillNext",
+                0, 100, 1, false,
+                0));
+        put("redProbability", new ProgressConfig(
+                100, 10, 800, 150, "redProbability",
+                0, 100, 1, false,
+                0));
+    }};
+
+    ////////////////////////////////////////////////////
+    // Box2D parameters
+    ////////////////////////////////////////////////////
+
+    public final float penCenterX = 256;
+    public final float penCenterY = 110;
+    public final float penW = 512;
+    public final float penH = 200;
+    public final float penThickness = 2;
+
+    ////////////////////////////////////////////////////
+    // Subclass definitions
+    ////////////////////////////////////////////////////
+
     public class SpineActorConfig {
         public final float w;
         public final float h;
@@ -40,22 +90,6 @@ public class UIConfig {
         }
     }
 
-    public final HashMap<String, SpineActorConfig> spineActors = new HashMap<String, SpineActorConfig>() {{
-        put("character", new SpineActorConfig(
-            300, 576, 100, 0,
-            "character",
-            "spine/spineboy/export/spineboy.atlas",
-            "spine/spineboy/export/spineboy-ess.json",
-            "walk"));
-        put("background", new SpineActorConfig(
-                1024, 1024, 512, 0,
-            "background",
-            "spine/windmill/export/windmill.atlas",
-            "spine/windmill/export/windmill-ess.json",
-            "animation"));
-    }};
-
-    // Dialogue box parameters.
     public class DialogueConfig {
         public final float w;
         public final float h;  // Can remove.
@@ -75,14 +109,6 @@ public class UIConfig {
         }
     }
 
-    public final HashMap<String, DialogueConfig> dialogueActors = new HashMap<String, DialogueConfig>() {{
-        put("dialogue", new DialogueConfig(
-                700, -1, 200, 500,
-                "dialogue",
-                0));
-    }};
-
-    // Progress bar parameters.
     public class ProgressConfig {
         public final float w;
         public final float h;
@@ -110,17 +136,5 @@ public class UIConfig {
             this.startValue = startValue;
         }
     }
-
-    public final HashMap<String, ProgressConfig> progressActors = new HashMap<String, ProgressConfig>() {{
-        put("timeTillNext", new ProgressConfig(
-                100, 10, 800, 200, "timeTillNext",
-                0, 100, 1, false,
-                0));
-        put("redProbability", new ProgressConfig(
-                100, 10, 800, 150, "redProbability",
-                0, 100, 1, false,
-                0));
-    }};
-
-
 }
+
