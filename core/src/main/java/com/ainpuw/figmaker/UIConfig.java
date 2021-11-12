@@ -57,11 +57,11 @@ public class UIConfig {
     // Box2D parameters
     ////////////////////////////////////////////////////
 
-    public final float penCenterX = 256;
+    public final float penCenterX = 570;
     public final float penCenterY = 110;
-    public final float penW = 512;
-    public final float penH = 200;
-    public final float penThickness = 2;
+    public final float penW = 650;
+    public final float penH = 150;
+    public final float penThickness = 20;
 
     ////////////////////////////////////////////////////
     // Subclass definitions

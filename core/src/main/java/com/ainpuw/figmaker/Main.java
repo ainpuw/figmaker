@@ -1,6 +1,7 @@
 package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -40,6 +41,7 @@ public class Main extends ApplicationAdapter {
 
         // Scene2D section.
         stage = new Stage(new ExtendViewport(uiConfig.w, uiConfig.h));
+        stage.getCamera().position.set(uiConfig.w/2, uiConfig.h/2, 0);
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal(uiConfig.skinFile));
@@ -57,15 +59,15 @@ public class Main extends ApplicationAdapter {
         timeTillNext = new ProgressActor(uiConfig.progressActors.get("timeTillNext"), skin);
         redProbability = new ProgressActor(uiConfig.progressActors.get("redProbability"), skin);
 
-        //stage.addActor(background);
-        //stage.addActor(character);
+        stage.addActor(background);
+        stage.addActor(character);
         stage.addActor(dialogue);
         stage.addActor(timeTillNext);
         stage.addActor(redProbability);
 
         // Box2D section.
         world = new World(gameConfig.gravity, true);
-        worm = new Worm(uiConfig, world);
+        worm = new Worm(gameConfig, uiConfig, world);
     }
 
     @Override
@@ -87,10 +89,8 @@ public class Main extends ApplicationAdapter {
         stage.draw();
 
         // SHOULDN'T BE HERE.
-        for (int i = 0 ; i < 5; i++) {
-            worm.step();
-            world.step(Gdx.graphics.getDeltaTime(), 3, 3);
-        }
+        worm.step();
+        world.step(Gdx.graphics.getDeltaTime(), 1, 1);
         debugRenderer.render(world, stage.getCamera().combined);
 
         spriteBatch.setProjectionMatrix(stage.getCamera().combined);
