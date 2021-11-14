@@ -1,7 +1,8 @@
 package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -9,10 +10,19 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.Null;
 
 public class Main extends ApplicationAdapter {
     private GameConfig gameConfig = new GameConfig();
@@ -27,9 +37,11 @@ public class Main extends ApplicationAdapter {
 
     private SpineActor background;
     private SpineActor character;
-    private DialogueActor dialogue;
+    private DialogueActor dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
+    private HorizontalGroup toolbox;
+    private DragAndDrop toolboxDrag;
 
     private Worm worm;
 
@@ -39,41 +51,46 @@ public class Main extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
 
+        /////////////////////////////////////////////
         // Scene2D section.
+        /////////////////////////////////////////////
+
         stage = new Stage(new ExtendViewport(uiConfig.w, uiConfig.h));
         stage.getCamera().position.set(uiConfig.w/2, uiConfig.h/2, 0);
         Gdx.input.setInputProcessor(stage);
-
         skin = new Skin(Gdx.files.internal(uiConfig.skinFile));
-        // Define how texts upscale, "nearest" gives a sharper look than "linear".
         skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        // Allow libGDX font markup language for font effects.
         skin.getFont("default-font").getData().markupEnabled = true;
-        // Size of the font.
         skin.getFont("default-font").getData().setScale(uiConfig.scale);
 
-        // Initialize actors.
         background = new SpineActor(uiConfig.spineActors.get("background"));
         character = new SpineActor(uiConfig.spineActors.get("character"));
-        dialogue = new DialogueActor(uiConfig.dialogueActors.get("dialogue"), skin);
+        dialogueBox = new DialogueActor(uiConfig.dialogueActors.get("dialogue"), skin);
         timeTillNext = new ProgressActor(uiConfig.progressActors.get("timeTillNext"), skin);
         redProbability = new ProgressActor(uiConfig.progressActors.get("redProbability"), skin);
+        toolbox = utils.initToolbox(uiConfig, gameConfig, dialogueBox);
+        toolboxDrag = utils.initToolboxDragAndDrop();
 
-        stage.addActor(background);
-        stage.addActor(character);
-        stage.addActor(dialogue);
-        stage.addActor(timeTillNext);
-        stage.addActor(redProbability);
-
+        //stage.addActor(background);
+        //stage.addActor(character);
+        stage.addActor(dialogueBox);
+        //stage.addActor(timeTillNext);
+        //stage.addActor(redProbability);
+        stage.addActor(toolbox);
+        
+        /////////////////////////////////////////////
         // Box2D section.
+        /////////////////////////////////////////////
+
         world = new World(gameConfig.gravity, true);
-        worm = new Worm(gameConfig, uiConfig, world);
+        worm = new Worm(gameConfig, uiConfig, stage, world);
     }
 
     @Override
     public void dispose () {
         stage.dispose();
         skin.dispose();
+        worm.dispose();
     }
 
     @Override
@@ -81,16 +98,16 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(uiConfig.screenR, uiConfig.screenG, uiConfig.screenB, uiConfig.screenA);
 
         // For debug.
-        dialogue.genRandomText();
-        timeTillNext.genRandomProgress();
+        // dialogueBox.genRandomText();
+        // timeTillNext.genRandomProgress();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / gameConfig.minFrameRate));
         stage.getViewport().apply();
         stage.draw();
 
         // SHOULDN'T BE HERE.
-        worm.step();
         world.step(Gdx.graphics.getDeltaTime(), 1, 1);
+        worm.step();
         debugRenderer.render(world, stage.getCamera().combined);
 
         spriteBatch.setProjectionMatrix(stage.getCamera().combined);

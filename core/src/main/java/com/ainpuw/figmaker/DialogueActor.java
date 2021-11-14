@@ -24,6 +24,13 @@ public class DialogueActor extends TypingLabel {
         this.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
     }
 
+    public void updateText(String text) {
+        this.setText(text, true);
+        this.restart();
+        this.setHeight(this.getPrefHeight());
+        this.setY(config.y - this.getHeight());
+    }
+
     public void genRandomText() {
         // For debug purpose.
         if (Math.random() > 0.995) {
@@ -36,10 +43,7 @@ public class DialogueActor extends TypingLabel {
                 }
                 text += " ";
             }
-            this.setText(text, true);
-            this.restart();
-            this.setHeight(this.getPrefHeight());
-            this.setY(config.y - this.getHeight());
+            this.updateText(text);
         }
 
     }

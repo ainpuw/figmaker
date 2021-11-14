@@ -17,7 +17,8 @@ public class UIConfig {
     // Scene2D parameters
     ////////////////////////////////////////////////////
 
-    public final String skinFile = "data/uiskin.json";
+    public final String skinFile = "skin/uiskin.json";
+
     // Spine animation parameters.
     public final HashMap<String, SpineActorConfig> spineActors = new HashMap<String, SpineActorConfig>() {{
         put("character", new SpineActorConfig(
@@ -33,6 +34,7 @@ public class UIConfig {
             "spine/windmill/export/windmill-ess.json",
             "animation"));
     }};
+
     // Dialogue box parameters.
     public final HashMap<String, DialogueConfig> dialogueActors = new HashMap<String, DialogueConfig>() {{
         put("dialogue", new DialogueConfig(
@@ -52,6 +54,13 @@ public class UIConfig {
                 0, 100, 1, false,
                 0));
     }};
+
+    // Toolbox parameters.
+    public final float toolboxX = 910;
+    public final float toolboxY = 50;
+    public final float toolboxW = 90;
+    public final float toolboxH = 300;
+    public final float toolboxSpacing = 10;
 
     ////////////////////////////////////////////////////
     // Box2D parameters
