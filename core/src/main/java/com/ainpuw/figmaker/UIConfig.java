@@ -1,5 +1,12 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
 import java.util.HashMap;
 
 public class UIConfig {
@@ -12,6 +19,9 @@ public class UIConfig {
     public final float screenG = 0.2f;
     public final float screenB = 0.2f;
     public final float screenA = 1f;
+    public Stage stage = new Stage(new ExtendViewport(w, h));
+    public Skin skin;
+    public DragAndDrop toolboxDrag;
 
     ////////////////////////////////////////////////////
     // Scene2D parameters
@@ -144,6 +154,25 @@ public class UIConfig {
             this.vertical = vertical;
             this.startValue = startValue;
         }
+    }
+
+    ////////////////////////////////////////////////////
+    // Class functions
+    ////////////////////////////////////////////////////
+
+    public UIConfig() {
+        stage.getCamera().position.set(w/2, h/2, 0);
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal(skinFile));
+        skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        skin.getFont("default-font").getData().markupEnabled = true;
+        skin.getFont("default-font").getData().setScale(scale);
+        toolboxDrag = new DragAndDrop();
+    }
+
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
     }
 }
 
