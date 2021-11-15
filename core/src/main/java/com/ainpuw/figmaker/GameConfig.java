@@ -59,10 +59,12 @@ public class GameConfig {
     class WormSegConfig {
         final String name;
         final String imgPath;
+        final Texture texture;
 
         public WormSegConfig(String name) {
             this.name = name;
             this.imgPath = "worm/" + name + ".png";
+            this.texture = new Texture(this.imgPath);
         }
     }
 
@@ -91,5 +93,9 @@ public class GameConfig {
         segShapeM.dispose();
         segIndicatorLeftTexture.dispose();
         segIndicatorRightTexture.dispose();
+
+        for (int i = 0; i < wormSegConfigs.size(); i++) {
+            wormSegConfigs.get(i).texture.dispose();
+        }
     }
 }

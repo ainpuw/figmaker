@@ -1,6 +1,8 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,17 +15,18 @@ public class ToolboxListener extends InputListener {
     UIConfig uiConfig;
     GameState state;
     DialogueActor dialogueBox;
+    Actor segActor;
     int segID;
 
-    public ToolboxListener(GameConfig gameConfig, UIConfig uiConfig, GameState state, DialogueActor dialogueBox, int segID) {
+    public ToolboxListener(GameConfig gameConfig, UIConfig uiConfig, GameState state,
+                           DialogueActor dialogueBox, Actor segActor, int segID) {
         super();
         this.gameConfig = gameConfig;
         this.uiConfig = uiConfig;
         this.state = state;
         this.dialogueBox = dialogueBox;
+        this.segActor = segActor;
         this.segID = segID;
-
-        // initToolboxDragAndDrop(500, 300);
     }
 
     @Override
@@ -36,8 +39,16 @@ public class ToolboxListener extends InputListener {
                 basicSeg.updateAndAddToStage();
             }
         }
-
-        initToolboxDragAndDrop(x, y);
+        /*
+        System.out.println(Gdx.input.getX());
+        System.out.println(Gdx.input.getY());
+        System.out.println(Gdx.graphics.getWidth());
+        System.out.println(Gdx.graphics.getHeight());
+        System.out.println(event.getStageX());
+        System.out.println(event.getStageY());
+        System.out.println("");
+*/
+        initToolboxDragAndDrop(event.getStageX(), event.getStageY());
 
         // FIXME: This is for debug purpose.
         dialogueBox.updateText(gameConfig.wormSegConfigs.get(segID).name);
@@ -61,13 +72,16 @@ public class ToolboxListener extends InputListener {
         uiConfig.toolboxDrag.clear();
 
         // Create a source actor. The target actors are already created and added.
-        Image source = new Image(new Texture(gameConfig.wormSegConfigs.get(segID).imgPath));
-        source.setPosition(x, y);
-        //source.setBounds(0, 0, source.getImageWidth(), source.getImageHeight());
-        uiConfig.stage.addActor(source);
+        Image source = new Image(gameConfig.wormSegConfigs.get(segID).texture);
+        float tWidth = gameConfig.wormSegConfigs.get(segID).texture.getWidth();
+        float tHeight = gameConfig.wormSegConfigs.get(segID).texture.getHeight();
+        source.setPosition(x - tWidth / 2, y - tHeight / 2);
+
+        // source.setBounds(0, 0, source.getImageWidth(), source.getImageHeight());
+        // uiConfig.stage.addActor(source);
         System.out.println("I am added!");
 
-        uiConfig.toolboxDrag.addSource(new DragAndDrop.Source(source) {
+        uiConfig.toolboxDrag.addSource(new DragAndDrop.Source(segActor) {
             @Null
             public DragAndDrop.Payload dragStart (InputEvent event, float x, float y, int pointer) {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
@@ -108,6 +122,7 @@ public class ToolboxListener extends InputListener {
             }
         }
          */
+
 
     }
 }

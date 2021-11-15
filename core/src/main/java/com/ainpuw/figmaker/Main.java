@@ -41,7 +41,7 @@ public class Main extends ApplicationAdapter {
         dialogueBox = new DialogueActor(uiConfig.dialogueActors.get("dialogue"), uiConfig.skin);
         timeTillNext = new ProgressActor(uiConfig.progressActors.get("timeTillNext"), uiConfig.skin);
         redProbability = new ProgressActor(uiConfig.progressActors.get("redProbability"), uiConfig.skin);
-        toolbox = utils.initToolbox(uiConfig, gameConfig, state, dialogueBox);
+        toolbox = new Toolbox(uiConfig, gameConfig, state, dialogueBox);
 
         // uiConfig.stage.addActor(background);
         // uiConfig.stage.addActor(character);
