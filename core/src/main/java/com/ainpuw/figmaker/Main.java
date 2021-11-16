@@ -22,7 +22,7 @@ public class Main extends ApplicationAdapter {
     private DialogueActor dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
-    private HorizontalGroup toolbox;
+    private Toolbox toolbox;
 
     private Worm worm;
 
@@ -49,7 +49,7 @@ public class Main extends ApplicationAdapter {
         // uiConfig.stage.addActor(timeTillNext);
         // uiConfig.stage.addActor(redProbability);
         uiConfig.stage.addActor(toolbox);
-        
+
         /////////////////////////////////////////////
         // Box2D section
         /////////////////////////////////////////////
@@ -82,6 +82,7 @@ public class Main extends ApplicationAdapter {
         // dialogueBox.genRandomText();
         // timeTillNext.genRandomProgress();
 
+        toolbox.ready(false);  // This only run for ~0.5 seconds.
         uiConfig.stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / gameConfig.minFrameRate));
         uiConfig.stage.getViewport().apply();
         uiConfig.stage.draw();

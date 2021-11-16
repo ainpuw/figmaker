@@ -16,7 +16,7 @@ public class Lwjgl3Launcher {
 
 	private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
 		Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-		configuration.setTitle("sons of the abyss the forest");
+		configuration.setTitle("Sons of the Abyss");
 		configuration.setWindowedMode(1024, 576);
 		configuration.setWindowIcon("worm128.png", "worm64.png", "worm32.png", "worm16.png");
 		return configuration;

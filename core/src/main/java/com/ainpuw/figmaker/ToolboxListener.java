@@ -1,29 +1,25 @@
 package com.ainpuw.figmaker;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.utils.Null;
 
 public class ToolboxListener extends InputListener {
     GameConfig gameConfig;
     UIConfig uiConfig;
     GameState state;
+    Toolbox toolbox;
     DialogueActor dialogueBox;
-    Actor segActor;
+    Toolbox.Tool segActor;
     int segID;
 
     public ToolboxListener(GameConfig gameConfig, UIConfig uiConfig, GameState state,
-                           DialogueActor dialogueBox, Actor segActor, int segID) {
+                           Toolbox toolbox, DialogueActor dialogueBox, Toolbox.Tool segActor, int segID) {
         super();
         this.gameConfig = gameConfig;
         this.uiConfig = uiConfig;
         this.state = state;
+        this.toolbox = toolbox;
         this.dialogueBox = dialogueBox;
         this.segActor = segActor;
         this.segID = segID;
@@ -39,15 +35,10 @@ public class ToolboxListener extends InputListener {
                 basicSeg.updateAndAddToStage();
             }
         }
-        /*
-        System.out.println(Gdx.input.getX());
-        System.out.println(Gdx.input.getY());
-        System.out.println(Gdx.graphics.getWidth());
-        System.out.println(Gdx.graphics.getHeight());
-        System.out.println(event.getStageX());
-        System.out.println(event.getStageY());
-        System.out.println("");
-*/
+
+        // Set the displayActor half alpha.
+        segActor.displayActor.getColor().a = 0.5f;
+
         initToolboxDragAndDrop(event.getStageX(), event.getStageY());
 
         // FIXME: This is for debug purpose.
@@ -58,45 +49,11 @@ public class ToolboxListener extends InputListener {
 
     @Override
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-        // Resume stepping Box2D when the building action ends.
-        state.doBox2DStep = true;
-        // Remove worm actors from stage to reduce computation.
-        for (WormSegment seg : state.wormSegs) {
-            for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
-                basicSeg.removeFromStage();
-            }
-        }
+        // We don't put Box2D world state change here because DragAndDrop is conflicting with InputListener.
+        // We handle state change in DragAndDrop instead.
     }
 
     private void initToolboxDragAndDrop(float x, float y) {
-        uiConfig.toolboxDrag.clear();
-
-        // Create a source actor. The target actors are already created and added.
-        Image source = new Image(gameConfig.wormSegConfigs.get(segID).texture);
-        float tWidth = gameConfig.wormSegConfigs.get(segID).texture.getWidth();
-        float tHeight = gameConfig.wormSegConfigs.get(segID).texture.getHeight();
-        source.setPosition(x - tWidth / 2, y - tHeight / 2);
-
-        // source.setBounds(0, 0, source.getImageWidth(), source.getImageHeight());
-        // uiConfig.stage.addActor(source);
-        System.out.println("I am added!");
-
-        uiConfig.toolboxDrag.addSource(new DragAndDrop.Source(segActor) {
-            @Null
-            public DragAndDrop.Payload dragStart (InputEvent event, float x, float y, int pointer) {
-                DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                payload.setObject("Some payload!");
-
-                payload.setDragActor(getActor());
-
-                Label validLabel = new Label("connect", uiConfig.skin);
-                validLabel.setColor(0, 1, 0, 1);
-                payload.setValidDragActor(validLabel);
-
-                return payload;
-            }
-        });
-
         /*
         for (WormSegment seg : state.wormSegs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
@@ -122,7 +79,5 @@ public class ToolboxListener extends InputListener {
             }
         }
          */
-
-
     }
 }
