@@ -66,17 +66,21 @@ public class UIConfig {
     }};
 
     // Toolbox parameters.
-    public final float toolboxX = 910;
+    public final float toolboxX = 830;
     public final float toolboxY = 50;
-    public final float toolboxW = 90;
+    public final float toolboxW = 170;
     public final float toolboxH = 300;
-    public final float toolboxSpacing = 10;
+    public final float toolboxSpacing = 1;
+    public final float getDragAndDropActorPositionX = -20;
+    public final float getDragAndDropActorPositionY = 20;
+    public final float dragAndDropTouchOffsetX = -60;
+    public final float dragAndDropTouchOffsetY = 60;
 
     ////////////////////////////////////////////////////
     // Box2D parameters
     ////////////////////////////////////////////////////
 
-    public final float penCenterX = 570;
+    public final float penCenterX = 500;
     public final float penCenterY = 110;
     public final float penW = 650;
     public final float penH = 150;

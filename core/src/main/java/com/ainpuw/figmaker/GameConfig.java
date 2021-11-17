@@ -24,12 +24,13 @@ public class GameConfig {
     // Worm parameters
     ////////////////////////////////////////////////////
 
-    public final float segMidW = 35;
-    public final float segMidH = 10;
-    public final float segEndW = 5;
-    public final float segEndH = 5;
-    public final float segDensity = 5;
+    public final float segMidW = 60;
+    public final float segMidH = 20;
+    public final float segEndW = 10;
+    public final float segEndH = 10;
+    public final float segDensity = 1;
     public final float jointLen = 10;
+    public final float joinPos = segMidW/2 + segEndW;
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
     public PolygonShape segShapeM;  // Middle piece.

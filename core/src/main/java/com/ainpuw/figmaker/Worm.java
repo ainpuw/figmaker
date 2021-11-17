@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
 
 public class Worm {
@@ -59,6 +60,30 @@ public class Worm {
     public void step() {
         for (WormSegment seg : segs) {
             seg.step();
+        }
+    }
+
+    public static void joinSegs(WormSegment newSeg, WormSegment.BasicSegment joinSeg, boolean isLeft) {
+        // FIXME: We now always use the first element in the basicSegs list.
+        Body bodyNew = newSeg.basicSegs.get(0).body;
+        Body bodyOld = joinSeg.body;
+
+        DistanceJointDef distanceJointDef = new DistanceJointDef();
+        distanceJointDef.collideConnected = false;
+        distanceJointDef.length = newSeg.gameConfig.jointLen;
+        for (int i = 0; i < 19; i++) {
+            distanceJointDef.bodyA = bodyNew;
+            distanceJointDef.bodyB = bodyOld;
+            if (isLeft) {
+                // Join right side of newSeg to the left side of joinSeg.
+                distanceJointDef.localAnchorA.set(newSeg.gameConfig.joinPos, 0);
+                distanceJointDef.localAnchorB.set(-newSeg.gameConfig.joinPos, 0);
+            } else {
+                // Join left side of newSeg to the right side of joinSeg.
+                distanceJointDef.localAnchorA.set(-newSeg.gameConfig.joinPos, 0);
+                distanceJointDef.localAnchorB.set(newSeg.gameConfig.joinPos, 0);
+            }
+            newSeg.gameConfig.world.createJoint(distanceJointDef);
         }
     }
 }

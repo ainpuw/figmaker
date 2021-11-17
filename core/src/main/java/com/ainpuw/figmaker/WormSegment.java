@@ -1,5 +1,6 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
 public class WormSegment {
-    private GameConfig gameConfig;
+    public GameConfig gameConfig;
     private UIConfig uiConfig;
     private String name;  // Unique identifier.
     public Array<BasicSegment> basicSegs = new Array<>();
@@ -19,17 +20,17 @@ public class WormSegment {
         this.name = name;
 
         if (name == "seg_balloon") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_arm") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_pendulum") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_fan") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_leg") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_wing") {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
             /*
             DistanceJointDef distanceJointDef = new DistanceJointDef();
             distanceJointDef.collideConnected = true;
@@ -43,7 +44,7 @@ public class WormSegment {
             }
              */
         } else {
-            basicSegs.add(new BasicSegment(x, y, 0));
+            basicSegs.add(new BasicSegment(x, y, 0, this));
         }
     }
 
@@ -59,15 +60,18 @@ public class WormSegment {
     }
 
     ////////////////////////////////////////////////////
-    // Basic segment subclass definition
+    // Subclass definitions
     ////////////////////////////////////////////////////
 
     public class BasicSegment {
-        private Body body;
-        public Actor leftEnd;
-        public Actor rightEnd;
+        public Body body;
+        public BasicImgSegment leftEnd;
+        public BasicImgSegment rightEnd;
+        public WormSegment parent;
 
-        public BasicSegment(float x, float y, float angle) {
+        public BasicSegment(float x, float y, float angle, WormSegment parent) {
+            this.parent = parent;
+
             // Init for world.
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -90,8 +94,8 @@ public class WormSegment {
             float segMidW = gameConfig.segMidW;
             float segMidH = gameConfig.segMidH;
             float segEndW = gameConfig.segEndW;
-            this.leftEnd = new Image(gameConfig.segIndicatorLeftTexture);
-            this.rightEnd = new Image(gameConfig.segIndicatorRightTexture);
+            this.leftEnd = new BasicImgSegment(gameConfig.segIndicatorLeftTexture, this, true);
+            this.rightEnd = new BasicImgSegment(gameConfig.segIndicatorRightTexture, this, false);
             this.leftEnd.setSize(segMidW / 2 + segEndW, segMidH);
             this.leftEnd.setBounds(0, 0, this.leftEnd.getWidth(), this.leftEnd.getHeight());
             this.rightEnd.setSize(this.leftEnd.getWidth(), this.leftEnd.getHeight());
@@ -136,4 +140,16 @@ public class WormSegment {
             rightEnd.remove();
         }
     }
+
+    public class BasicImgSegment extends Image {
+        BasicSegment parent;
+        boolean isLeft;
+
+        public BasicImgSegment(Texture texture, BasicSegment parent, boolean isLeft) {
+            super(texture);
+            this.parent = parent;
+            this.isLeft = isLeft;
+        }
+    }
+
 }
