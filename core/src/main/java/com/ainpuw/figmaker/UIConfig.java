@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-
 import java.util.HashMap;
 
 public class UIConfig {
@@ -21,7 +20,9 @@ public class UIConfig {
     public final float screenA = 1f;
     public Stage stage = new Stage(new ExtendViewport(w, h));
     public Skin skin;
-    public DragAndDrop toolboxDrag;
+    public DragAndDrop toolboxDragAndDrop;
+    // At most update at 30 FPS.
+    public final float maxStageUpdateDelta = 1 / 30f;
 
     ////////////////////////////////////////////////////
     // Scene2D parameters
@@ -30,13 +31,13 @@ public class UIConfig {
     public final String skinFile = "skin/uiskin.json";
 
     // Spine animation parameters.
-    public final HashMap<String, SpineActorConfig> spineActors = new HashMap<String, SpineActorConfig>() {{
+    public final HashMap<String, SpineActorConfig> spineActorConfigs = new HashMap<String, SpineActorConfig>() {{
         put("character", new SpineActorConfig(
             300, 576, 100, 0,
             "character",
-            "spine/spineboy/export/spineboy.atlas",
-            "spine/spineboy/export/spineboy-ess.json",
-            "walk"));
+            "spine/character_test/character_test.atlas",
+            "spine/character_test/Illustration.json",
+            "animation1"));
         put("background", new SpineActorConfig(
                 1024, 1024, 512, 0,
             "background",
@@ -46,15 +47,16 @@ public class UIConfig {
     }};
 
     // Dialogue box parameters.
-    public final HashMap<String, DialogueConfig> dialogueActors = new HashMap<String, DialogueConfig>() {{
+    public final HashMap<String, DialogueConfig> dialogueActorConfigs = new HashMap<String, DialogueConfig>() {{
         put("dialogue", new DialogueConfig(
                 700, -1, 200, 500,
                 "dialogue",
                 0));
     }};
+    public DialogueActor dialogueBox = null;  // Provide quick access to dialogue box.
 
     // Progress bar parameters.
-    public final HashMap<String, ProgressConfig> progressActors = new HashMap<String, ProgressConfig>() {{
+    public final HashMap<String, ProgressConfig> progressActorConfigs = new HashMap<String, ProgressConfig>() {{
         put("timeTillNext", new ProgressConfig(
                 100, 10, 800, 200, "timeTillNext",
                 0, 100, 1, false,
@@ -71,20 +73,11 @@ public class UIConfig {
     public final float toolboxW = 170;
     public final float toolboxH = 300;
     public final float toolboxSpacing = 1;
-    public final float getDragAndDropActorPositionX = -20;
-    public final float getDragAndDropActorPositionY = 20;
+    public final float dragActorPositionX = -20;
+    public final float dragActorPositionY = 20;
     public final float dragAndDropTouchOffsetX = -60;
     public final float dragAndDropTouchOffsetY = 60;
-
-    ////////////////////////////////////////////////////
-    // Box2D parameters
-    ////////////////////////////////////////////////////
-
-    public final float penCenterX = 500;
-    public final float penCenterY = 110;
-    public final float penW = 650;
-    public final float penH = 150;
-    public final float penThickness = 20;
+    public String dragAndDrogSourceName = "";
 
     ////////////////////////////////////////////////////
     // Subclass definitions
@@ -171,7 +164,7 @@ public class UIConfig {
         skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         skin.getFont("default-font").getData().markupEnabled = true;
         skin.getFont("default-font").getData().setScale(scale);
-        toolboxDrag = new DragAndDrop();
+        toolboxDragAndDrop = new DragAndDrop();
     }
 
     public void dispose() {

@@ -3,7 +3,7 @@ package com.ainpuw.figmaker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public class utils {
+public class Utils {
     public static void drawGameBoundingBox (UIConfig uiConfig, SpriteBatch spriteBatch,
                                             ShapeRenderer shapeRenderer) {
         shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());

@@ -5,99 +5,103 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends ApplicationAdapter {
+    // Config and World global objects.
     private GameConfig gameConfig;
+    // Config and Stage global objects.
     private UIConfig uiConfig;
-    private GameState state;
 
+    // Draw debug shapes outside of Stage.
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
+    // Draw debug view of World.
     private Box2DDebugRenderer debugRenderer;
 
+    // Stage Actors.
     private SpineActor background;
     private SpineActor character;
     private DialogueActor dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
-    private Toolbox toolbox;
+    private ToolboxActor toolbox;
 
+    // World Bodies.
     private Worm worm;
 
     @Override
     public void create () {
         gameConfig = new GameConfig();
         uiConfig = new UIConfig();
-        state = new GameState();
 
         /////////////////////////////////////////////
-        // Scene2D section
+        // Scene2D
         /////////////////////////////////////////////
 
-        background = new SpineActor(uiConfig.spineActors.get("background"));
-        character = new SpineActor(uiConfig.spineActors.get("character"));
-        dialogueBox = new DialogueActor(uiConfig.dialogueActors.get("dialogue"), uiConfig.skin);
-        timeTillNext = new ProgressActor(uiConfig.progressActors.get("timeTillNext"), uiConfig.skin);
-        redProbability = new ProgressActor(uiConfig.progressActors.get("redProbability"), uiConfig.skin);
-        toolbox = new Toolbox(uiConfig, gameConfig, state, dialogueBox);
+        background = new SpineActor(uiConfig.spineActorConfigs.get("background"));
+        character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
+        dialogueBox = new DialogueActor(uiConfig.dialogueActorConfigs.get("dialogue"), uiConfig.skin);
+        timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
+        redProbability = new ProgressActor(uiConfig.progressActorConfigs.get("redProbability"), uiConfig.skin);
+        toolbox = new ToolboxActor(gameConfig, uiConfig);
+        uiConfig.dialogueBox = dialogueBox;
 
         // uiConfig.stage.addActor(background);
-        // uiConfig.stage.addActor(character);
+        uiConfig.stage.addActor(character);
         uiConfig.stage.addActor(dialogueBox);
+        uiConfig.stage.addActor(toolbox);
         // uiConfig.stage.addActor(timeTillNext);
         // uiConfig.stage.addActor(redProbability);
-        uiConfig.stage.addActor(toolbox);
 
         /////////////////////////////////////////////
-        // Box2D section
+        // Box2D
         /////////////////////////////////////////////
 
         worm = new Worm(gameConfig, uiConfig);
+        gameConfig.wormSegs = worm.segs;
 
         /////////////////////////////////////////////
-        // Other
+        // Others
         /////////////////////////////////////////////
 
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
-
-        // Add the necessary stateful objects to game state to be used elsewhere.
-        state.wormSegs = worm.segs;
-    }
-
-    @Override
-    public void dispose () {
-        gameConfig.dispose();
-        uiConfig.dispose();
     }
 
     @Override
     public void render () {
         ScreenUtils.clear(uiConfig.screenR, uiConfig.screenG, uiConfig.screenB, uiConfig.screenA);
 
-        // For debug.
-        // dialogueBox.genRandomText();
-        // timeTillNext.genRandomProgress();
+        /////////////////////////////////////////////
+        // Scene2D
+        /////////////////////////////////////////////
 
-        toolbox.ready(false);  // This only run for ~0.5 seconds.
-        uiConfig.stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / gameConfig.minFrameRate));
+        toolbox.ready(false);  // This only runs for the first 30 frames.
+        uiConfig.stage.act(Math.min(Gdx.graphics.getDeltaTime(), uiConfig.maxStageUpdateDelta));
         uiConfig.stage.getViewport().apply();
         uiConfig.stage.draw();
 
-        if (state.doBox2DStep) {
-            gameConfig.world.step(Gdx.graphics.getDeltaTime(), 1, 1);
-            worm.step();
-        }
-        debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        /////////////////////////////////////////////
+        // Box2D
+        /////////////////////////////////////////////
 
-        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
+        if (gameConfig.evolveWorld) {
+            // FIXME: Why would resize mess up with the physics? Need max update delta?
+            gameConfig.world.step(Gdx.graphics.getDeltaTime(), gameConfig.velocityIterations, gameConfig.positionIterations);
+            worm.step();  // Apply forces to worm to be evolved next rendering.
+        }
+
+        /////////////////////////////////////////////
+        // Debug
+        /////////////////////////////////////////////
 
         // FIXME: For debug.
-        utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
+        debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
+        Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
     @Override
@@ -105,5 +109,11 @@ public class Main extends ApplicationAdapter {
         // It is very important to set centerCamera to "false" for ExtendViewport.
         uiConfig.stage.getViewport().update(width, height, false);
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+    }
+
+    @Override
+    public void dispose () {
+        gameConfig.dispose();
+        uiConfig.dispose();
     }
 }

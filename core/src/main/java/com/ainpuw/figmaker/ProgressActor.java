@@ -11,12 +11,11 @@ public class ProgressActor extends ProgressBar {
         this.config = config;
         this.setValue(config.startValue);
         this.setPosition(config.x, config.y);
-        this.setWidth(config.w);  // Not working?
-        this.setHeight(config.h);  // Now working?
+        this.setWidth(config.w);  // FIXME: Not working?
+        this.setHeight(config.h);  // FIXME: Now working?
     }
 
-    public void genRandomProgress() {
-        // For debug purpose.
+    public void genRandomProgressDebug() {
         float newValue = (float) Math.random() + this.getValue();
         if (newValue > this.getMaxValue())
             this.setValue(0);

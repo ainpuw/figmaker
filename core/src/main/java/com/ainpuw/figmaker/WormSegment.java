@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
@@ -19,6 +18,7 @@ public class WormSegment {
         this.uiConfig = uiConfig;
         this.name = name;
 
+        // TODO: Need to expand on this.
         if (name == "seg_balloon") {
             basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_arm") {
@@ -31,18 +31,6 @@ public class WormSegment {
             basicSegs.add(new BasicSegment(x, y, 0, this));
         } else if (name == "seg_wing") {
             basicSegs.add(new BasicSegment(x, y, 0, this));
-            /*
-            DistanceJointDef distanceJointDef = new DistanceJointDef();
-            distanceJointDef.collideConnected = true;
-            distanceJointDef.length = gameConfig.jointLen;
-            for (int i = 0; i < 19; i++) {
-                distanceJointDef.bodyA = segs.get(i).body;
-                distanceJointDef.bodyB = segs.get(i+1).body;
-                distanceJointDef.localAnchorA.set(-jPos/2, 0);
-                distanceJointDef.localAnchorB.set(jPos/2, 0);
-                world.createJoint(distanceJointDef);
-            }
-             */
         } else {
             basicSegs.add(new BasicSegment(x, y, 0, this));
         }
@@ -50,7 +38,8 @@ public class WormSegment {
 
     public void step() {
         // FIXME: This is just for debug.
-        // FIXME: Need to put forces into game config?
+        // Given different segments, different forces should be applied, even periodically.
+        // FIXME: Need to put force values into game config.
         for (BasicSegment seg : basicSegs) {
             if (Math.random() > 0.8)
                 seg.body.applyLinearImpulse(new Vector2(0, 10000), seg.body.getPosition(), true);
@@ -65,8 +54,8 @@ public class WormSegment {
 
     public class BasicSegment {
         public Body body;
-        public BasicImgSegment leftEnd;
-        public BasicImgSegment rightEnd;
+        public BasicImgSegment leftEnd;  // For drag and drop visual indications.
+        public BasicImgSegment rightEnd;  // For drag and drop visual indications.
         public WormSegment parent;
 
         public BasicSegment(float x, float y, float angle, WormSegment parent) {
@@ -130,7 +119,7 @@ public class WormSegment {
             uiConfig.stage.addActor(leftEnd);
             uiConfig.stage.addActor(rightEnd);
 
-            // Show Scene2D debug bounding boxes.
+            // FIXME: For debug, show Scene2D debug bounding boxes.
             leftEnd.debug();
             rightEnd.debug();
         }
