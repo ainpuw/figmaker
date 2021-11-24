@@ -1,5 +1,8 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -87,6 +90,24 @@ public class Worm {
             distanceJointDef.localAnchorB.set(newSeg.gameConfig.joinPos, 0);
         }
         newSeg.gameConfig.world.createJoint(distanceJointDef);
+    }
+
+    public static void drawWorm(GameConfig config, SpriteBatch spriteBatch) {
+        spriteBatch.begin();
+        for (WormSegment seg : config.wormSegs) {
+            for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
+                Vector2 segPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
+
+                spriteBatch.draw(config.segTextureRegions[0][0],
+                        segPos.x - config.segTexture.getWidth()/2,
+                        segPos.y - config.segTexture.getHeight()/2,
+                        0, 0,
+                        config.segTexture.getWidth(), config.segTexture.getHeight(),
+                        1, 1,
+                        basicSeg.body.getAngle() * 57.2958f);
+            }
+        }
+        spriteBatch.end();
     }
 }
 

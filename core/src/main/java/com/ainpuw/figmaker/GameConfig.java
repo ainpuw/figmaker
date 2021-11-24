@@ -2,6 +2,7 @@ package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -51,8 +52,10 @@ public class GameConfig {
     public FixtureDef segFixtureDefL = new FixtureDef();
     public FixtureDef segFixtureDefR = new FixtureDef();
     public FixtureDef segFixtureDefM = new FixtureDef();
-    public Texture segIndicatorLeftTexture;
-    public Texture segIndicatorRightTexture;
+    public final Texture segTexture;
+    public final TextureRegion[][] segTextureRegions;
+    public final Texture segIndicatorLeftTexture;
+    public final Texture segIndicatorRightTexture;
 
     public final HashMap<Integer, WormSegConfig> wormSegConfigs = new HashMap<Integer, WormSegConfig>() {{
         put(0, new WormSegConfig("seg_balloon"));
@@ -94,6 +97,8 @@ public class GameConfig {
         segFixtureDefR.density = segDensity;
         segFixtureDefM.shape = segShapeM;
         segFixtureDefM.density = segDensity;
+        segTexture = new Texture(Gdx.files.internal("worm/seg_balloon.png"));  // FIXME: Debug.
+        segTextureRegions = TextureRegion.split(segTexture, segTexture.getWidth(), segTexture.getHeight());
         segIndicatorLeftTexture = new Texture(Gdx.files.internal("worm/indicator_left.png"));
         segIndicatorRightTexture = new Texture(Gdx.files.internal("worm/indicator_right.png"));
     }
@@ -104,6 +109,7 @@ public class GameConfig {
         segShapeL.dispose();
         segShapeR.dispose();
         segShapeM.dispose();
+        segTexture.dispose();
         segIndicatorLeftTexture.dispose();
         segIndicatorRightTexture.dispose();
 

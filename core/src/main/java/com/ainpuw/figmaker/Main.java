@@ -93,16 +93,17 @@ public class Main extends ApplicationAdapter {
             gameConfig.world.step(deltaTime, gameConfig.velocityIterations, gameConfig.positionIterations);
             worm.step();  // Apply forces to worm to be evolved next rendering.
         }
+        Worm.drawWorm(gameConfig, spriteBatch);
 
         /////////////////////////////////////////////
         // Debug
         /////////////////////////////////////////////
 
         // FIXME: For debug.
-        debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        // debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
         spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
         shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
+        // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
     @Override
