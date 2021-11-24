@@ -1,5 +1,6 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -43,13 +44,13 @@ public class Worm {
         fixture.friction = gameConfig.friction;
         fixture.density = 0.0f;
         // The floor.
-        shape.setAsBox(uiConfig.w, gameConfig.penThickness / 2);
+        shape.setAsBox(uiConfig.w, gameConfig.penThickness/2, new Vector2(0, -gameConfig.penThickness/2), 0);
         pen.get(0).createFixture(fixture);
         // The left wall.
-        shape.setAsBox(gameConfig.penThickness / 2, gameConfig.penH / 2);
+        shape.setAsBox(gameConfig.penThickness/2, gameConfig.penH/2, new Vector2(-gameConfig.penThickness/2, 0), 0);
         pen.get(1).createFixture(fixture);
         // The right wall.
-        shape.setAsBox(gameConfig.penThickness / 2, gameConfig.penH / 2);
+        shape.setAsBox(gameConfig.penThickness/2, gameConfig.penH/2, new Vector2(gameConfig.penThickness/2, 0), 0);
         pen.get(2).createFixture(fixture);
         shape.dispose();
     }

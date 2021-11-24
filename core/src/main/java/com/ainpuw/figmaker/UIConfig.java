@@ -2,6 +2,7 @@ package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -14,9 +15,9 @@ public class UIConfig {
     public final float w = 1024;
     public final float h = 576;
     public final float scale = 1;
-    public final float screenR = 0.2f;
-    public final float screenG = 0.2f;
-    public final float screenB = 0.2f;
+    public final float screenR = 246/255f;
+    public final float screenG = 255/255f;
+    public final float screenB = 240/255f;
     public final float screenA = 1f;
     public Stage stage = new Stage(new ExtendViewport(w, h));
     public Skin skin;
@@ -38,12 +39,6 @@ public class UIConfig {
             "spine/character_test/character_test.atlas",
             "spine/character_test/Illustration.json",
             "animation1"));
-        put("background", new SpineActorConfig(
-                1024, 1024, 512, 0,
-            "background",
-            "spine/windmill/export/windmill.atlas",
-            "spine/windmill/export/windmill-ess.json",
-            "animation"));
     }};
 
     // Dialogue box parameters.
@@ -78,6 +73,17 @@ public class UIConfig {
     public final float dragAndDropTouchOffsetX = -60;
     public final float dragAndDropTouchOffsetY = 60;
     public String dragAndDrogSourceName = "";
+
+    ////////////////////////////////////////////////////
+    // Background animation
+    ////////////////////////////////////////////////////
+
+    public final Texture backgroundFloorTexture = new Texture("background_floor.jpg"); // Static.
+    public final Texture backgroundSkyTexture = new Texture("background_sky.jpg");  // Dynamic.
+    public final int backgroundFrames = 7;
+    public final Vector2 backgroundFrameSize = new Vector2(1920, 540);
+    public final float backgroundFrameDuration = 0.14f;
+    public float backgroundStateTime = 0;  // Decide which part of the animation loop we are in.
 
     ////////////////////////////////////////////////////
     // Subclass definitions
@@ -170,6 +176,8 @@ public class UIConfig {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        backgroundFloorTexture.dispose();
+        backgroundSkyTexture.dispose();
     }
 }
 

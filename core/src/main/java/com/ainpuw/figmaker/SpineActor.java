@@ -51,13 +51,6 @@ public class SpineActor extends Actor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        skeleton.getColor().a = parentAlpha;
-        skeletonRenderer.draw(batch, skeleton);
-        super.draw(batch, parentAlpha);
-    }
-
-    @Override
     public void act(float delta) {
         skeleton.setX(this.getX());
         skeleton.setY(this.getY());
@@ -65,5 +58,12 @@ public class SpineActor extends Actor {
         animationState.update(delta);
         animationState.apply(skeleton);
         super.act(delta);
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        skeleton.getColor().a = parentAlpha;
+        skeletonRenderer.draw(batch, skeleton);
+        super.draw(batch, parentAlpha);
     }
 }

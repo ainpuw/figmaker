@@ -20,7 +20,7 @@ public class Main extends ApplicationAdapter {
     private Box2DDebugRenderer debugRenderer;
 
     // Stage Actors.
-    private SpineActor background;
+    private BackgroundActor background;
     private SpineActor character;
     private DialogueActor dialogueBox;
     private ProgressActor timeTillNext;
@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
         // Scene2D
         /////////////////////////////////////////////
 
-        background = new SpineActor(uiConfig.spineActorConfigs.get("background"));
+        background = new BackgroundActor(uiConfig);
         character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
         dialogueBox = new DialogueActor(uiConfig.dialogueActorConfigs.get("dialogue"), uiConfig.skin);
         timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
@@ -47,7 +47,7 @@ public class Main extends ApplicationAdapter {
         toolbox = new ToolboxActor(gameConfig, uiConfig);
         uiConfig.dialogueBox = dialogueBox;
 
-        // uiConfig.stage.addActor(background);
+        uiConfig.stage.addActor(background);
         uiConfig.stage.addActor(character);
         uiConfig.stage.addActor(dialogueBox);
         uiConfig.stage.addActor(toolbox);
@@ -72,6 +72,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render () {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(uiConfig.screenR, uiConfig.screenG, uiConfig.screenB, uiConfig.screenA);
 
         /////////////////////////////////////////////
@@ -79,7 +80,7 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         toolbox.ready(false);  // This only runs for the first 30 frames.
-        uiConfig.stage.act(Math.min(Gdx.graphics.getDeltaTime(), uiConfig.maxStageUpdateDelta));
+        uiConfig.stage.act(Math.min(deltaTime, uiConfig.maxStageUpdateDelta));
         uiConfig.stage.getViewport().apply();
         uiConfig.stage.draw();
 
@@ -89,7 +90,7 @@ public class Main extends ApplicationAdapter {
 
         if (gameConfig.evolveWorld) {
             // FIXME: Why would resize mess up with the physics? Need max update delta?
-            gameConfig.world.step(Gdx.graphics.getDeltaTime(), gameConfig.velocityIterations, gameConfig.positionIterations);
+            gameConfig.world.step(deltaTime, gameConfig.velocityIterations, gameConfig.positionIterations);
             worm.step();  // Apply forces to worm to be evolved next rendering.
         }
 

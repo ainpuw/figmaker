@@ -16,4 +16,6 @@ public class Utils {
         shapeRenderer.line(uiConfig.w, 0, uiConfig.w, uiConfig.h);
         shapeRenderer.end();
     }
+
+
 }

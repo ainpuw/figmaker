@@ -32,10 +32,10 @@ public class GameConfig {
 
     // Coordinates for the worm pen.
     public final float penCenterX = 500;
-    public final float penCenterY = 110;
+    public final float penCenterY = 325;
     public final float penW = 650;
-    public final float penH = 150;
-    public final float penThickness = 20;
+    public final float penH = 475;
+    public final float penThickness = 100;
 
     public final float segMidW = 60;
     public final float segMidH = 20;
