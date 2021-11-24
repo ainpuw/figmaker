@@ -94,19 +94,46 @@ public class Worm {
 
     public static void drawWorm(GameConfig config, SpriteBatch spriteBatch) {
         spriteBatch.begin();
+
+        // Draw shadow.
         for (WormSegment seg : config.wormSegs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
-                Vector2 segPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
+                float angle = basicSeg.body.getAngle() * 57.2958f;
+                Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
+                Vector2 disp = new Vector2(- config.segTexture.getWidth()/2, - config.segTexture.getHeight()/2);
+                disp.rotateDeg(angle);
+                Vector2 corPos = ctrPos.add(disp);
+
+                spriteBatch.draw(config.shadowTextureRegions[0][0],
+                        corPos.x, config.segShadowOffsetY + basicSeg.body.getPosition().y * 0.2f,
+                        0, 0,
+                        Math.abs(disp.x) * 2 / basicSeg.body.getPosition().y * 100, config.segTexture.getHeight() / basicSeg.body.getPosition().y * 100,
+                        1, 1,
+                        0);
+            }
+        }
+
+        // Draw joints.
+        // ...
+
+        // Draw segments.
+        for (WormSegment seg : config.wormSegs) {
+            for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
+                float angle = basicSeg.body.getAngle() * 57.2958f;
+                Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
+                Vector2 disp = new Vector2(- config.segTexture.getWidth()/2, - config.segTexture.getHeight()/2);
+                disp.rotateDeg(angle);
+                Vector2 corPos = ctrPos.add(disp);
 
                 spriteBatch.draw(config.segTextureRegions[0][0],
-                        segPos.x - config.segTexture.getWidth()/2,
-                        segPos.y - config.segTexture.getHeight()/2,
+                        corPos.x, corPos.y,
                         0, 0,
                         config.segTexture.getWidth(), config.segTexture.getHeight(),
                         1, 1,
-                        basicSeg.body.getAngle() * 57.2958f);
+                        angle);
             }
         }
+
         spriteBatch.end();
     }
 }

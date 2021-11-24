@@ -100,10 +100,10 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         // FIXME: For debug.
-        // debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
         spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
         shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
+        Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
     @Override

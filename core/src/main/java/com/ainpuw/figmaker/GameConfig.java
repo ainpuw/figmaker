@@ -52,10 +52,14 @@ public class GameConfig {
     public FixtureDef segFixtureDefL = new FixtureDef();
     public FixtureDef segFixtureDefR = new FixtureDef();
     public FixtureDef segFixtureDefM = new FixtureDef();
+
     public final Texture segTexture;
+    public final Texture shadowTexture;
     public final TextureRegion[][] segTextureRegions;
+    public final TextureRegion[][] shadowTextureRegions;
     public final Texture segIndicatorLeftTexture;
     public final Texture segIndicatorRightTexture;
+    public final float segShadowOffsetY = 40;
 
     public final HashMap<Integer, WormSegConfig> wormSegConfigs = new HashMap<Integer, WormSegConfig>() {{
         put(0, new WormSegConfig("seg_balloon"));
@@ -99,6 +103,8 @@ public class GameConfig {
         segFixtureDefM.density = segDensity;
         segTexture = new Texture(Gdx.files.internal("worm/seg_balloon.png"));  // FIXME: Debug.
         segTextureRegions = TextureRegion.split(segTexture, segTexture.getWidth(), segTexture.getHeight());
+        shadowTexture = new Texture(Gdx.files.internal("worm/shadow.png"));  // FIXME: Debug.
+        shadowTextureRegions = TextureRegion.split(shadowTexture, shadowTexture.getWidth(), shadowTexture.getHeight());
         segIndicatorLeftTexture = new Texture(Gdx.files.internal("worm/indicator_left.png"));
         segIndicatorRightTexture = new Texture(Gdx.files.internal("worm/indicator_right.png"));
     }
@@ -110,6 +116,7 @@ public class GameConfig {
         segShapeR.dispose();
         segShapeM.dispose();
         segTexture.dispose();
+        shadowTexture.dispose();
         segIndicatorLeftTexture.dispose();
         segIndicatorRightTexture.dispose();
 
