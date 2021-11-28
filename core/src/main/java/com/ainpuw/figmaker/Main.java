@@ -22,6 +22,7 @@ public class Main extends ApplicationAdapter {
     // Stage Actors.
     private BackgroundActor background;
     private SpineActor character;
+    private SpineActor portrait;
     private DialogueActor dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
@@ -41,14 +42,21 @@ public class Main extends ApplicationAdapter {
 
         background = new BackgroundActor(uiConfig);
         character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
+        portrait = new SpineActor(uiConfig.spineActorConfigs.get("portrait"));
         dialogueBox = new DialogueActor(uiConfig.dialogueActorConfigs.get("dialogue"), uiConfig.skin);
         timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
         redProbability = new ProgressActor(uiConfig.progressActorConfigs.get("redProbability"), uiConfig.skin);
         toolbox = new ToolboxActor(gameConfig, uiConfig);
         uiConfig.dialogueBox = dialogueBox;
 
+        // FIXME: Refactor.
+        portrait.animationState.setAnimation(1, "blink", true);
+        portrait.animationState.setAnimation(2, "armeye", true);
+        dialogueBox.updateText("Interesting specimen... it duplicates at astonishing speed.");
+
         uiConfig.stage.addActor(background);
-        uiConfig.stage.addActor(character);
+        // uiConfig.stage.addActor(character);
+        uiConfig.stage.addActor(portrait);
         uiConfig.stage.addActor(dialogueBox);
         uiConfig.stage.addActor(toolbox);
         // uiConfig.stage.addActor(timeTillNext);

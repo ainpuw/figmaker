@@ -36,9 +36,15 @@ public class UIConfig {
         put("character", new SpineActorConfig(
             300, 576, 100, 0,
             "character",
-            "spine/character_test/character_test.atlas",
-            "spine/character_test/Illustration.json",
-            "animation1"));
+            "spine/spineboy/export/spineboy.atlas",
+            "spine/spineboy/export/spineboy-ess.json",
+            "walk"));
+        put("portrait", new SpineActorConfig(
+                274 * 0.5f, 304 * 0.5f, 30, 560,
+                "portrait",
+                "spine/portrait/character_portrait.atlas",
+                "spine/portrait/character_portrait.json",
+                "idle"));
     }};
 
     // Dialogue box parameters.

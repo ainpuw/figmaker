@@ -17,7 +17,7 @@ public class SpineActor extends Actor {
     private UIConfig.SpineActorConfig config;
     private Skeleton skeleton;
     private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();;
-    private AnimationState animationState;
+    public AnimationState animationState;
 
     public SpineActor(UIConfig.SpineActorConfig config) {
         this.config = config;
