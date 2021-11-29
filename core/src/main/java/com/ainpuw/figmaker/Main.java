@@ -20,7 +20,7 @@ public class Main extends ApplicationAdapter {
     private Box2DDebugRenderer debugRenderer;
 
     // Stage Actors.
-    private BackgroundActor background;
+    private SpineActor background;
     private SpineActor character;
     private Dialogue dialogueBox;
     private ProgressActor timeTillNext;
@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
         // Scene2D
         /////////////////////////////////////////////
 
-        background = new BackgroundActor(uiConfig);
+        background = new SpineActor(uiConfig.spineActorConfigs.get("background"));
         character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
         dialogueBox = new Dialogue(uiConfig);
         timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
@@ -106,10 +106,10 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         // FIXME: For debug.
-        debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        //debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
         spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
         shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
+        //Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
     @Override

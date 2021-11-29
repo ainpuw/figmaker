@@ -34,14 +34,12 @@ public class Dialogue {
         // Portrait.
         portrait = new SpineActor(config.spineActorConfigs.get("portrait"));
         portrait.skeleton.setScale(config.dialogueScale, config.dialogueScale);
-        portrait.setPosition(config.dialogueOffset.x + 391, config.dialogueOffset.y + 231);
+        portrait.setPosition(config.dialogueOffset.x + 392, config.dialogueOffset.y + 230);
 
         // FIXME: Refactor.
         portrait.animationState.setAnimation(1, "blink", true);
         portrait.animationState.setAnimation(2, "armeye", true);
-        updateText("{COLOR=GREEN}Hello,{WAIT} world! Interesting specimen... it duplicates at astonishing speed.");
-        //updateText("i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i i ");
-
+        updateText("{COLOR=WHITE}Hello,{WAIT} world! Interesting specimen... it duplicates at astonishing speed.");
     }
 
     public void addToStage() {

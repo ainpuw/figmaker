@@ -45,6 +45,12 @@ public class UIConfig {
                 "spine/portrait/character_portrait.atlas",
                 "spine/portrait/character_portrait.json",
                 "idle"));
+        put("background", new SpineActorConfig(
+                1920, 1080, -480, 900,
+                "background",
+                "spine/background/background.atlas",
+                "spine/background/background.json",
+                "idle"));
     }};
 
     // Dialogue box parameters.
@@ -83,17 +89,6 @@ public class UIConfig {
     public final float dragAndDropTouchOffsetX = -60;
     public final float dragAndDropTouchOffsetY = 60;
     public String dragAndDrogSourceName = "";
-
-    ////////////////////////////////////////////////////
-    // Background animation
-    ////////////////////////////////////////////////////
-
-    public final Texture backgroundFloorTexture = new Texture("background_floor.jpg"); // Static.
-    public final Texture backgroundSkyTexture = new Texture("background_sky.jpg");  // Dynamic.
-    public final int backgroundFrames = 7;
-    public final Vector2 backgroundFrameSize = new Vector2(1920, 540);
-    public final float backgroundFrameDuration = 0.14f;
-    public float backgroundStateTime = 0;  // Decide which part of the animation loop we are in.
 
     ////////////////////////////////////////////////////
     // Subclass definitions
@@ -186,8 +181,6 @@ public class UIConfig {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        backgroundFloorTexture.dispose();
-        backgroundSkyTexture.dispose();
         dialogueBackgroundTexture.dispose();
     }
 }
