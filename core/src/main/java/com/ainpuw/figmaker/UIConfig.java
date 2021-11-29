@@ -40,7 +40,7 @@ public class UIConfig {
             "spine/spineboy/export/spineboy-ess.json",
             "walk"));
         put("portrait", new SpineActorConfig(
-                274 * 0.5f, 304 * 0.5f, 30, 560,
+                210, 304, 630, 560,  // w, h, x and y are useless here.
                 "portrait",
                 "spine/portrait/character_portrait.atlas",
                 "spine/portrait/character_portrait.json",
@@ -49,12 +49,15 @@ public class UIConfig {
 
     // Dialogue box parameters.
     public final HashMap<String, DialogueConfig> dialogueActorConfigs = new HashMap<String, DialogueConfig>() {{
-        put("dialogue", new DialogueConfig(
-                700, -1, 200, 500,
+        put("dialogueLabel", new DialogueConfig(
+                390, -1, 50, 163,  // x and y are useless here.
                 "dialogue",
                 0));
     }};
-    public DialogueActor dialogueBox = null;  // Provide quick access to dialogue box.
+    public Dialogue dialogueBox = null;  // Provide quick access to dialogue box.
+    public final Texture dialogueBackgroundTexture = new Texture("dialogue_background.png");
+    public final Vector2 dialogueOffset = new Vector2(210, 330);
+    public final float dialogueScale = 0.8f;
 
     // Progress bar parameters.
     public final HashMap<String, ProgressConfig> progressActorConfigs = new HashMap<String, ProgressConfig>() {{
@@ -67,6 +70,7 @@ public class UIConfig {
                 0, 100, 1, false,
                 0));
     }};
+
 
     // Toolbox parameters.
     public final float toolboxX = 830;
@@ -184,6 +188,7 @@ public class UIConfig {
         skin.dispose();
         backgroundFloorTexture.dispose();
         backgroundSkyTexture.dispose();
+        dialogueBackgroundTexture.dispose();
     }
 }
 

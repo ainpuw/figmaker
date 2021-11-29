@@ -22,8 +22,7 @@ public class Main extends ApplicationAdapter {
     // Stage Actors.
     private BackgroundActor background;
     private SpineActor character;
-    private SpineActor portrait;
-    private DialogueActor dialogueBox;
+    private Dialogue dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
     private ToolboxActor toolbox;
@@ -42,22 +41,15 @@ public class Main extends ApplicationAdapter {
 
         background = new BackgroundActor(uiConfig);
         character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
-        portrait = new SpineActor(uiConfig.spineActorConfigs.get("portrait"));
-        dialogueBox = new DialogueActor(uiConfig.dialogueActorConfigs.get("dialogue"), uiConfig.skin);
+        dialogueBox = new Dialogue(uiConfig);
         timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
         redProbability = new ProgressActor(uiConfig.progressActorConfigs.get("redProbability"), uiConfig.skin);
         toolbox = new ToolboxActor(gameConfig, uiConfig);
         uiConfig.dialogueBox = dialogueBox;
 
-        // FIXME: Refactor.
-        portrait.animationState.setAnimation(1, "blink", true);
-        portrait.animationState.setAnimation(2, "armeye", true);
-        dialogueBox.updateText("Interesting specimen... it duplicates at astonishing speed.");
-
         uiConfig.stage.addActor(background);
         // uiConfig.stage.addActor(character);
-        uiConfig.stage.addActor(portrait);
-        uiConfig.stage.addActor(dialogueBox);
+        dialogueBox.addToStage();
         uiConfig.stage.addActor(toolbox);
         // uiConfig.stage.addActor(timeTillNext);
         // uiConfig.stage.addActor(redProbability);
@@ -102,6 +94,12 @@ public class Main extends ApplicationAdapter {
             worm.step();  // Apply forces to worm to be evolved next rendering.
         }
         Worm.drawWorm(gameConfig, spriteBatch);
+
+        /////////////////////////////////////////////
+        // Dialogue.
+        /////////////////////////////////////////////
+        if (Gdx.input.isTouched())
+            dialogueBox.label.skipToTheEnd();
 
         /////////////////////////////////////////////
         // Debug

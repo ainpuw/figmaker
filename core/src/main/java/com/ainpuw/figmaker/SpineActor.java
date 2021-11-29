@@ -15,7 +15,7 @@ import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class SpineActor extends Actor {
     private UIConfig.SpineActorConfig config;
-    private Skeleton skeleton;
+    public Skeleton skeleton;
     private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();;
     public AnimationState animationState;
 
