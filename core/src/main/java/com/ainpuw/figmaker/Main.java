@@ -48,7 +48,7 @@ public class Main extends ApplicationAdapter {
         uiConfig.dialogueBox = dialogueBox;
 
         uiConfig.stage.addActor(background);
-        // uiConfig.stage.addActor(character);
+        uiConfig.stage.addActor(character);
         dialogueBox.addToStage();
         uiConfig.stage.addActor(toolbox);
         // uiConfig.stage.addActor(timeTillNext);

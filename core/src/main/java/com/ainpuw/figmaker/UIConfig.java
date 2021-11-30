@@ -34,11 +34,11 @@ public class UIConfig {
     // Spine animation parameters.
     public final HashMap<String, SpineActorConfig> spineActorConfigs = new HashMap<String, SpineActorConfig>() {{
         put("character", new SpineActorConfig(
-            300, 576, 100, 0,
-            "character",
-            "spine/spineboy/export/spineboy.atlas",
-            "spine/spineboy/export/spineboy-ess.json",
-            "walk"));
+                68.16f, 177, 70, 370,
+                "character",
+                "spine/character/character.atlas",
+                "spine/character/character.json",
+                "idle"));
         put("portrait", new SpineActorConfig(
                 210, 304, 630, 560,  // w, h, x and y are useless here.
                 "portrait",
@@ -46,7 +46,7 @@ public class UIConfig {
                 "spine/portrait/character_portrait.json",
                 "idle"));
         put("background", new SpineActorConfig(
-                1920, 1080, -480, 900,
+                1920, 1080, -480, 850,
                 "background",
                 "spine/background/background.atlas",
                 "spine/background/background.json",
