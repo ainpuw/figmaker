@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import java.util.HashMap;
 
@@ -76,7 +77,6 @@ public class UIConfig {
                 0, 100, 1, false,
                 0));
     }};
-
 
     // Toolbox parameters.
     public final float toolboxX = 830;

@@ -30,6 +30,9 @@ public class Main extends ApplicationAdapter {
     // World Bodies.
     private Worm worm;
 
+    // Cooldowns.
+    private AnimationManager animationManager;
+
     @Override
     public void create () {
         gameConfig = new GameConfig();
@@ -65,6 +68,7 @@ public class Main extends ApplicationAdapter {
         // Others
         /////////////////////////////////////////////
 
+        animationManager = new AnimationManager(character);
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
@@ -74,6 +78,7 @@ public class Main extends ApplicationAdapter {
     public void render () {
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(uiConfig.screenR, uiConfig.screenG, uiConfig.screenB, uiConfig.screenA);
+        animationManager.update(deltaTime);
 
         /////////////////////////////////////////////
         // Scene2D

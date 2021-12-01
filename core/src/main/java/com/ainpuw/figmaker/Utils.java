@@ -17,5 +17,15 @@ public class Utils {
         shapeRenderer.end();
     }
 
+    public static class StrStrFloatTriple {
+        public final String s1;
+        public final String s2;
+        public final float f;
 
+        public StrStrFloatTriple(String s1, String s2, float f) {
+            this.s1 = s1;
+            this.s2 = s2;
+            this.f = f;
+        }
+    }
 }
