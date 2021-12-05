@@ -2,7 +2,10 @@ package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -10,43 +13,81 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 
-public class ToolboxActor extends HorizontalGroup {
-    GameConfig gameConfig;
-    UIConfig uiConfig;
-    Array<ToolActor> tools;
+public class Menu {
+    private GameConfig gameConfig;
+    private UIConfig uiConfig;
+
+    public Group contents;
+    private Image tabBackground;
+    private Image tabTagWorm;
+    private Image tabTagStat;
+    private Image tabTagUnknown;
+    private HorizontalGroup tabWorm;
+    public Array<ToolActor> segTools;
+    private Actor tabStat;
+    private Actor tabUnknown;
+
     // LibGDX doesn't seem to initialize everything synchronously on start up.
     // Try for 30 frames for this update to kick in. One can also force a ready().
     private int readyCounter = 0;
     private final int isReady = 30;
 
-    public ToolboxActor(GameConfig gameConfig, UIConfig uiConfig) {
+    public Menu(GameConfig gameConfig, UIConfig uiConfig) {
         this.gameConfig = gameConfig;
         this.uiConfig = uiConfig;
 
-        this.setPosition(uiConfig.toolboxX, uiConfig.toolboxY);
-        this.setSize(uiConfig.toolboxW, uiConfig.toolboxH);
-        this.wrap(true);
-        this.rowAlign(Align.left);
-        this.space(uiConfig.toolboxSpacing);
-        this.wrapSpace(uiConfig.toolboxSpacing);
+        // Initialize members.
+        this.contents = new Group();
+        this.tabBackground = new Image(uiConfig.menuBackgroundTexture);
+        this.tabTagWorm = new Image(uiConfig.menuTabTagWormTexture);
+        this.tabTagStat = new Image(uiConfig.menuTabTagStatTexture);
+        this.tabTagUnknown = new Image(uiConfig.menuTabTagUnknownTexture);
+        this.tabWorm = new HorizontalGroup();
+        this.tabStat = new Actor();  // Dummy.
+        this.tabUnknown = new Actor();  // Dummy.
+        this.contents.setPosition(uiConfig.menuPosX, uiConfig.menuPosY);
 
-        tools = new Array<>();
+        // Parameterize tab tags and background.
+        this.tabTagWorm.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
+        this.tabTagStat.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
+        this.tabTagUnknown.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
+        this.tabBackground.setPosition(0, -515);  // Hard coded.
+        this.tabBackground.setVisible(false);
+        setTagDefaultPositions();
+
+        // Parameterize the worm tab.
+        this.tabWorm.setPosition(uiConfig.toolboxX, uiConfig.toolboxY);
+        this.tabWorm.setSize(uiConfig.toolboxW, uiConfig.toolboxH);
+        this.tabWorm.wrap(true);
+        this.tabWorm.rowAlign(Align.left);
+        this.tabWorm.space(uiConfig.toolboxSpacing);
+        this.tabWorm.wrapSpace(uiConfig.toolboxSpacing);
+        this.segTools = new Array<>();
         for (int segID = 0; segID < gameConfig.wormSegConfigs.size(); segID++) {
             ToolActor segTool = new ToolActor(segID, gameConfig.wormSegConfigs.get(segID).texture);
-            tools.add(segTool);
-            // Tool is added directly to stage, its displayActor is added into ToolboxActor,
-            // which in turn is added to stage.
-            uiConfig.stage.addActor(segTool);
-            this.addActor(segTool.displayActor);
+            segTools.add(segTool);
+            // displayActor is added into the HorizontalGroup.
+            this.tabWorm.addActor(segTool.displayActor);
         }
+        tabWorm.setVisible(false);
 
-        // Drag and drop offsets for touch screen inputs.
-        uiConfig.toolboxDragAndDrop.setDragActorPosition(uiConfig.dragActorPositionX, uiConfig.dragActorPositionY);
-        uiConfig.toolboxDragAndDrop.setTouchOffset(uiConfig.dragAndDropTouchOffsetX, uiConfig.dragAndDropTouchOffsetY);
+        // Parameterize the dummy tabs.
+        tabStat.setVisible(false);
+        tabUnknown.setVisible(false);
 
+        // Initialize all listeners.
+        initializeListeners();
+
+        // Add all initially visible elements to group.
+        this.contents.addActor(this.tabTagWorm);
+        this.contents.addActor(this.tabTagStat);
+        this.contents.addActor(this.tabTagUnknown);
+    }
+
+    private void initializeListeners() {
         // Initialize sources for drag and drop.
         uiConfig.toolboxDragAndDrop.clear();
-        for (ToolActor tool : tools) {
+        for (ToolActor tool : segTools) {
             uiConfig.toolboxDragAndDrop.addSource(new DragAndDrop.Source(tool) {
                 @Null
                 public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
@@ -96,6 +137,67 @@ public class ToolboxActor extends HorizontalGroup {
                 }
             });
         }
+
+        // Initialize listeners to tab tags.
+        tabTagWorm.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (tabBackground.isVisible() && tabWorm.isVisible()) {
+                    resetAllTabs();
+                } else {
+                    resetAllTabs();  // Hiding another tab if open.
+                    tabBackground.setVisible(true);
+                    tabWorm.setVisible(true);
+                    // tabBackground.setColor(Color.WHITE.cpy().lerp(Color.RED, .05f));
+                    contents.addActor(tabBackground);
+                    contents.addActor(tabWorm);
+                    for (ToolActor tool : segTools)  {
+                        tool.alignDisplayAndDrag();
+                        // Add to stage directly to avoid dealing with local vs. stage coordinates.
+                        uiConfig.stage.addActor(tool);
+                    }
+                    tabTagWorm.toFront();
+                    tabTagWorm.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagWorm.setPosition(tabTagWorm.getX() - 5, tabTagWorm.getY() - 5);
+                }
+                return true;
+            }
+        });
+        tabTagStat.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (tabBackground.isVisible() && tabStat.isVisible()) {
+                    resetAllTabs();
+                } else {
+                    resetAllTabs();  // Hiding another tab if open.
+                    tabBackground.setVisible(true);
+                    tabStat.setVisible(true);
+                    // tabBackground.setColor(Color.WHITE.cpy().lerp(Color.GREEN, .05f));
+                    contents.addActor(tabBackground);
+                    contents.addActor(tabStat);
+                    tabTagStat.toFront();
+                    tabTagStat.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagStat.setPosition(tabTagStat.getX() - 5, tabTagStat.getY() - 5);
+                }
+                return true;
+            }
+        });
+        tabTagUnknown.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (tabBackground.isVisible() && tabUnknown.isVisible()) {
+                    resetAllTabs();
+                } else {
+                    resetAllTabs();  // Hiding another tab if open.
+                    tabBackground.setVisible(true);
+                    tabUnknown.setVisible(true);
+                    // tabBackground.setColor(Color.WHITE.cpy().lerp(Color.YELLOW, .05f));
+                    contents.addActor(tabBackground);
+                    contents.addActor(tabUnknown);
+                    tabTagUnknown.toFront();
+                    tabTagUnknown.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagUnknown.setPosition(tabTagUnknown.getX() - 5, tabTagUnknown.getY() - 5);
+                }
+                return true;
+            }
+        });
     }
 
     private void addWormTargetsToDragAndDrop() {
@@ -160,9 +262,31 @@ public class ToolboxActor extends HorizontalGroup {
         }
     }
 
+    private void setTagDefaultPositions() {
+        tabTagWorm.setScale(uiConfig.tabTagScaleSmall);
+        tabTagStat.setScale(uiConfig.tabTagScaleSmall);
+        tabTagUnknown.setScale(uiConfig.tabTagScaleSmall);
+        tabTagWorm.setPosition(0, 0);
+        tabTagStat.setPosition(75, 0);  // Hard coded.
+        tabTagUnknown.setPosition(150, 0);  // Hard coded.
+    }
+
+    private void resetAllTabs() {
+        tabBackground.setVisible(false);
+        tabWorm.setVisible(false);
+        tabStat.setVisible(false);
+        tabUnknown.setVisible(false);
+        tabBackground.remove();
+        tabWorm.remove();
+        tabStat.remove();
+        tabUnknown.remove();
+        for (ToolActor tool : segTools)  tool.remove();
+        setTagDefaultPositions();
+    }
+
     public void ready(boolean force) {
         if (readyCounter < isReady || force) {
-            for (ToolActor tool : tools) {
+            for (ToolActor tool : segTools) {
                 tool.toFront();
                 tool.alignDisplayAndDrag();
             }

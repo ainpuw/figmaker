@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import java.util.HashMap;
 
@@ -78,9 +77,11 @@ public class UIConfig {
                 0));
     }};
 
-    // Toolbox parameters.
-    public final float toolboxX = 830;
-    public final float toolboxY = 50;
+    // Menu parameters.
+    public final float menuPosX = 798;
+    public final float menuPosY = 520;
+    public final float toolboxX = 32;
+    public final float toolboxY = -470;
     public final float toolboxW = 170;
     public final float toolboxH = 300;
     public final float toolboxSpacing = 1;
@@ -89,6 +90,12 @@ public class UIConfig {
     public final float dragAndDropTouchOffsetX = -60;
     public final float dragAndDropTouchOffsetY = 60;
     public String dragAndDrogSourceName = "";
+    public final float tabTagScaleSmall = 0.7f;
+    public final float tabTagScaleLarge = 0.8f;
+    public final Texture menuBackgroundTexture = new Texture("tab_background.png");
+    public final Texture menuTabTagWormTexture = new Texture("tab_worm.png");
+    public final Texture menuTabTagStatTexture = new Texture("tab_stat.png");
+    public final Texture menuTabTagUnknownTexture = new Texture("tab_unknown.png");
 
     ////////////////////////////////////////////////////
     // Subclass definitions
@@ -176,12 +183,19 @@ public class UIConfig {
         skin.getFont("default-font").getData().markupEnabled = true;
         skin.getFont("default-font").getData().setScale(scale);
         toolboxDragAndDrop = new DragAndDrop();
+        // Drag and drop offsets for touch screen inputs.
+        toolboxDragAndDrop.setDragActorPosition(dragActorPositionX, dragActorPositionY);
+        toolboxDragAndDrop.setTouchOffset(dragAndDropTouchOffsetX, dragAndDropTouchOffsetY);
     }
 
     public void dispose() {
         stage.dispose();
         skin.dispose();
         dialogueBackgroundTexture.dispose();
+        menuBackgroundTexture.dispose();
+        menuTabTagWormTexture.dispose();
+        menuTabTagStatTexture.dispose();
+        menuTabTagUnknownTexture.dispose();
     }
 }
 

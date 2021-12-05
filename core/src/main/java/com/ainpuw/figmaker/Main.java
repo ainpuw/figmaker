@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -25,7 +26,7 @@ public class Main extends ApplicationAdapter {
     private Dialogue dialogueBox;
     private ProgressActor timeTillNext;
     private ProgressActor redProbability;
-    private ToolboxActor toolbox;
+    private Menu menu;
 
     // World Bodies.
     private Worm worm;
@@ -47,13 +48,14 @@ public class Main extends ApplicationAdapter {
         dialogueBox = new Dialogue(uiConfig);
         timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
         redProbability = new ProgressActor(uiConfig.progressActorConfigs.get("redProbability"), uiConfig.skin);
-        toolbox = new ToolboxActor(gameConfig, uiConfig);
+        menu = new Menu(gameConfig, uiConfig);
         uiConfig.dialogueBox = dialogueBox;
 
         uiConfig.stage.addActor(background);
         uiConfig.stage.addActor(character);
+        uiConfig.stage.addActor(menu.contents);
         dialogueBox.addToStage();
-        uiConfig.stage.addActor(toolbox);
+
         // uiConfig.stage.addActor(timeTillNext);
         // uiConfig.stage.addActor(redProbability);
 
@@ -84,7 +86,7 @@ public class Main extends ApplicationAdapter {
         // Scene2D
         /////////////////////////////////////////////
 
-        toolbox.ready(false);  // This only runs for the first 30 frames.
+        menu.ready(false);  // This only runs for the first 30 frames.
         uiConfig.stage.act(Math.min(deltaTime, uiConfig.maxStageUpdateDelta));
         uiConfig.stage.getViewport().apply();
         uiConfig.stage.draw();
@@ -121,7 +123,13 @@ public class Main extends ApplicationAdapter {
     public void resize (int width, int height) {
         // It is very important to set centerCamera to "false" for ExtendViewport.
         uiConfig.stage.getViewport().update(width, height, false);
-        spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+
+        // Stick the menu to the right always.
+        menu.contents.setX(uiConfig.menuPosX + Math.max(0, uiConfig.stage.getWidth() - uiConfig.w) / 2);
+        for (Menu.ToolActor tool : menu.segTools) tool.alignDisplayAndDrag();
+
+        // Update worm textures.
+        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
     }
 
     @Override
