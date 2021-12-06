@@ -22,7 +22,8 @@ public class GameConfig {
     public final int positionIterations = 1;
     // Used to freeze the world when needed.
     public boolean evolveWorld = true;
-    // For quick access to worm segments.
+    // For quick access to worm information.
+    public Worm worm = null;
     public Array<WormSegment> wormSegs = null;
     // Decide where to add the next segment.
     public WormSegment.BasicImgSegment touchingSeg = null;
@@ -32,9 +33,9 @@ public class GameConfig {
     ////////////////////////////////////////////////////
 
     // Coordinates for the worm pen.
-    public final float penCenterX = 500;
-    public final float penCenterY = 325;
-    public final float penW = 650;
+    public final float penCenterX = 512;
+    public final float penCenterY = 300;
+    public final float penW = 990;
     public final float penH = 475;
     public final float penThickness = 100;
 
@@ -43,8 +44,8 @@ public class GameConfig {
     public final float segEndW = 10;
     public final float segEndH = 10;
     public final float segDensity = 1;
-    public final float jointLen = 10;
-    public final boolean collideConnected = true;
+    public final float jointLen = 5;
+    public final boolean collideConnected = false;
     public final float joinPos = segMidW/2 + segEndW;
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
@@ -59,7 +60,8 @@ public class GameConfig {
     public final TextureRegion[][] shadowTextureRegions;
     public final Texture segIndicatorLeftTexture;
     public final Texture segIndicatorRightTexture;
-    public final float segShadowOffsetY = 40;
+    public final Vector2 segShadowYRange = new Vector2(62, 212);
+    public final Vector2 segShadowYRangeRef = new Vector2(62, 576);  // Assumed body Y range.
 
     public final HashMap<Integer, WormSegConfig> wormSegConfigs = new HashMap<Integer, WormSegConfig>() {{
         put(0, new WormSegConfig("seg_balloon"));
@@ -69,6 +71,9 @@ public class GameConfig {
         put(4, new WormSegConfig("seg_leg"));
         put(5, new WormSegConfig("seg_wing"));
     }};
+
+    public final float adjacentRepulsiveForceCutoff = 60;
+    public final float adjacentRepulsiveForceFactor = 10000000;
 
     ////////////////////////////////////////////////////
     // Subclass definitions

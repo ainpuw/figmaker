@@ -145,13 +145,13 @@ public class Menu {
                     resetAllTabs();
                 } else {
                     resetAllTabs();  // Hiding another tab if open.
+                    readyCounter = 0;
                     tabBackground.setVisible(true);
                     tabWorm.setVisible(true);
                     // tabBackground.setColor(Color.WHITE.cpy().lerp(Color.RED, .05f));
                     contents.addActor(tabBackground);
                     contents.addActor(tabWorm);
                     for (ToolActor tool : segTools)  {
-                        tool.alignDisplayAndDrag();
                         // Add to stage directly to avoid dealing with local vs. stage coordinates.
                         uiConfig.stage.addActor(tool);
                     }
@@ -250,7 +250,7 @@ public class Menu {
 
                             WormSegment newSeg = new WormSegment(gameConfig, uiConfig, uiConfig.dragAndDrogSourceName, spawnX, spawnY);
                             gameConfig.wormSegs.add(newSeg);
-                            Worm.joinSegments(newSeg, gameConfig.touchingSeg.parent, isLeft);
+                            Worm.joinSegments(newSeg, gameConfig.touchingSeg.parent, isLeft, gameConfig.worm.repulsivePairs);
 
                             // Reset global variables.
                             uiConfig.dragAndDrogSourceName = "";

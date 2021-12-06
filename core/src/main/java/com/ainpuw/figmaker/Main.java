@@ -4,9 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Main extends ApplicationAdapter {
     // Config and World global objects.
@@ -17,6 +17,7 @@ public class Main extends ApplicationAdapter {
     // Draw debug shapes outside of Stage.
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
+    private SkeletonRenderer skeletonRenderer;
     // Draw debug view of World.
     private Box2DDebugRenderer debugRenderer;
 
@@ -64,6 +65,7 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         worm = new Worm(gameConfig, uiConfig);
+        gameConfig.worm = worm;
         gameConfig.wormSegs = worm.segs;
 
         /////////////////////////////////////////////
@@ -73,6 +75,7 @@ public class Main extends ApplicationAdapter {
         animationManager = new AnimationManager(character);
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
+        skeletonRenderer = new SkeletonRenderer();
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
 
@@ -86,9 +89,11 @@ public class Main extends ApplicationAdapter {
         // Scene2D
         /////////////////////////////////////////////
 
-        menu.ready(false);  // This only runs for the first 30 frames.
+        menu.ready(false);
         uiConfig.stage.act(Math.min(deltaTime, uiConfig.maxStageUpdateDelta));
         uiConfig.stage.getViewport().apply();
+        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
         uiConfig.stage.draw();
 
         /////////////////////////////////////////////
@@ -100,7 +105,7 @@ public class Main extends ApplicationAdapter {
             gameConfig.world.step(deltaTime, gameConfig.velocityIterations, gameConfig.positionIterations);
             worm.step();  // Apply forces to worm to be evolved next rendering.
         }
-        Worm.drawWorm(gameConfig, spriteBatch);
+        Worm.drawWorm(gameConfig, spriteBatch, shapeRenderer);
 
         /////////////////////////////////////////////
         // Dialogue.
@@ -113,10 +118,8 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         // FIXME: For debug.
-        //debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
-        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        //Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
+        // debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
     @Override
