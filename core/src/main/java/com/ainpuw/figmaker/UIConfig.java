@@ -24,6 +24,7 @@ public class UIConfig {
     public DragAndDrop toolboxDragAndDrop;
     // At most update at 30 FPS.
     public final float maxStageUpdateDelta = 1 / 30f;
+    public AnimationManager amanager = null;
 
     ////////////////////////////////////////////////////
     // Scene2D parameters
@@ -50,6 +51,12 @@ public class UIConfig {
                 "background",
                 "spine/background/background.atlas",
                 "spine/background/background.json",
+                "idle"));
+        put("wormseg", new SpineActorConfig(
+                -1, -1, -1, -1,
+                "wormseg",
+                "spine/wormseg/wormseg.atlas",
+                "spine/wormseg/wormseg.json",
                 "idle"));
     }};
 

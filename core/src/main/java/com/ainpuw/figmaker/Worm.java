@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Worm {
     private GameConfig gameConfig;
@@ -64,6 +65,8 @@ public class Worm {
     }
 
     public void step() {
+        // TODO: Need to add force on the wall to repel in one direction.
+
         for (WormSegment seg : segs) {
             seg.step();
         }
@@ -136,7 +139,8 @@ public class Worm {
         }
     }
 
-    public static void drawWorm(GameConfig config, SpriteBatch spriteBatch, ShapeRenderer renderer) {
+    public static void drawWorm(float delta, GameConfig config, SpriteBatch spriteBatch,
+                                ShapeRenderer shapeRenderer, SkeletonRenderer skeletonRenderer) {
         // Draw shadow.
         spriteBatch.begin();
         for (WormSegment seg : config.wormSegs) {
@@ -172,14 +176,14 @@ public class Worm {
         spriteBatch.end();
 
         // Draw joints.
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < config.worm.repulsivePairs.size/2; i++) {
             // Odd indices are pairs of even indices.
             Body body1 = config.worm.repulsivePairs.get(2 * i);
             Body body2 = config.worm.repulsivePairs.get(2 * i + 1);
             Vector2 body1Ctr = body1.getPosition();
             Vector2 body2Ctr = body2.getPosition();
-            renderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+            shapeRenderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 
             float angle1 = body1.getAngle() * 57.2958f;
             float angle2 = body2.getAngle() * 57.2958f;
@@ -189,10 +193,10 @@ public class Worm {
             disp2.rotateDeg(angle2);
             Vector2 ctrDisp1 = body1Ctr.add(disp1);
             Vector2 ctrDisp2 = body2Ctr.add(disp2);
-            renderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+            shapeRenderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 
         }
-        renderer.end();
+        shapeRenderer.end();
 
         // Draw segments.
         spriteBatch.begin();
@@ -200,16 +204,13 @@ public class Worm {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
                 float angle = basicSeg.body.getAngle() * 57.2958f;
                 Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
-                Vector2 disp = new Vector2(- config.segTexture.getWidth()/2, - config.segTexture.getHeight()/2);
-                disp.rotateDeg(angle);
-                Vector2 corPos = ctrPos.add(disp);
-
-                spriteBatch.draw(config.segTextureRegions[0][0],
-                        corPos.x, corPos.y,
-                        0, 0,
-                        config.segTexture.getWidth(), config.segTexture.getHeight(),
-                        1, 1,
-                        angle);
+                basicSeg.skeleton.getRootBone().setX(ctrPos.x);
+                basicSeg.skeleton.getRootBone().setY(ctrPos.y);
+                basicSeg.skeleton.getRootBone().setRotation(angle);
+                basicSeg.skeleton.updateWorldTransform();
+                basicSeg.animationState.update(delta);
+                basicSeg.animationState.apply(basicSeg.skeleton);
+                skeletonRenderer.draw(spriteBatch, basicSeg.skeleton);
             }
         }
         spriteBatch.end();

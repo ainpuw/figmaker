@@ -73,6 +73,7 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         animationManager = new AnimationManager(character);
+        uiConfig.amanager = animationManager;
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         skeletonRenderer = new SkeletonRenderer();
@@ -105,7 +106,7 @@ public class Main extends ApplicationAdapter {
             gameConfig.world.step(deltaTime, gameConfig.velocityIterations, gameConfig.positionIterations);
             worm.step();  // Apply forces to worm to be evolved next rendering.
         }
-        Worm.drawWorm(gameConfig, spriteBatch, shapeRenderer);
+        Worm.drawWorm(deltaTime, gameConfig, spriteBatch, shapeRenderer, skeletonRenderer);
 
         /////////////////////////////////////////////
         // Dialogue.

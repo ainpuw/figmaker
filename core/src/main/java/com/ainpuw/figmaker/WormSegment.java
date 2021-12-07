@@ -1,11 +1,20 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
+import com.esotericsoftware.spine.AnimationState;
+import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonJson;
+import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class WormSegment {
     public GameConfig gameConfig;
@@ -57,6 +66,9 @@ public class WormSegment {
         public BasicImgSegment leftEnd;  // For drag and drop visual indications.
         public BasicImgSegment rightEnd;  // For drag and drop visual indications.
         public WormSegment parent;
+        // For spine animation.
+        public Skeleton skeleton;
+        public AnimationState animationState;
 
         public BasicSegment(float x, float y, float angle, WormSegment parent) {
             this.parent = parent;
@@ -91,6 +103,20 @@ public class WormSegment {
             this.rightEnd.setBounds(0, 0, this.leftEnd.getWidth(), this.leftEnd.getHeight());
             this.leftEnd.getColor().a = 0f;  // Make the indicator transparent.
             this.rightEnd.getColor().a = 0f;
+
+            // Spine animation setup.
+            UIConfig.SpineActorConfig spineConfig = uiConfig.spineActorConfigs.get("wormseg");
+            TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(spineConfig.atlas));
+            SkeletonJson json = new SkeletonJson(atlas);
+            SkeletonData skeletonData = json.readSkeletonData(Gdx.files.internal(spineConfig.skeletonJson));
+            AnimationStateData stateData = new AnimationStateData(skeletonData);
+            this.skeleton = new Skeleton(skeletonData);
+            this.skeleton.setToSetupPose();
+            this.skeleton.updateWorldTransform();
+            this.animationState = new AnimationState(stateData);
+            this.animationState.setAnimation(0, spineConfig.defaultAnimation, true);
+            animationState.update((float) Math.random());  // Random offset.
+            animationState.apply(skeleton);
         }
 
         public void updateAndAddToStage() {
