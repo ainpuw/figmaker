@@ -1,19 +1,16 @@
 package com.ainpuw.figmaker;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 public class Dialogue {
-    private UIConfig config;
-    private UIConfig.DialogueConfig labelConfig;
+    private Config config;
+    private Config.DialogueConfig labelConfig;
     public TypingLabel label;
     public Image background;
     public SpineActor portrait;
 
-    public Dialogue(UIConfig config) {
+    public Dialogue(Config config) {
         this.config = config;
         this.labelConfig = config.dialogueActorConfigs.get("dialogueLabel");
 

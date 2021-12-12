@@ -8,23 +8,19 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
-import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class WormSegment {
-    public GameConfig gameConfig;
-    private UIConfig uiConfig;
+    public Config config;
     private String name;  // Unique identifier.
     public Array<BasicSegment> basicSegs = new Array<>();
 
-    public WormSegment(GameConfig gameConfig, UIConfig uiConfig, String name, float x, float y) {
-        this.gameConfig = gameConfig;
-        this.uiConfig = uiConfig;
+    public WormSegment(Config config, String name, float x, float y) {
+        this.config = config;
         this.name = name;
 
         // TODO: Need to expand on this.
@@ -77,26 +73,26 @@ public class WormSegment {
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.DynamicBody;
             bodyDef.position.set(x, y);  // Body center position.
-            this.body = gameConfig.world.createBody(bodyDef);
+            this.body = config.world.createBody(bodyDef);
             // Adjust fixture orientations.
             angle *= 0.01745f;  // Degrees to radians.
-            Vector2 lCenter = new Vector2(-(gameConfig.segMidW+ gameConfig.segEndW)/2, 0);
-            Vector2 rCenter = new Vector2(+(gameConfig.segMidW+ gameConfig.segEndW)/2, 0);
+            Vector2 lCenter = new Vector2(-(config.segMidW+ config.segEndW)/2, 0);
+            Vector2 rCenter = new Vector2(+(config.segMidW+ config.segEndW)/2, 0);
             lCenter.rotateRad(angle);
             rCenter.rotateRad(angle);
-            gameConfig.segShapeL.setAsBox(gameConfig.segEndW/2, gameConfig.segEndH/2, lCenter, angle);
-            gameConfig.segShapeR.setAsBox(gameConfig.segEndW/2, gameConfig.segEndH/2, rCenter, angle);
-            gameConfig.segShapeM.setAsBox(gameConfig.segMidW/2, gameConfig.segMidH/2, new Vector2(0, 0), 0);
-            this.body.createFixture(gameConfig.segFixtureDefL);
-            this.body.createFixture(gameConfig.segFixtureDefR);
-            this.body.createFixture(gameConfig.segFixtureDefM);
+            config.segShapeL.setAsBox(config.segEndW/2, config.segEndH/2, lCenter, angle);
+            config.segShapeR.setAsBox(config.segEndW/2, config.segEndH/2, rCenter, angle);
+            config.segShapeM.setAsBox(config.segMidW/2, config.segMidH/2, new Vector2(0, 0), 0);
+            this.body.createFixture(config.segFixtureDefL);
+            this.body.createFixture(config.segFixtureDefR);
+            this.body.createFixture(config.segFixtureDefM);
 
             // Init for stage.
-            float segMidW = gameConfig.segMidW;
-            float segMidH = gameConfig.segMidH;
-            float segEndW = gameConfig.segEndW;
-            this.leftEnd = new BasicImgSegment(gameConfig.segIndicatorLeftTexture, this, true);
-            this.rightEnd = new BasicImgSegment(gameConfig.segIndicatorRightTexture, this, false);
+            float segMidW = config.segMidW;
+            float segMidH = config.segMidH;
+            float segEndW = config.segEndW;
+            this.leftEnd = new BasicImgSegment(config.segIndicatorLeftTexture, this, true);
+            this.rightEnd = new BasicImgSegment(config.segIndicatorRightTexture, this, false);
             this.leftEnd.setSize(segMidW / 2 + segEndW, segMidH);
             this.leftEnd.setBounds(0, 0, this.leftEnd.getWidth(), this.leftEnd.getHeight());
             this.rightEnd.setSize(this.leftEnd.getWidth(), this.leftEnd.getHeight());
@@ -105,7 +101,7 @@ public class WormSegment {
             this.rightEnd.getColor().a = 0f;
 
             // Spine animation setup.
-            UIConfig.SpineActorConfig spineConfig = uiConfig.spineActorConfigs.get("wormseg");
+            Config.SpineActorConfig spineConfig = config.spineActorConfigs.get("wormseg");
             TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(spineConfig.atlas));
             SkeletonJson json = new SkeletonJson(atlas);
             SkeletonData skeletonData = json.readSkeletonData(Gdx.files.internal(spineConfig.skeletonJson));
@@ -142,8 +138,8 @@ public class WormSegment {
             rightEnd.setRotation(angle * 57.2958f);
 
             // Add the actors to stage.
-            uiConfig.stage.addActor(leftEnd);
-            uiConfig.stage.addActor(rightEnd);
+            config.stage.addActor(leftEnd);
+            config.stage.addActor(rightEnd);
 
             // FIXME: For debug, show Scene2D debug bounding boxes.
             leftEnd.debug();

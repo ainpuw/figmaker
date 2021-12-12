@@ -4,9 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ProgressActor extends ProgressBar {
-    UIConfig.ProgressConfig config;
+    Config.ProgressConfig config;
 
-    public ProgressActor(UIConfig.ProgressConfig config, Skin skin) {
+    public ProgressActor(Config.ProgressConfig config, Skin skin) {
         super(config.min, config.max, config.stepSize, config.vertical, skin);
         this.config = config;
         this.setValue(config.startValue);

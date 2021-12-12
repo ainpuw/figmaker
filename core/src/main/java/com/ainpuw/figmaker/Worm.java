@@ -13,19 +13,17 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Worm {
-    private GameConfig gameConfig;
-    private UIConfig uiConfig;
+    private Config config;
     private Array<Body> pen = new Array<>();
     public Array<WormSegment> segs = new Array<>();
     public Array<Body> repulsivePairs = new Array<>();
 
-    public Worm(GameConfig gameConfig, UIConfig uiConfig) {
-        this.gameConfig = gameConfig;
-        this.uiConfig = uiConfig;
+    public Worm(Config config) {
+        this.config = config;
 
         createPen();
         // FIXME: For debug.
-        makeDebugWorm();
+        // makeDebugWorm();
     }
 
     private void createPen() {
@@ -33,35 +31,35 @@ public class Worm {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // The floor.
-        bodyDef.position.set(uiConfig.w / 2, gameConfig.penCenterY - gameConfig.penH / 2);
-        pen.add(gameConfig.world.createBody(bodyDef));
+        bodyDef.position.set(config.w / 2, config.penCenterY - config.penH / 2);
+        pen.add(config.world.createBody(bodyDef));
         // The left wall.
-        bodyDef.position.set(gameConfig.penCenterX - gameConfig.penW / 2, gameConfig.penCenterY);
-        pen.add(gameConfig.world.createBody(bodyDef));
+        bodyDef.position.set(config.penCenterX - config.penW / 2, config.penCenterY);
+        pen.add(config.world.createBody(bodyDef));
         // The right wall.
-        bodyDef.position.set(gameConfig.penCenterX + gameConfig.penW / 2, gameConfig.penCenterY);
-        pen.add(gameConfig.world.createBody(bodyDef));
+        bodyDef.position.set(config.penCenterX + config.penW / 2, config.penCenterY);
+        pen.add(config.world.createBody(bodyDef));
 
         // Set pen wall shape.
         FixtureDef fixture = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         fixture.shape = shape;
-        fixture.friction = gameConfig.friction;
+        fixture.friction = config.friction;
         fixture.density = 0.0f;
         // The floor.
-        shape.setAsBox(uiConfig.w, gameConfig.penThickness/2, new Vector2(0, -gameConfig.penThickness/2), 0);
+        shape.setAsBox(config.w, config.penThickness/2, new Vector2(0, -config.penThickness/2), 0);
         pen.get(0).createFixture(fixture);
         // The left wall.
-        shape.setAsBox(gameConfig.penThickness/2, gameConfig.penH/2, new Vector2(-gameConfig.penThickness/2, 0), 0);
+        shape.setAsBox(config.penThickness/2, config.penH/2, new Vector2(-config.penThickness/2, 0), 0);
         pen.get(1).createFixture(fixture);
         // The right wall.
-        shape.setAsBox(gameConfig.penThickness/2, gameConfig.penH/2, new Vector2(gameConfig.penThickness/2, 0), 0);
+        shape.setAsBox(config.penThickness/2, config.penH/2, new Vector2(config.penThickness/2, 0), 0);
         pen.get(2).createFixture(fixture);
         shape.dispose();
     }
 
     private void makeDebugWorm() {
-       segs.add(new WormSegment(gameConfig, uiConfig, "seg_balloon", 500, 100));
+       segs.add(new WormSegment(config, "seg_balloon", 500, 100));
     }
 
     public void step() {
@@ -83,10 +81,10 @@ public class Worm {
             one2two.add(body1Pos);
             // Apply repulsion.
             float dist = one2two.len();
-            if (dist > gameConfig.adjacentRepulsiveForceCutoff) continue;
+            if (dist > config.adjacentRepulsiveForceCutoff) continue;
             one2two.nor();
-            one2two.x *= gameConfig.adjacentRepulsiveForceFactor / dist / dist;  // 1/r^2 force.
-            one2two.y *= gameConfig.adjacentRepulsiveForceFactor / dist / dist;
+            one2two.x *= config.adjacentRepulsiveForceFactor / dist / dist;  // 1/r^2 force.
+            one2two.y *= config.adjacentRepulsiveForceFactor / dist / dist;
             Vector2 two2one = new Vector2(-one2two.x, -one2two.y);
             body1.applyLinearImpulse(two2one, body1.getPosition(), true);
             body2.applyLinearImpulse(one2two, body2.getPosition(), true);
@@ -100,8 +98,8 @@ public class Worm {
         Body bodyOld = joinSeg.body;
 
         DistanceJointDef distanceJointDef = new DistanceJointDef();
-        distanceJointDef.collideConnected = newSeg.gameConfig.collideConnected;
-        distanceJointDef.length = newSeg.gameConfig.jointLen;
+        distanceJointDef.collideConnected = newSeg.config.collideConnected;
+        distanceJointDef.length = newSeg.config.jointLen;
         distanceJointDef.bodyA = bodyNew;
         distanceJointDef.bodyB = bodyOld;
         distanceJointDef.frequencyHz = 1f;  // Spring strength - higher the stronger.
@@ -109,25 +107,25 @@ public class Worm {
         // Add top joint.
         if (isLeft) {
             // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.gameConfig.joinPos, newSeg.gameConfig.segMidH/2);
-            distanceJointDef.localAnchorB.set(-newSeg.gameConfig.joinPos, newSeg.gameConfig.segMidH/2);
+            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, newSeg.config.segMidH/2);
         } else {
             // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.gameConfig.joinPos, newSeg.gameConfig.segMidH/2);
-            distanceJointDef.localAnchorB.set(newSeg.gameConfig.joinPos, newSeg.gameConfig.segMidH/2);
+            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, newSeg.config.segMidH/2);
         }
-        newSeg.gameConfig.world.createJoint(distanceJointDef);
+        newSeg.config.world.createJoint(distanceJointDef);
         // Add bottom joint.
         if (isLeft) {
             // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.gameConfig.joinPos, -newSeg.gameConfig.segMidH/2);
-            distanceJointDef.localAnchorB.set(-newSeg.gameConfig.joinPos, -newSeg.gameConfig.segMidH/2);
+            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, -newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, -newSeg.config.segMidH/2);
         } else {
             // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.gameConfig.joinPos, -newSeg.gameConfig.segMidH/2);
-            distanceJointDef.localAnchorB.set(newSeg.gameConfig.joinPos, -newSeg.gameConfig.segMidH/2);
+            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, -newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, -newSeg.config.segMidH/2);
         }
-        newSeg.gameConfig.world.createJoint(distanceJointDef);
+        newSeg.config.world.createJoint(distanceJointDef);
 
         // Adjacent segments are repulsive to each other. This gives the worm a stiffer feel.
         if (isLeft) {
@@ -139,11 +137,11 @@ public class Worm {
         }
     }
 
-    public static void drawWorm(float delta, GameConfig config, SpriteBatch spriteBatch,
+    public static void drawWorm(float delta, Config config, SpriteBatch spriteBatch,
                                 ShapeRenderer shapeRenderer, SkeletonRenderer skeletonRenderer) {
         // Draw shadow.
         spriteBatch.begin();
-        for (WormSegment seg : config.wormSegs) {
+        for (WormSegment seg : config.worm.segs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
                 // Basic segment angle.
                 float angle = basicSeg.body.getAngle() * 57.2958f;
@@ -200,7 +198,7 @@ public class Worm {
 
         // Draw segments.
         spriteBatch.begin();
-        for (WormSegment seg : config.wormSegs) {
+        for (WormSegment seg : config.worm.segs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
                 float angle = basicSeg.body.getAngle() * 57.2958f;
                 Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);

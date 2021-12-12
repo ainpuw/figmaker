@@ -14,8 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 
 public class Menu {
-    private GameConfig gameConfig;
-    private UIConfig uiConfig;
+    private Config config;
 
     public Group contents;
     private Image tabBackground;
@@ -32,39 +31,38 @@ public class Menu {
     private int readyCounter = 0;
     private final int isReady = 30;
 
-    public Menu(GameConfig gameConfig, UIConfig uiConfig) {
-        this.gameConfig = gameConfig;
-        this.uiConfig = uiConfig;
+    public Menu(Config config) {
+        this.config = config;
 
         // Initialize members.
         this.contents = new Group();
-        this.tabBackground = new Image(uiConfig.menuBackgroundTexture);
-        this.tabTagWorm = new Image(uiConfig.menuTabTagWormTexture);
-        this.tabTagStat = new Image(uiConfig.menuTabTagStatTexture);
-        this.tabTagUnknown = new Image(uiConfig.menuTabTagUnknownTexture);
+        this.tabBackground = new Image(config.menuBackgroundTexture);
+        this.tabTagWorm = new Image(config.menuTabTagWormTexture);
+        this.tabTagStat = new Image(config.menuTabTagStatTexture);
+        this.tabTagUnknown = new Image(config.menuTabTagUnknownTexture);
         this.tabWorm = new HorizontalGroup();
         this.tabStat = new Actor();  // Dummy.
         this.tabUnknown = new Actor();  // Dummy.
-        this.contents.setPosition(uiConfig.menuPosX, uiConfig.menuPosY);
+        this.contents.setPosition(config.menuPosX, config.menuPosY);
 
         // Parameterize tab tags and background.
-        this.tabTagWorm.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
-        this.tabTagStat.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
-        this.tabTagUnknown.setScale(uiConfig.tabTagScaleSmall);  // Hard coded.
+        this.tabTagWorm.setScale(config.tabTagScaleSmall);  // Hard coded.
+        this.tabTagStat.setScale(config.tabTagScaleSmall);  // Hard coded.
+        this.tabTagUnknown.setScale(config.tabTagScaleSmall);  // Hard coded.
         this.tabBackground.setPosition(0, -515);  // Hard coded.
         this.tabBackground.setVisible(false);
         setTagDefaultPositions();
 
         // Parameterize the worm tab.
-        this.tabWorm.setPosition(uiConfig.toolboxX, uiConfig.toolboxY);
-        this.tabWorm.setSize(uiConfig.toolboxW, uiConfig.toolboxH);
+        this.tabWorm.setPosition(config.toolboxX, config.toolboxY);
+        this.tabWorm.setSize(config.toolboxW, config.toolboxH);
         this.tabWorm.wrap(true);
         this.tabWorm.rowAlign(Align.left);
-        this.tabWorm.space(uiConfig.toolboxSpacing);
-        this.tabWorm.wrapSpace(uiConfig.toolboxSpacing);
+        this.tabWorm.space(config.toolboxSpacing);
+        this.tabWorm.wrapSpace(config.toolboxSpacing);
         this.segTools = new Array<>();
-        for (int segID = 0; segID < gameConfig.wormSegConfigs.size(); segID++) {
-            ToolActor segTool = new ToolActor(segID, gameConfig.wormSegConfigs.get(segID).texture);
+        for (int segID = 0; segID < config.wormSegConfigs.size(); segID++) {
+            ToolActor segTool = new ToolActor(segID, config.wormSegConfigs.get(segID).texture);
             segTools.add(segTool);
             // displayActor is added into the HorizontalGroup.
             this.tabWorm.addActor(segTool.displayActor);
@@ -86,21 +84,21 @@ public class Menu {
 
     private void initializeListeners() {
         // Initialize sources for drag and drop.
-        uiConfig.toolboxDragAndDrop.clear();
+        config.toolboxDragAndDrop.clear();
         for (ToolActor tool : segTools) {
-            uiConfig.toolboxDragAndDrop.addSource(new DragAndDrop.Source(tool) {
+            config.toolboxDragAndDrop.addSource(new DragAndDrop.Source(tool) {
                 @Null
                 public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
                     ToolActor toolActor = (ToolActor) getActor();
                     // Use this global variable to mark the actor being dragged.
-                    uiConfig.dragAndDrogSourceName = gameConfig.wormSegConfigs.get(toolActor.segID).name;
+                    config.dragAndDrogSourceName = config.wormSegConfigs.get(toolActor.segID).name;
                     // Set the ToolActor's displayActor to half alpha.
                     toolActor.displayActor.getColor().a = 0.5f;
 
                     // Stop stepping Box2D when in building mode.
-                    gameConfig.evolveWorld = false;
+                    config.evolveWorld = false;
                     // Add worm display actors to stage for visualization.
-                    for (WormSegment wormSeg : gameConfig.wormSegs) {
+                    for (WormSegment wormSeg : config.worm.segs) {
                         for (WormSegment.BasicSegment basicSeg : wormSeg.basicSegs) {
                             basicSeg.updateAndAddToStage();
                         }
@@ -109,11 +107,11 @@ public class Menu {
 
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
                     // FIXME: Is this needed?
-                    payload.setObject("Payload" + uiConfig.dragAndDrogSourceName);
+                    payload.setObject("Payload" + config.dragAndDrogSourceName);
                     payload.setDragActor(toolActor);
 
                     // FIXME: This is for debug purpose.
-                    uiConfig.dialogueBox.updateText(uiConfig.dragAndDrogSourceName);
+                    config.dialogueBox.updateText(config.dragAndDrogSourceName);
 
                     return payload;
                 }
@@ -127,9 +125,9 @@ public class Menu {
                     // Set the ToolActor's displayActor to full alpha.
                     toolActor.displayActor.getColor().a = 1f;
                     // Resume stepping Box2D when the building action ends.
-                    gameConfig.evolveWorld = true;
+                    config.evolveWorld = true;
                     // Remove worm actors from stage to save computation.
-                    for (WormSegment wormSeg : gameConfig.wormSegs) {
+                    for (WormSegment wormSeg : config.worm.segs) {
                         for (WormSegment.BasicSegment basicSeg : wormSeg.basicSegs) {
                             basicSeg.removeFromStage();
                         }
@@ -153,10 +151,10 @@ public class Menu {
                     contents.addActor(tabWorm);
                     for (ToolActor tool : segTools)  {
                         // Add to stage directly to avoid dealing with local vs. stage coordinates.
-                        uiConfig.stage.addActor(tool);
+                        config.stage.addActor(tool);
                     }
                     tabTagWorm.toFront();
-                    tabTagWorm.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagWorm.setScale(config.tabTagScaleLarge);
                     tabTagWorm.setPosition(tabTagWorm.getX() - 5, tabTagWorm.getY() - 5);
                 }
                 return true;
@@ -174,7 +172,7 @@ public class Menu {
                     contents.addActor(tabBackground);
                     contents.addActor(tabStat);
                     tabTagStat.toFront();
-                    tabTagStat.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagStat.setScale(config.tabTagScaleLarge);
                     tabTagStat.setPosition(tabTagStat.getX() - 5, tabTagStat.getY() - 5);
                 }
                 return true;
@@ -192,7 +190,7 @@ public class Menu {
                     contents.addActor(tabBackground);
                     contents.addActor(tabUnknown);
                     tabTagUnknown.toFront();
-                    tabTagUnknown.setScale(uiConfig.tabTagScaleLarge);
+                    tabTagUnknown.setScale(config.tabTagScaleLarge);
                     tabTagUnknown.setPosition(tabTagUnknown.getX() - 5, tabTagUnknown.getY() - 5);
                 }
                 return true;
@@ -201,28 +199,28 @@ public class Menu {
     }
 
     private void addWormTargetsToDragAndDrop() {
-        for (WormSegment wormSeg : gameConfig.wormSegs) {
+        for (WormSegment wormSeg : config.worm.segs) {
             for (WormSegment.BasicSegment basicSeg : wormSeg.basicSegs) {
                 Array<WormSegment.BasicImgSegment> tempArray = new Array<>();
                 tempArray.add(basicSeg.leftEnd);
                 tempArray.add(basicSeg.rightEnd);
                 for (WormSegment.BasicImgSegment basicImgSeg : tempArray) {
-                    uiConfig.toolboxDragAndDrop.addTarget(new DragAndDrop.Target(basicImgSeg) {
+                    config.toolboxDragAndDrop.addTarget(new DragAndDrop.Target(basicImgSeg) {
                         public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                             WormSegment.BasicImgSegment indicatorImgActor = (WormSegment.BasicImgSegment) getActor();
                             indicatorImgActor.getColor().a = 1f;
-                            gameConfig.touchingSeg = indicatorImgActor;
+                            config.touchingSeg = indicatorImgActor;
                             return true;
                         }
 
                         public void reset(DragAndDrop.Source source, DragAndDrop.Payload payload) {
                             WormSegment.BasicImgSegment indicatorImgActor = (WormSegment.BasicImgSegment) getActor();
                             indicatorImgActor.getColor().a = 0f;
-                            gameConfig.touchingSeg = null;
+                            config.touchingSeg = null;
                         }
 
                         public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                            if (gameConfig.touchingSeg == null) return;
+                            if (config.touchingSeg == null) return;
 
                             // Create a WormSegment and join it to the touched BasicSegment.
                             WormSegment.BasicImgSegment indicatorImgActor = (WormSegment.BasicImgSegment) getActor();
@@ -236,25 +234,25 @@ public class Menu {
                             float spawnX = indicatorImgActor.getX();
                             float spawnY = indicatorImgActor.getY();
                             // Convert to spawn body center position, ignoring indicatorImgActor rotation.
-                            spawnX += (gameConfig.segMidW / 2 + gameConfig.segEndW) / 2;
-                            spawnY += gameConfig.segMidH / 2;
+                            spawnX += (config.segMidW / 2 + config.segEndW) / 2;
+                            spawnY += config.segMidH / 2;
                             // FIXME: This shift amount needs to be adjusted. Not good enough.
                             if (indicatorImgActor2.getX() > indicatorImgActor.getX())
-                                spawnX -= gameConfig.segMidW / 2;
+                                spawnX -= config.segMidW / 2;
                             else
-                                spawnX += gameConfig.segMidW / 2;
+                                spawnX += config.segMidW / 2;
                             if (indicatorImgActor2.getY() > indicatorImgActor.getY())
-                                spawnX -= gameConfig.segMidH;
+                                spawnX -= config.segMidH;
                             else
-                                spawnX += gameConfig.segMidH;
+                                spawnX += config.segMidH;
 
-                            WormSegment newSeg = new WormSegment(gameConfig, uiConfig, uiConfig.dragAndDrogSourceName, spawnX, spawnY);
-                            gameConfig.wormSegs.add(newSeg);
-                            Worm.joinSegments(newSeg, gameConfig.touchingSeg.parent, isLeft, gameConfig.worm.repulsivePairs);
+                            WormSegment newSeg = new WormSegment(config, config.dragAndDrogSourceName, spawnX, spawnY);
+                            config.worm.segs.add(newSeg);
+                            Worm.joinSegments(newSeg, config.touchingSeg.parent, isLeft, config.worm.repulsivePairs);
 
                             // Reset global variables.
-                            uiConfig.dragAndDrogSourceName = "";
-                            gameConfig.touchingSeg = null;
+                            config.dragAndDrogSourceName = "";
+                            config.touchingSeg = null;
                         }
                     });
                 }
@@ -263,9 +261,9 @@ public class Menu {
     }
 
     private void setTagDefaultPositions() {
-        tabTagWorm.setScale(uiConfig.tabTagScaleSmall);
-        tabTagStat.setScale(uiConfig.tabTagScaleSmall);
-        tabTagUnknown.setScale(uiConfig.tabTagScaleSmall);
+        tabTagWorm.setScale(config.tabTagScaleSmall);
+        tabTagStat.setScale(config.tabTagScaleSmall);
+        tabTagUnknown.setScale(config.tabTagScaleSmall);
         tabTagWorm.setPosition(0, 0);
         tabTagStat.setPosition(75, 0);  // Hard coded.
         tabTagUnknown.setPosition(150, 0);  // Hard coded.

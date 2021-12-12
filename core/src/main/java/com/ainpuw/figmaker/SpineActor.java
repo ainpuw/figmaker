@@ -14,12 +14,12 @@ import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class SpineActor extends Actor {
-    private UIConfig.SpineActorConfig config;
+    private Config.SpineActorConfig config;
     public Skeleton skeleton;
     private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();  // FIXME: This should be a global one.
     public AnimationState animationState;
 
-    public SpineActor(UIConfig.SpineActorConfig config) {
+    public SpineActor(Config.SpineActorConfig config) {
         this.config = config;
 
         // Spine animation setup.

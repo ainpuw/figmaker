@@ -1,5 +1,7 @@
 package com.ainpuw.figmaker;
 
+import com.ainpuw.figmaker.scenarios.Intro;
+import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -9,71 +11,22 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Main extends ApplicationAdapter {
-    // Config and World global objects.
-    private GameConfig gameConfig;
-    // Config and Stage global objects.
-    private UIConfig uiConfig;
+    // Configs and global objects.
+    private Config config;
+    // Current scenario.
+    private Scenario scenario;
 
-    // Draw debug shapes outside of Stage.
+    // Renderers.
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
     private SkeletonRenderer skeletonRenderer;
-    // Draw debug view of World.
     private Box2DDebugRenderer debugRenderer;
-
-    // Stage Actors.
-    private SpineActor background;
-    private SpineActor character;
-    private Dialogue dialogueBox;
-    private ProgressActor timeTillNext;
-    private ProgressActor redProbability;
-    private Menu menu;
-
-    // World Bodies.
-    private Worm worm;
-
-    // Cooldowns.
-    private AnimationManager animationManager;
 
     @Override
     public void create () {
-        gameConfig = new GameConfig();
-        uiConfig = new UIConfig();
+        config = new Config();
+        scenario = new Intro(config);
 
-        /////////////////////////////////////////////
-        // Scene2D
-        /////////////////////////////////////////////
-
-        background = new SpineActor(uiConfig.spineActorConfigs.get("background"));
-        character = new SpineActor(uiConfig.spineActorConfigs.get("character"));
-        dialogueBox = new Dialogue(uiConfig);
-        timeTillNext = new ProgressActor(uiConfig.progressActorConfigs.get("timeTillNext"), uiConfig.skin);
-        redProbability = new ProgressActor(uiConfig.progressActorConfigs.get("redProbability"), uiConfig.skin);
-        menu = new Menu(gameConfig, uiConfig);
-        uiConfig.dialogueBox = dialogueBox;
-
-        uiConfig.stage.addActor(background);
-        uiConfig.stage.addActor(character);
-        uiConfig.stage.addActor(menu.contents);
-        dialogueBox.addToStage();
-
-        // uiConfig.stage.addActor(timeTillNext);
-        // uiConfig.stage.addActor(redProbability);
-
-        /////////////////////////////////////////////
-        // Box2D
-        /////////////////////////////////////////////
-
-        worm = new Worm(gameConfig, uiConfig);
-        gameConfig.worm = worm;
-        gameConfig.wormSegs = worm.segs;
-
-        /////////////////////////////////////////////
-        // Others
-        /////////////////////////////////////////////
-
-        animationManager = new AnimationManager(character);
-        uiConfig.amanager = animationManager;
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         skeletonRenderer = new SkeletonRenderer();
@@ -83,36 +36,50 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render () {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        ScreenUtils.clear(uiConfig.screenR, uiConfig.screenG, uiConfig.screenB, uiConfig.screenA);
-        animationManager.update(deltaTime);
+        ScreenUtils.clear(config.screenR, config.screenG, config.screenB, config.screenA);
+
+        /////////////////////////////////////////////
+        // Scenario management
+        /////////////////////////////////////////////
+
+        // Get the next event if the current event has ended.
+        if (scenario.currentEvent.ended || scenario.currentEvent == null) {
+            // Get the next scenario if the current scenario has ended.
+            if (scenario.eventQueue.isEmpty()) {
+                scenario = scenario.NextScenario();
+            }
+            // scenario.eventQueue.
+        }
 
         /////////////////////////////////////////////
         // Scene2D
         /////////////////////////////////////////////
 
-        menu.ready(false);
-        uiConfig.stage.act(Math.min(deltaTime, uiConfig.maxStageUpdateDelta));
-        uiConfig.stage.getViewport().apply();
-        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(uiConfig.stage.getCamera().combined);
-        uiConfig.stage.draw();
+        config.amanager.update(deltaTime);
+        config.menu.ready(false);
+        config.stage.act(Math.min(deltaTime, config.maxStageUpdateDelta));
+        config.stage.getViewport().apply();
+        spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(config.stage.getCamera().combined);
+        config.stage.draw();
 
         /////////////////////////////////////////////
         // Box2D
         /////////////////////////////////////////////
 
-        if (gameConfig.evolveWorld) {
+        if (config.evolveWorld) {
             // FIXME: Why would resize mess up with the physics? Need max update delta?
-            gameConfig.world.step(deltaTime, gameConfig.velocityIterations, gameConfig.positionIterations);
-            worm.step();  // Apply forces to worm to be evolved next rendering.
+            config.world.step(deltaTime, config.velocityIterations, config.positionIterations);
+            config.worm.step();  // Apply forces to worm to be evolved next rendering.
         }
-        Worm.drawWorm(deltaTime, gameConfig, spriteBatch, shapeRenderer, skeletonRenderer);
+        Worm.drawWorm(deltaTime, config, spriteBatch, shapeRenderer, skeletonRenderer);
 
         /////////////////////////////////////////////
         // Dialogue.
         /////////////////////////////////////////////
+
         if (Gdx.input.isTouched())
-            dialogueBox.label.skipToTheEnd();
+            config.dialogueBox.label.skipToTheEnd();
 
         /////////////////////////////////////////////
         // Debug
@@ -126,19 +93,18 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize (int width, int height) {
         // It is very important to set centerCamera to "false" for ExtendViewport.
-        uiConfig.stage.getViewport().update(width, height, false);
+        config.stage.getViewport().update(width, height, false);
 
         // Stick the menu to the right always.
-        menu.contents.setX(uiConfig.menuPosX + Math.max(0, uiConfig.stage.getWidth() - uiConfig.w) / 2);
-        for (Menu.ToolActor tool : menu.segTools) tool.alignDisplayAndDrag();
+        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stage.getWidth() - config.w) / 2);
+        for (Menu.ToolActor tool : config.menu.segTools) tool.alignDisplayAndDrag();
 
         // Update worm textures.
-        spriteBatch.setProjectionMatrix(uiConfig.stage.getCamera().combined);
+        spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
     }
 
     @Override
     public void dispose () {
-        gameConfig.dispose();
-        uiConfig.dispose();
+        config.dispose();
     }
 }
