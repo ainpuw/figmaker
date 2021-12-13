@@ -53,14 +53,15 @@ public class Main extends ApplicationAdapter {
             }
         }
         else {
-            System.out.println("No more scenarios.");
+            // Do nothing.
+            // System.out.println("No more scenarios.");
         }
 
         /////////////////////////////////////////////
         // Scene2D
         /////////////////////////////////////////////
 
-        config.amanager.update(deltaTime);
+        config.amanager.update(deltaTime);  // FIXME: We shouldn't always run this.
         config.menu.ready(false);
         config.stage.act(Math.min(deltaTime, config.maxStageUpdateDelta));
         config.stage.getViewport().apply();
@@ -78,13 +79,6 @@ public class Main extends ApplicationAdapter {
             config.worm.step();  // Apply forces to worm to be evolved next rendering.
         }
         Worm.drawWorm(deltaTime, config, spriteBatch, shapeRenderer, skeletonRenderer);
-
-        /////////////////////////////////////////////
-        // Dialogue.
-        /////////////////////////////////////////////
-
-        if (Gdx.input.isTouched())
-            config.dialogueBox.label.skipToTheEnd();
 
         /////////////////////////////////////////////
         // Debug

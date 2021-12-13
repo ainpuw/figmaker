@@ -137,7 +137,7 @@ public class Config {
     public final int velocityIterations = 1;
     public final int positionIterations = 1;
     // Used to freeze the world when needed.
-    public boolean evolveWorld = true;
+    public boolean evolveWorld = false;
     // Decide where to add the next segment.
     public WormSegment.BasicImgSegment touchingSeg = null;
 

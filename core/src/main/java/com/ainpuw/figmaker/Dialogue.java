@@ -1,5 +1,7 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
@@ -9,6 +11,8 @@ public class Dialogue {
     public TypingLabel label;
     public Image background;
     public SpineActor portrait;
+    public int dialogueCurrentLine = 0;
+    public String[] dialogueLines = null;
 
     public Dialogue(Config config) {
         this.config = config;
@@ -33,10 +37,30 @@ public class Dialogue {
         portrait.skeleton.setScale(config.dialogueScale, config.dialogueScale);
         portrait.setPosition(config.dialogueOffset.x + 392, config.dialogueOffset.y + 230);
 
-        // FIXME: Refactor.
+        // Default animation.
         portrait.animationState.setAnimation(1, "blink", true);
         portrait.animationState.setAnimation(2, "armeye", true);
-        updateText("{COLOR=WHITE}Hello,{WAIT} world! Interesting specimen... it duplicates at astonishing speed.");
+    }
+
+    public boolean step() {
+        if (dialogueLines == null) return true;
+
+        if ((Gdx.input.justTouched() && label.hasEnded()) || label.textEquals("")) {
+            if (dialogueCurrentLine >= dialogueLines.length) return true;
+
+            String lineSplit[] = dialogueLines[dialogueCurrentLine].split("###");
+            String currentCharacter = lineSplit[0];  // TODO: Utilize these two attributes.
+            String emote = lineSplit[1];  // TODO: Utilize these two attributes.
+            String words = lineSplit[2];
+
+            updateText(words);
+            dialogueCurrentLine++;
+        }
+        else if (Gdx.input.justTouched()) {
+            label.skipToTheEnd();
+        }
+
+        return false;
     }
 
     public void addToStage() {
@@ -45,26 +69,16 @@ public class Dialogue {
         config.stage.addActor(label);
     }
 
+    public void removeFromStage() {
+        background.remove();
+        portrait.remove();
+        label.remove();
+    }
+
     public void updateText(String text) {
         label.setText(text);
         label.restart();
         label.setHeight(label.getPrefHeight());
         label.setY(config.dialogueOffset.y + labelConfig.y - label.getHeight());
-    }
-
-    public void genRandomTextDebug() {
-        if (Math.random() > 0.995) {
-            String text = "";
-            int words = (int) (Math.random() * 30);
-            for (int i = 0; i < words; i++) {
-                int letters = (int) (Math.random() * 10);
-                for (int j = 0; j < letters; j++) {
-                    text += (char) Math.max(60, (int) (Math.random() * 122));
-                }
-                text += " ";
-            }
-            this.updateText(text);
-        }
-
     }
 }

@@ -34,6 +34,7 @@ public class Intro extends Scenario {
                     if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete()) {
                         active = false;
                         ended = true;
+                        // TODO: Instead of dispose(), we should add intro here!
                         dispose();
                     }
                 }
