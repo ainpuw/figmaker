@@ -3,8 +3,6 @@ package com.ainpuw.figmaker.scenarios;
 import com.ainpuw.figmaker.Config;
 
 public class Level1 extends Scenario {
-    Config config;
-
     public Level1(Config config) {
         super(config);
         /*
@@ -15,7 +13,7 @@ public class Level1 extends Scenario {
          */
     }
 
-    public Scenario NextScenario() {
+    public Scenario nextScenario() {
         return new Level2(config);
     }
 }

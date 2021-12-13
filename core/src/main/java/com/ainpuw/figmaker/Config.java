@@ -51,7 +51,7 @@ public class Config {
     // Spine animation parameters.
     public final HashMap<String, SpineActorConfig> spineActorConfigs = new HashMap<String, SpineActorConfig>() {{
         put("logo", new SpineActorConfig(
-                68.16f, 177, 70, 370,
+                661/3, 1403/3, 1024/2 - 661/3/2, 650,
                 "logo",
                 "spine/logo/logo.atlas",
                 "spine/logo/logo.json",

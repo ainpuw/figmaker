@@ -42,13 +42,18 @@ public class Main extends ApplicationAdapter {
         // Scenario management
         /////////////////////////////////////////////
 
-        // Get the next event if the current event has ended.
-        if (scenario.currentEvent.ended || scenario.currentEvent == null) {
-            // Get the next scenario if the current scenario has ended.
-            if (scenario.eventQueue.isEmpty()) {
-                scenario = scenario.NextScenario();
+        if (scenario != null) {
+            // Get the next scenario if the scenario is over.
+            if (scenario.isOver()) {
+                scenario = scenario.nextScenario();
             }
-            // scenario.eventQueue.
+            // Advance the scenario by one step.
+            else {
+                scenario.step(deltaTime);
+            }
+        }
+        else {
+            System.out.println("No more scenarios.");
         }
 
         /////////////////////////////////////////////
