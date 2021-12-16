@@ -10,7 +10,7 @@ public class Intro extends Scenario {
     public Intro(Config config) {
         super(config);
         config.stage.clear();
-        logoActor = new SpineActor(config.spineActorConfigs.get("logo"));
+        logoActor = new SpineActor(config.spineActorConfigs.get("logo"), config.skeletonRenderer);
         logoActor.animationState.setAnimation(0, "grow", false);
 
         events.add(new Event(config, "logo_animation") {

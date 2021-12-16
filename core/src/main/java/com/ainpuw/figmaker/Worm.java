@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Worm {
@@ -20,10 +21,7 @@ public class Worm {
 
     public Worm(Config config) {
         this.config = config;
-
         createPen();
-        // FIXME: For debug.
-        // makeDebugWorm();
     }
 
     private void createPen() {
@@ -47,19 +45,15 @@ public class Worm {
         fixture.friction = config.friction;
         fixture.density = 0.0f;
         // The floor.
-        shape.setAsBox(config.w, config.penThickness/2, new Vector2(0, -config.penThickness/2), 0);
+        shape.setAsBox(config.w, config.penThickness / 2, new Vector2(0, -config.penThickness / 2), 0);
         pen.get(0).createFixture(fixture);
         // The left wall.
-        shape.setAsBox(config.penThickness/2, config.penH/2, new Vector2(-config.penThickness/2, 0), 0);
+        shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(-config.penThickness / 2, 0), 0);
         pen.get(1).createFixture(fixture);
         // The right wall.
-        shape.setAsBox(config.penThickness/2, config.penH/2, new Vector2(config.penThickness/2, 0), 0);
+        shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(config.penThickness / 2, 0), 0);
         pen.get(2).createFixture(fixture);
         shape.dispose();
-    }
-
-    private void makeDebugWorm() {
-       segs.add(new WormSegment(config, "seg_balloon", 500, 100));
     }
 
     public void step() {
@@ -69,10 +63,10 @@ public class Worm {
             seg.step();
         }
 
-        for (int i = 0; i < repulsivePairs.size/2; i++) {
+        for (int i = 0; i < repulsivePairs.size / 2; i++) {
             // Odd indices are pairs of even indices.
-            Body body1 = repulsivePairs.get(2*i);
-            Body body2 = repulsivePairs.get(2*i+1);
+            Body body1 = repulsivePairs.get(2 * i);
+            Body body2 = repulsivePairs.get(2 * i + 1);
             // v2 - v1.
             Vector2 body1Pos = new Vector2(body1.getPosition());
             body1Pos.x = -body1Pos.x;
@@ -107,23 +101,23 @@ public class Worm {
         // Add top joint.
         if (isLeft) {
             // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, newSeg.config.segMidH/2);
-            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, newSeg.config.segMidH / 2);
+            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, newSeg.config.segMidH / 2);
         } else {
             // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, newSeg.config.segMidH/2);
-            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, newSeg.config.segMidH / 2);
+            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, newSeg.config.segMidH / 2);
         }
         newSeg.config.world.createJoint(distanceJointDef);
         // Add bottom joint.
         if (isLeft) {
             // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, -newSeg.config.segMidH/2);
-            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, -newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, -newSeg.config.segMidH / 2);
+            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, -newSeg.config.segMidH / 2);
         } else {
             // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, -newSeg.config.segMidH/2);
-            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, -newSeg.config.segMidH/2);
+            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, -newSeg.config.segMidH / 2);
+            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, -newSeg.config.segMidH / 2);
         }
         newSeg.config.world.createJoint(distanceJointDef);
 
@@ -137,10 +131,88 @@ public class Worm {
         }
     }
 
-    public static void drawWorm(float delta, Config config, SpriteBatch spriteBatch,
-                                ShapeRenderer shapeRenderer, SkeletonRenderer skeletonRenderer) {
+    public static void drawWorm(float delta, Config config) {
+        if (config.wormSpine != null)
+            drawWormSpine(delta, config);
+        else
+            drawWormBox2d(delta, config);
+
+    }
+
+    public static void drawWormSpine(float delta, Config config) {
+        config.wormSpine.skeleton.getRootBone().setX(config.wormSpine.getX());
+        config.wormSpine.skeleton.getRootBone().setY(config.wormSpine.getY());
+
         // Draw shadow.
-        spriteBatch.begin();
+        config.spriteBatch.begin();
+        for (Bone bone : config.wormSpine.skeleton.getRootBone().getChildren()) {
+            // Basic segment angle.
+            float angle = bone.getRotation() - 90;
+            if (angle > 180) angle -= 180;
+            // Center and actual width.
+            Vector2 ctrPos = new Vector2(config.wormSpine.getX() + bone.getX(),
+                                         config.wormSpine.getY() + bone.getY());
+            Vector2 segW = new Vector2(config.segTexture.getWidth(), 0);
+            segW.rotateDeg(angle);
+            // Calculate shadow relative Y percent position.
+            float shadowYPercent = (ctrPos.y - config.segShadowYRangeRef.x) / (config.segShadowYRangeRef.y - config.segShadowYRangeRef.x);
+            shadowYPercent = Math.min(shadowYPercent, 1);
+            shadowYPercent = Math.max(shadowYPercent, 0);
+            // Calculate shadow size.
+            float shadowW = Math.abs(segW.x) * (1 - shadowYPercent);
+            float shadowH = config.shadowTextureRegions[0][0].getRegionHeight() * (1 - shadowYPercent);
+            shadowW = Math.max(20, shadowW);
+            shadowH = Math.max(6.67f, shadowH);
+            // Calculate shadow center position.
+            float shadowX = ctrPos.x - shadowW / 2;
+            float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH / 2;
+
+            config.spriteBatch.draw(config.shadowTextureRegions[0][0],
+                                    shadowX, shadowY,
+                                    0, 0,
+                                    shadowW, shadowH,
+                                    1, 1,
+                                    0);
+        }
+        config.spriteBatch.end();
+
+        // Draw joints.
+        /*
+        config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < config.worm.repulsivePairs.size / 2; i++) {
+            // Odd indices are pairs of even indices.
+            Body body1 = config.worm.repulsivePairs.get(2 * i);
+            Body body2 = config.worm.repulsivePairs.get(2 * i + 1);
+            Vector2 body1Ctr = body1.getPosition();
+            Vector2 body2Ctr = body2.getPosition();
+            config.shapeRenderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+
+            float angle1 = body1.getAngle() * 57.2958f;
+            float angle2 = body2.getAngle() * 57.2958f;
+            Vector2 disp1 = new Vector2(config.segTexture.getWidth() / 2.2f, 0);
+            Vector2 disp2 = new Vector2(-config.segTexture.getWidth() / 2.2f, 0);
+            disp1.rotateDeg(angle1);
+            disp2.rotateDeg(angle2);
+            Vector2 ctrDisp1 = body1Ctr.add(disp1);
+            Vector2 ctrDisp2 = body2Ctr.add(disp2);
+            config.shapeRenderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+
+        }
+        config.shapeRenderer.end();
+        */
+
+        // Draw the worm Spine animation.
+        config.spriteBatch.begin();
+        config.wormSpine.skeleton.updateWorldTransform();
+        config.wormSpine.animationState.update(delta);
+        config.wormSpine.animationState.apply(config.wormSpine.skeleton);
+        config.skeletonRenderer.draw(config.spriteBatch, config.wormSpine.skeleton);
+        config.spriteBatch.end();
+    }
+
+    public static void drawWormBox2d(float delta, Config config) {
+        // Draw shadow.
+        config.spriteBatch.begin();
         for (WormSegment seg : config.worm.segs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
                 // Basic segment angle.
@@ -151,7 +223,7 @@ public class Worm {
                 Vector2 segW = new Vector2(config.segTexture.getWidth(), 0);
                 segW.rotateDeg(angle);
                 // Calculate shadow relative Y percent position.
-                float shadowYPercent = (ctrPos.y - config.segShadowYRangeRef.x)/(config.segShadowYRangeRef.y - config.segShadowYRangeRef.x);
+                float shadowYPercent = (ctrPos.y - config.segShadowYRangeRef.x) / (config.segShadowYRangeRef.y - config.segShadowYRangeRef.x);
                 shadowYPercent = Math.min(shadowYPercent, 1);
                 shadowYPercent = Math.max(shadowYPercent, 0);
                 // Calculate shadow size.
@@ -161,9 +233,9 @@ public class Worm {
                 shadowH = Math.max(6.67f, shadowH);
                 // Calculate shadow center position.
                 float shadowX = ctrPos.x - shadowW / 2;
-                float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH/2;
+                float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH / 2;
 
-                spriteBatch.draw(config.shadowTextureRegions[0][0],
+                config.spriteBatch.draw(config.shadowTextureRegions[0][0],
                         shadowX, shadowY,
                         0, 0,
                         shadowW, shadowH,
@@ -171,33 +243,33 @@ public class Worm {
                         0);
             }
         }
-        spriteBatch.end();
+        config.spriteBatch.end();
 
         // Draw joints.
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i = 0; i < config.worm.repulsivePairs.size/2; i++) {
+        config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < config.worm.repulsivePairs.size / 2; i++) {
             // Odd indices are pairs of even indices.
             Body body1 = config.worm.repulsivePairs.get(2 * i);
             Body body2 = config.worm.repulsivePairs.get(2 * i + 1);
             Vector2 body1Ctr = body1.getPosition();
             Vector2 body2Ctr = body2.getPosition();
-            shapeRenderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+            config.shapeRenderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 
             float angle1 = body1.getAngle() * 57.2958f;
             float angle2 = body2.getAngle() * 57.2958f;
-            Vector2 disp1 = new Vector2(config.segTexture.getWidth()/2.2f, 0);
-            Vector2 disp2 = new Vector2(-config.segTexture.getWidth()/2.2f, 0);
+            Vector2 disp1 = new Vector2(config.segTexture.getWidth() / 2.2f, 0);
+            Vector2 disp2 = new Vector2(-config.segTexture.getWidth() / 2.2f, 0);
             disp1.rotateDeg(angle1);
             disp2.rotateDeg(angle2);
             Vector2 ctrDisp1 = body1Ctr.add(disp1);
             Vector2 ctrDisp2 = body2Ctr.add(disp2);
-            shapeRenderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+            config.shapeRenderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
 
         }
-        shapeRenderer.end();
+        config.shapeRenderer.end();
 
         // Draw segments.
-        spriteBatch.begin();
+        config.spriteBatch.begin();
         for (WormSegment seg : config.worm.segs) {
             for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
                 float angle = basicSeg.body.getAngle() * 57.2958f;
@@ -208,11 +280,10 @@ public class Worm {
                 basicSeg.skeleton.updateWorldTransform();
                 basicSeg.animationState.update(delta);
                 basicSeg.animationState.apply(basicSeg.skeleton);
-                skeletonRenderer.draw(spriteBatch, basicSeg.skeleton);
+                config.skeletonRenderer.draw(config.spriteBatch, basicSeg.skeleton);
             }
         }
-        spriteBatch.end();
-
+        config.spriteBatch.end();
     }
 }
 

@@ -8,8 +8,8 @@ public class Level2 extends Scenario {
         super(config);
         if (config.background.getStage() == null) config.stage.addActor(config.background);
         if (config.character.getStage() == null) config.stage.addActor(config.character);
-        if (config.wormhurt.getStage() == null) config.stage.addActor(config.wormhurt);
         // if (config.menu.contents.getStage() == null) config.stage.addActor(config.menu.contents);
+        config.wormSpine = config.wormhurt;
 
         events.add(new Event(config, "intro_dialogue") {
             public void init() {
@@ -29,6 +29,7 @@ public class Level2 extends Scenario {
             }
 
             public void dispose() {
+                config.wormSpine = null;
                 config.dialogueBox.removeFromStage();
             }
         });

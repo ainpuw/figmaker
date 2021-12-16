@@ -3,12 +3,8 @@ package com.ainpuw.figmaker;
 import com.ainpuw.figmaker.scenarios.Intro;
 import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class Main extends ApplicationAdapter {
     // Configs and global objects.
@@ -16,21 +12,10 @@ public class Main extends ApplicationAdapter {
     // Current scenario.
     private Scenario scenario;
 
-    // Renderers.
-    private SpriteBatch spriteBatch;
-    private ShapeRenderer shapeRenderer;
-    private SkeletonRenderer skeletonRenderer;
-    private Box2DDebugRenderer debugRenderer;
-
     @Override
     public void create () {
         config = new Config();
         scenario = new Intro(config);
-
-        spriteBatch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        skeletonRenderer = new SkeletonRenderer();
-        debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
     }
 
     @Override
@@ -65,8 +50,8 @@ public class Main extends ApplicationAdapter {
         config.menu.ready(false);
         config.stage.act(Math.min(deltaTime, config.maxStageUpdateDelta));
         config.stage.getViewport().apply();
-        spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(config.stage.getCamera().combined);
+        config.spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
+        config.shapeRenderer.setProjectionMatrix(config.stage.getCamera().combined);
         config.stage.draw();
 
         /////////////////////////////////////////////
@@ -78,14 +63,13 @@ public class Main extends ApplicationAdapter {
             config.world.step(deltaTime, config.velocityIterations, config.positionIterations);
             config.worm.step();  // Apply forces to worm to be evolved next rendering.
         }
-        Worm.drawWorm(deltaTime, config, spriteBatch, shapeRenderer, skeletonRenderer);
+        Worm.drawWorm(deltaTime, config);
 
         /////////////////////////////////////////////
         // Debug
         /////////////////////////////////////////////
 
-        // FIXME: For debug.
-        // debugRenderer.render(gameConfig.world, uiConfig.stage.getCamera().combined);
+        config.debugRenderer.render(config.world, config.stage.getCamera().combined);
         // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 
@@ -99,7 +83,7 @@ public class Main extends ApplicationAdapter {
         for (Menu.ToolActor tool : config.menu.segTools) tool.alignDisplayAndDrag();
 
         // Update worm textures.
-        spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
+        config.spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
     }
 
     @Override

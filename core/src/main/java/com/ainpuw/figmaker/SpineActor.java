@@ -14,13 +14,12 @@ import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
 public class SpineActor extends Actor {
-    private Config.SpineActorConfig config;
     public Skeleton skeleton;
-    private SkeletonRenderer skeletonRenderer = new SkeletonRenderer();  // FIXME: This should be a global one.
+    private SkeletonRenderer skeletonRenderer;
     public AnimationState animationState;
 
-    public SpineActor(Config.SpineActorConfig config) {
-        this.config = config;
+    public SpineActor(Config.SpineActorConfig config, SkeletonRenderer skeletonRenderer) {
+        this.skeletonRenderer = skeletonRenderer;
 
         // Spine animation setup.
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(config.atlas));
@@ -35,18 +34,15 @@ public class SpineActor extends Actor {
         this.setName(config.name);
 
         // Spine animation repositioning and resizing.
-        // Only based on the AABB of the first frame.
         this.setPosition(config.x, config.y);
-        Vector2 offset = new Vector2();
-        Vector2 size = new Vector2();
-        FloatArray temp = new FloatArray();
-        this.skeleton.getBounds(offset, size, temp);
-        float skeletonScaleX = config.w / size.x;
-        float skeletonScaleY = config.h / size.y;
-        this.skeleton.setScale(skeletonScaleX, skeletonScaleY);
-        if (Math.abs(size.x / size.y - config.w / config.h) > 0.05) {
-            System.err.println("Detected discrepancy between the aspect ratios of " +
-                    "the spine actor and the spine animation.");
+        if (config.w != 0-1 && config.h != -1) {
+            Vector2 offset = new Vector2();
+            Vector2 size = new Vector2();
+            FloatArray temp = new FloatArray();
+            this.skeleton.getBounds(offset, size, temp);
+            float skeletonScaleX = config.w / size.x;
+            float skeletonScaleY = config.h / size.y;
+            this.skeleton.setScale(skeletonScaleX, skeletonScaleY);
         }
     }
 

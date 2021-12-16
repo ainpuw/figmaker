@@ -2,21 +2,25 @@ package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.esotericsoftware.spine.SkeletonRenderer;
+
 import java.util.HashMap;
 
 public class Config {
     ////////////////////////////////////////////////////
-    // Game size
+    // Game general
     ////////////////////////////////////////////////////
     // Default screen size, but allows ExtendViewport scaling.
     // 16:9 aspect ratio, a balance between laptop and phone screens.
@@ -34,6 +38,12 @@ public class Config {
     public final float maxStageUpdateDelta = 1 / 30f;
     public AnimationManager amanager = null;
 
+    // Renderers.
+    public SpriteBatch spriteBatch;
+    public ShapeRenderer shapeRenderer;
+    public SkeletonRenderer skeletonRenderer;
+    public Box2DDebugRenderer debugRenderer;
+
     ////////////////////////////////////////////////////
     // Scene2D parameters
     ////////////////////////////////////////////////////
@@ -47,6 +57,8 @@ public class Config {
     public ProgressActor timeTillNext;
     public ProgressActor redProbability;
     public Menu menu;
+
+    public SpineActor wormSpine = null;  // For drawing shadows.
 
     public final String skinFile = "skin/uiskin.json";
 
@@ -83,7 +95,7 @@ public class Config {
                 "spine/worm/worm_seg.json",
                 "idle"));
         put("wormhurt", new SpineActorConfig(
-                81f, 31.37f, 500, 100,
+                -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
                 "spine/worm/worm.atlas",
                 "spine/worm/worm_hurt.json",
@@ -287,6 +299,11 @@ public class Config {
     ////////////////////////////////////////////////////
 
     public Config() {
+        spriteBatch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+        skeletonRenderer = new SkeletonRenderer();
+        debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
+
         stage.getCamera().position.set(w/2, h/2, 0);
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal(skinFile));
@@ -299,10 +316,10 @@ public class Config {
         toolboxDragAndDrop.setTouchOffset(dragAndDropTouchOffsetX, dragAndDropTouchOffsetY);
 
         // Initialize actors.
-        background = new SpineActor(spineActorConfigs.get("background"));
-        character = new SpineActor(spineActorConfigs.get("character"));
-        wormseg = new SpineActor(spineActorConfigs.get("wormseg"));
-        wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"));
+        background = new SpineActor(spineActorConfigs.get("background"), skeletonRenderer);
+        character = new SpineActor(spineActorConfigs.get("character"), skeletonRenderer);
+        wormseg = new SpineActor(spineActorConfigs.get("wormseg"), skeletonRenderer);
+        wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"), skeletonRenderer);
         dialogueBox = new Dialogue(this);
         timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
         redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);

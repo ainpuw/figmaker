@@ -33,7 +33,7 @@ public class Dialogue {
         background.setPosition(config.dialogueOffset.x, config.dialogueOffset.y);
 
         // Portrait.
-        portrait = new SpineActor(config.spineActorConfigs.get("portrait"));
+        portrait = new SpineActor(config.spineActorConfigs.get("portrait"), config.skeletonRenderer);
         portrait.skeleton.setScale(config.dialogueScale, config.dialogueScale);
         portrait.setPosition(config.dialogueOffset.x + 392, config.dialogueOffset.y + 230);
 
