@@ -1,7 +1,6 @@
 package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
@@ -13,6 +12,7 @@ public class Dialogue {
     public SpineActor portrait;
     public int dialogueCurrentLine = 0;
     public String[] dialogueLines = null;
+    private final String endMarker = "{COLOR=#999999}{WAVE=0.05;-1}_{ENDWAVE}";
 
     public Dialogue(Config config) {
         this.config = config;
@@ -53,7 +53,7 @@ public class Dialogue {
             String emote = lineSplit[1];  // TODO: Utilize these two attributes.
             String words = lineSplit[2];
 
-            updateText(words);
+            updateText(words + endMarker);
             dialogueCurrentLine++;
         }
         else if (Gdx.input.justTouched()) {

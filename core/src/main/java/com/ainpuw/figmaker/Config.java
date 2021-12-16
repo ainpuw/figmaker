@@ -41,6 +41,8 @@ public class Config {
     // Actors.
     public SpineActor background;
     public SpineActor character;
+    public SpineActor wormseg;
+    public SpineActor wormhurt;
     public Dialogue dialogueBox;
     public ProgressActor timeTillNext;
     public ProgressActor redProbability;
@@ -76,9 +78,15 @@ public class Config {
                 "idle"));
         put("wormseg", new SpineActorConfig(
                 -1, -1, -1, -1,
-                "wormseg",
-                "spine/wormseg/wormseg.atlas",
-                "spine/wormseg/wormseg.json",
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_seg.json",
+                "idle"));
+        put("wormhurt", new SpineActorConfig(
+                81f, 31.37f, 500, 100,
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_hurt.json",
                 "idle"));
     }};
 
@@ -141,7 +149,7 @@ public class Config {
     // Decide where to add the next segment.
     public WormSegment.BasicImgSegment touchingSeg = null;
 
-    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////w
     // Worm parameters
     ////////////////////////////////////////////////////
 
@@ -293,6 +301,8 @@ public class Config {
         // Initialize actors.
         background = new SpineActor(spineActorConfigs.get("background"));
         character = new SpineActor(spineActorConfigs.get("character"));
+        wormseg = new SpineActor(spineActorConfigs.get("wormseg"));
+        wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"));
         dialogueBox = new Dialogue(this);
         timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
         redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);
