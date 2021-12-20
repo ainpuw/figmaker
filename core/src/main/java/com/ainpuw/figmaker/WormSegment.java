@@ -16,29 +16,11 @@ import com.esotericsoftware.spine.SkeletonJson;
 
 public class WormSegment {
     public Config config;
-    private String name;  // Unique identifier.
     public Array<BasicSegment> basicSegs = new Array<>();
 
-    public WormSegment(Config config, String name, float x, float y) {
+    public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
-        this.name = name;
-
-        // TODO: Need to expand on this.
-        if (name == "seg_balloon") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else if (name == "seg_arm") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else if (name == "seg_pendulum") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else if (name == "seg_fan") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else if (name == "seg_leg") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else if (name == "seg_wing") {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        } else {
-            basicSegs.add(new BasicSegment(x, y, 0, this));
-        }
+        basicSegs.add(new BasicSegment(x, y, angle, this));
     }
 
     public void step() {
@@ -46,9 +28,10 @@ public class WormSegment {
         // Given different segments, different forces should be applied, even periodically.
         // FIXME: Need to put force values into game config.
         for (BasicSegment seg : basicSegs) {
-            if (Math.random() > 0.8)
+            if (Math.random() > 0.5)
                 seg.body.applyLinearImpulse(new Vector2(0, 10000), seg.body.getPosition(), true);
-            seg.body.applyLinearImpulse(new Vector2(0, -5000 * Math.min(1, seg.body.getPosition().y / 500f)), seg.body.getPosition(), true);
+            else
+                seg.body.applyLinearImpulse(new Vector2(0, -10000), seg.body.getPosition(), true);
         }
 
     }
@@ -73,15 +56,13 @@ public class WormSegment {
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.DynamicBody;
             bodyDef.position.set(x, y);  // Body center position.
+            bodyDef.angle = angle * 0.01745f;
             this.body = config.world.createBody(bodyDef);
             // Adjust fixture orientations.
-            angle *= 0.01745f;  // Degrees to radians.
             Vector2 lCenter = new Vector2(-(config.segMidW+ config.segEndW)/2, 0);
             Vector2 rCenter = new Vector2(+(config.segMidW+ config.segEndW)/2, 0);
-            lCenter.rotateRad(angle);
-            rCenter.rotateRad(angle);
-            config.segShapeL.setAsBox(config.segEndW/2, config.segEndH/2, lCenter, angle);
-            config.segShapeR.setAsBox(config.segEndW/2, config.segEndH/2, rCenter, angle);
+            config.segShapeL.setAsBox(config.segEndW/2, config.segEndH/2, lCenter, 0);
+            config.segShapeR.setAsBox(config.segEndW/2, config.segEndH/2, rCenter, 0);
             config.segShapeM.setAsBox(config.segMidW/2, config.segMidH/2, new Vector2(0, 0), 0);
             this.body.createFixture(config.segFixtureDefL);
             this.body.createFixture(config.segFixtureDefR);

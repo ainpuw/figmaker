@@ -8,20 +8,38 @@ public class Level2 extends Scenario {
         super(config);
         if (config.background.getStage() == null) config.stage.addActor(config.background);
         if (config.character.getStage() == null) config.stage.addActor(config.character);
-        // if (config.menu.contents.getStage() == null) config.stage.addActor(config.menu.contents);
-        config.wormSpine = config.wormhurt;
+        config.wormOne = config.wormhurt;
 
         events.add(new Event(config, "intro_dialogue") {
             public void init() {
-                config.dialogueBox.dialogueCurrentLine = 0;
+                config.dialogueBox.reset();
                 config.dialogueBox.dialogueLines =
                         Gdx.files.internal("dialogues/level2_intro.txt").readString().split("\\r?\\n");
                 config.dialogueBox.addToStage();
+
+                // Skip the first frame that has the coordinates of the setup mode.
+                config.wormlvl2.animationState.update(0.1f);
+                config.wormlvl2.animationState.apply(config.wormlvl2.skeleton);
             }
 
             public void step(float deltaTime) {
-                boolean finished = config.dialogueBox.step();
-                if (finished) {
+                String trigger = config.dialogueBox.step();
+                boolean wormAnimationFinished = config.wormlvl2.animationState.getTracks().get(0).isComplete();
+                boolean wormSetupFinished = true;
+
+                if (trigger.equals("1")) {
+                    config.wormOne = config.wormseg;
+                }
+                else if (trigger.equals("2")) {
+                    config.wormOne = null;
+                    config.wormSkeleton = config.wormlvl2;
+                }
+                else if (wormAnimationFinished && config.wormSkeleton != null) {
+                    config.wormSkeleton = null;
+                    config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone());
+                    config.evolveWorld = true;
+                }
+                else if (trigger.equals("done") && wormSetupFinished) {
                     active = false;
                     ended = true;
                     dispose();
@@ -29,7 +47,7 @@ public class Level2 extends Scenario {
             }
 
             public void dispose() {
-                config.wormSpine = null;
+                config.wormOne = null;
                 config.dialogueBox.removeFromStage();
             }
         });

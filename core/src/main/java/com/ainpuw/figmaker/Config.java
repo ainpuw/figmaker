@@ -53,12 +53,16 @@ public class Config {
     public SpineActor character;
     public SpineActor wormseg;
     public SpineActor wormhurt;
+    public SpineActor wormlvl2;
     public Dialogue dialogueBox;
     public ProgressActor timeTillNext;
     public ProgressActor redProbability;
     public Menu menu;
 
-    public SpineActor wormSpine = null;  // For drawing shadows.
+    // Draw the Spine animation of the initial single worm segment.
+    public SpineActor wormOne = null;
+    // Only use the skeleton of the Spine animation.
+    public SpineActor wormSkeleton = null;
 
     public final String skinFile = "skin/uiskin.json";
 
@@ -69,37 +73,43 @@ public class Config {
                 "logo",
                 "spine/logo/logo.atlas",
                 "spine/logo/logo.json",
-                "idle"));
+                "idle", true));
         put("character", new SpineActorConfig(
                 68.16f, 177, 70, 370,
                 "character",
                 "spine/character/character.atlas",
                 "spine/character/character.json",
-                "idle"));
+                "idle", true));
         put("portrait", new SpineActorConfig(
                 210, 304, 630, 560,  // w, h, x and y are useless here.
                 "portrait",
                 "spine/portrait/character_portrait.atlas",
                 "spine/portrait/character_portrait.json",
-                "idle"));
+                "idle", true));
         put("background", new SpineActorConfig(
                 1920, 1080, -480, 850,
                 "background",
                 "spine/background/background.atlas",
                 "spine/background/background.json",
-                "idle"));
+                "idle", true));
         put("wormseg", new SpineActorConfig(
-                -1, -1, -1, -1,
+                -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
                 "spine/worm/worm.atlas",
                 "spine/worm/worm_seg.json",
-                "idle"));
+                "idle", true));
         put("wormhurt", new SpineActorConfig(
                 -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
                 "spine/worm/worm.atlas",
                 "spine/worm/worm_hurt.json",
-                "idle"));
+                "idle", true));
+        put("wormlvl2", new SpineActorConfig(
+                -1, -1, 512, 75, // Here x and y are center positions!
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_level4.json",
+                "grow", false));
     }};
 
     // Dialogue box parameters.
@@ -151,7 +161,7 @@ public class Config {
 
     public Worm worm;
 
-    public final Vector2 gravity = new Vector2(0, -50f);
+    public final Vector2 gravity = new Vector2(0, 0);
     public World world = new World(gravity, true);
     public final float friction = 0.5f;
     public final int velocityIterations = 1;
@@ -167,9 +177,9 @@ public class Config {
 
     // Coordinates for the worm pen.
     public final float penCenterX = 512;
-    public final float penCenterY = 300;
+    public final float penCenterY = 309;
     public final float penW = 990;
-    public final float penH = 475;
+    public final float penH = 495;
     public final float penThickness = 100;
 
     public final float segMidW = 60;
@@ -221,9 +231,10 @@ public class Config {
         public final String atlas;
         public final String skeletonJson;
         public final String defaultAnimation;
+        public final boolean loop;
 
         public SpineActorConfig(float w, float h, float x, float y, String name, String atlas,
-                                String skeletonJson, String defaultAnimation) {
+                                String skeletonJson, String defaultAnimation, boolean loop) {
             this.w = w;
             this.h = h;
             this.x = x;  // What this means depends on the Spine file.
@@ -232,6 +243,7 @@ public class Config {
             this.atlas = atlas;
             this.skeletonJson = skeletonJson;
             this.defaultAnimation = defaultAnimation;
+            this.loop = loop;
         }
     }
 
@@ -320,6 +332,7 @@ public class Config {
         character = new SpineActor(spineActorConfigs.get("character"), skeletonRenderer);
         wormseg = new SpineActor(spineActorConfigs.get("wormseg"), skeletonRenderer);
         wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"), skeletonRenderer);
+        wormlvl2 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
         dialogueBox = new Dialogue(this);
         timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
         redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);

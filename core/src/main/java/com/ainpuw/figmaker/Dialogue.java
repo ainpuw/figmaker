@@ -42,25 +42,28 @@ public class Dialogue {
         portrait.animationState.setAnimation(2, "armeye", true);
     }
 
-    public boolean step() {
-        if (dialogueLines == null) return true;
+    public String step() {
+        if (dialogueLines == null) return "done";
 
         if ((Gdx.input.justTouched() && label.hasEnded()) || label.textEquals("")) {
-            if (dialogueCurrentLine >= dialogueLines.length) return true;
+            if (dialogueCurrentLine >= dialogueLines.length) return "done";
 
             String lineSplit[] = dialogueLines[dialogueCurrentLine].split("###");
-            String currentCharacter = lineSplit[0];  // TODO: Utilize these two attributes.
-            String emote = lineSplit[1];  // TODO: Utilize these two attributes.
-            String words = lineSplit[2];
+            String currentCharacter = lineSplit[0];  // TODO: Utilize this attribute.
+            String emote = lineSplit[1];  // TODO: Utilize this attribute.
+            String trigger = lineSplit[2];
+            String words = lineSplit[3];
 
             updateText(words + endMarker);
             dialogueCurrentLine++;
+
+            return trigger;
         }
         else if (Gdx.input.justTouched()) {
             label.skipToTheEnd();
         }
 
-        return false;
+        return "";
     }
 
     public void addToStage() {
@@ -80,5 +83,9 @@ public class Dialogue {
         label.restart();
         label.setHeight(label.getPrefHeight());
         label.setY(config.dialogueOffset.y + labelConfig.y - label.getHeight());
+    }
+
+    public void reset() {
+        dialogueCurrentLine = 0;
     }
 }

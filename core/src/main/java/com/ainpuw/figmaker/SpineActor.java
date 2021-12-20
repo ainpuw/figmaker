@@ -30,7 +30,7 @@ public class SpineActor extends Actor {
         this.skeleton.setToSetupPose();
         this.skeleton.updateWorldTransform();
         this.animationState = new AnimationState(stateData);
-        this.animationState.setAnimation(0, config.defaultAnimation, true);
+        this.animationState.setAnimation(0, config.defaultAnimation, config.loop);
         this.setName(config.name);
 
         // Spine animation repositioning and resizing.

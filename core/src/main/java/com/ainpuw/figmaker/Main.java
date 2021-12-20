@@ -69,7 +69,7 @@ public class Main extends ApplicationAdapter {
         // Debug
         /////////////////////////////////////////////
 
-        config.debugRenderer.render(config.world, config.stage.getCamera().combined);
+        // config.debugRenderer.render(config.world, config.stage.getCamera().combined);
         // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 

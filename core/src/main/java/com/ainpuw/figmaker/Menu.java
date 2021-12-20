@@ -246,7 +246,7 @@ public class Menu {
                             else
                                 spawnX += config.segMidH;
 
-                            WormSegment newSeg = new WormSegment(config, config.dragAndDrogSourceName, spawnX, spawnY);
+                            WormSegment newSeg = new WormSegment(config, spawnX, spawnY, 0);
                             config.worm.segs.add(newSeg);
                             Worm.joinSegments(newSeg, config.touchingSeg.parent, isLeft, config.worm.repulsivePairs);
 
