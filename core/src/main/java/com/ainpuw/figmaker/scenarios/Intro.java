@@ -6,14 +6,16 @@ import com.badlogic.gdx.Gdx;
 
 public class Intro extends Scenario {
     SpineActor logoActor;
+    SpineActor introActor;
 
     public Intro(Config config) {
         super(config);
         config.stage.clear();
         logoActor = new SpineActor(config.spineActorConfigs.get("logo"), config.skeletonRenderer);
         logoActor.animationState.setAnimation(0, "grow", false);
+        introActor = new SpineActor(config.spineActorConfigs.get("intro"), config.skeletonRenderer);
 
-        events.add(new Event(config, "logo_animation") {
+        events.add(new Event(config, "intro_animation") {
             public void init() {
                 // Skip the first frame that has the coordinates of the setup mode.
                 logoActor.animationState.update(0.01f);
@@ -24,7 +26,13 @@ public class Intro extends Scenario {
             public void step(float deltaTime) {
                 String animationName = logoActor.animationState.getTracks().get(0).toString();
 
-                if (animationName.equals("grow")) {
+                if (introActor.getStage() != null) {
+                    if (Gdx.input.justTouched() ||  introActor.animationState.getTracks().get(0).isComplete()) {
+                        active = false;
+                        ended = true;
+                        dispose();
+                    }
+                } else if (animationName.equals("grow")) {
                     if (Gdx.input.justTouched() ||  logoActor.animationState.getTracks().get(0).isComplete())
                         logoActor.animationState.setAnimation(0, "idle", true);
                 } else if (animationName.equals("idle")) {
@@ -32,15 +40,14 @@ public class Intro extends Scenario {
                         logoActor.animationState.setAnimation(0, "death", false);
                 } else if (animationName.equals("death")) {
                     if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete()) {
-                        active = false;
-                        ended = true;
-                        // TODO: Instead of dispose(), we should add intro here!
-                        dispose();
+                        logoActor.remove();
+                        config.stage.addActor(introActor);
                     }
                 }
             }
             public void dispose() {
                 logoActor.remove();
+                introActor.remove();
             }
         });
     }

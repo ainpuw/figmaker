@@ -74,6 +74,12 @@ public class Config {
                 "spine/logo/logo.atlas",
                 "spine/logo/logo.json",
                 "idle", true));
+        put("intro", new SpineActorConfig(
+                7863.15f, 5222.98f,512, 800,
+                "intro",
+                "spine/intro/intro.atlas",
+                "spine/intro/intro.json",
+                "default", false));
         put("character", new SpineActorConfig(
                 68.16f, 177, 70, 370,
                 "character",
