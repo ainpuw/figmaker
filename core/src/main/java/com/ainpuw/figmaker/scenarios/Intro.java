@@ -27,10 +27,16 @@ public class Intro extends Scenario {
                 String animationName = logoActor.animationState.getTracks().get(0).toString();
 
                 if (introActor.getStage() != null) {
-                    if (Gdx.input.justTouched() ||  introActor.animationState.getTracks().get(0).isComplete()) {
+                    if (Gdx.input.justTouched() || introActor.animationState.getTracks().get(0).isComplete()) {
+                        config.stage.addActor(config.background);
+                        config.stage.addActor(config.character);
+                        introActor.remove();
+                    }
+                } else if (config.background.getStage() != null) {
+                    if (config.background.animationState.getTracks().get(0).isComplete()) {
+                        dispose();
                         active = false;
                         ended = true;
-                        dispose();
                     }
                 } else if (animationName.equals("grow")) {
                     if (Gdx.input.justTouched() ||  logoActor.animationState.getTracks().get(0).isComplete())
@@ -46,6 +52,8 @@ public class Intro extends Scenario {
                 }
             }
             public void dispose() {
+                config.character.animationState.setAnimation(0, "idle", true);
+                config.background.animationState.setAnimation(0, "idle", true);
                 logoActor.remove();
                 introActor.remove();
             }

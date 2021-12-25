@@ -1,0 +1,5 @@
+scientist###idle###0###I see.
+scientist###idle###0###Hopefully {COLOR=#d69267}specimen two{CLEARCOLOR} produces some results.
+scientist###idle###0###Lifting the restraint...
+scientist###idle###1###What will you become?
+scientist###idle###2###Wings?

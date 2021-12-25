@@ -75,7 +75,7 @@ public class Config {
                 "spine/logo/logo.json",
                 "idle", true));
         put("intro", new SpineActorConfig(
-                7863.15f, 5222.98f,512, 800,
+                14644.26f, 3128.68f,512, 800,
                 "intro",
                 "spine/intro/intro.atlas",
                 "spine/intro/intro.json",
@@ -85,7 +85,7 @@ public class Config {
                 "character",
                 "spine/character/character.atlas",
                 "spine/character/character.json",
-                "idle", true));
+                "intro", false));
         put("portrait", new SpineActorConfig(
                 210, 304, 630, 560,  // w, h, x and y are useless here.
                 "portrait",
@@ -97,7 +97,7 @@ public class Config {
                 "background",
                 "spine/background/background.atlas",
                 "spine/background/background.json",
-                "idle", true));
+                "intro", false));
         put("wormseg", new SpineActorConfig(
                 -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
