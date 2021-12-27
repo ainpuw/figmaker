@@ -1,0 +1,2 @@
+scientist###idle###0###Finally here,{WAIT} {COLOR=#c4e0a6}the peninsula{CLEARCOLOR}.
+scientist###idle###0###Nothing seems to have changed since {COLOR=#e0b6a6}Sanara{CLEARCOLOR} moved out of the site.

@@ -33,7 +33,7 @@ public class Intro extends Scenario {
                         introActor.remove();
                     }
                 } else if (config.background.getStage() != null) {
-                    if (config.background.animationState.getTracks().get(0).isComplete()) {
+                    if (Gdx.input.justTouched() || config.background.animationState.getTracks().get(0).isComplete()) {
                         dispose();
                         active = false;
                         ended = true;

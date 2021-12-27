@@ -14,7 +14,7 @@ public class Level2 extends Scenario {
             public void init() {
                 config.dialogueBox.reset();
                 config.dialogueBox.dialogueLines =
-                        Gdx.files.internal("dialogues/level2_intro.txt").readString().split("\\r?\\n");
+                        Gdx.files.internal("dialogues/level1_intro.txt").readString().split("\\r?\\n");
                 config.dialogueBox.addToStage();
 
                 // Skip the first frame that has the coordinates of the setup mode.
