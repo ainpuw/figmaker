@@ -1,2 +1,8 @@
-scientist###idle###0###Finally here,{WAIT} {COLOR=#c4e0a6}the peninsula{CLEARCOLOR}.
-scientist###idle###0###Nothing seems to have changed since {COLOR=#e0b6a6}Sanara{CLEARCOLOR} moved out of the site.
+scientist###idle###0###"Day 1"
+scientist###idle###0###"Arrived at {COLOR=#c4e0a6}the forest{CLEARCOLOR}."
+scientist###idle###0###"Located the cave entrance.{WAIT} Ready to head down to the site tomorrow."
+scientist###idle###0###...
+scientist###idle###0###Everything is going according to plan.{WAIT} Found {COLOR=#000000}the obsidian{CLEARCOLOR} faster than I expected.
+scientist###idle###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.
+scientist###idle###0###With this obsidian fragment, I should be able to control the growth of these specimens.
+scientist###idle###0###
