@@ -38,7 +38,7 @@ public class Dialogue {
         portrait.setPosition(config.dialogueOffset.x + 392, config.dialogueOffset.y + 230);
 
         // Default animation.
-        portrait.animationState.setAnimation(1, "blink", true);
+        portrait.animationState.setAnimation(1, "normal", true);
         portrait.animationState.setAnimation(2, "armeye", true);
     }
 
@@ -55,6 +55,7 @@ public class Dialogue {
             String words = lineSplit[3];
 
             updateText(words + endMarker);
+            portrait.animationState.setAnimation(1, emote, true);
             dialogueCurrentLine++;
 
             return trigger;

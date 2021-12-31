@@ -1,8 +1,9 @@
-scientist###idle###0###"Day 1"
-scientist###idle###0###"Arrived at {COLOR=#c4e0a6}the forest{CLEARCOLOR}."
-scientist###idle###0###"Located the cave entrance.{WAIT} Ready to head down to the site tomorrow."
-scientist###idle###0###...
-scientist###idle###0###Everything is going according to plan.{WAIT} Found {COLOR=#000000}the obsidian{CLEARCOLOR} faster than I expected.
-scientist###idle###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.
-scientist###idle###0###With this obsidian fragment, I should be able to control the growth of these specimens.
-scientist###idle###0###
+scientist###normal###0###{COLOR=#feffcc}"Day 1"{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Arrived at the peninsula."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Located the cave entrance.{WAIT} Ready to head down to the site tomorrow."{CLEARCOLOR}
+scientist###normal###0###...
+scientist###normal###0###Everything is going according to plan.{WAIT} Found {COLOR=#000000}the obsidian{CLEARCOLOR} faster than I expected.
+scientist###normal###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.
+scientist###serious###0###But still,{WAIT} I gotta hurry.
+scientist###serious###0###...
+scientist###normal###0###Specimen one...{WAIT} it's weak and dying. Perfect candidate to test out my spectrometer.
