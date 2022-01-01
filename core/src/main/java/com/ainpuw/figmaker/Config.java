@@ -31,7 +31,8 @@ public class Config {
     public final float screenG = 255/255f;
     public final float screenB = 240/255f;
     public final float screenA = 1f;
-    public Stage stage = new Stage(new ExtendViewport(w, h));
+    public Stage stageBack = new Stage(new ExtendViewport(w, h));
+    public Stage stageFront = new Stage(new ExtendViewport(w, h));
     public Skin skin;
     public DragAndDrop toolboxDragAndDrop;
     // At most update at 30 FPS.
@@ -53,7 +54,11 @@ public class Config {
     public SpineActor character;
     public SpineActor wormseg;
     public SpineActor wormhurt;
+    public SpineActor wormlvl1;
     public SpineActor wormlvl2;
+    public SpineActor wormlvl3;
+    public SpineActor wormlvl4;
+    public SpineActor wormlvl5;
     public Dialogue dialogueBox;
     public ProgressActor timeTillNext;
     public ProgressActor redProbability;
@@ -110,6 +115,12 @@ public class Config {
                 "spine/worm/worm.atlas",
                 "spine/worm/worm_hurt.json",
                 "idle", true));
+        put("wormlvl1", new SpineActorConfig(
+                -1, -1, 512, 75, // Here x and y are center positions!
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_level1.json",
+                "grow", false));
         put("wormlvl2", new SpineActorConfig(
                 -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
@@ -322,8 +333,9 @@ public class Config {
         skeletonRenderer = new SkeletonRenderer();
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
 
-        stage.getCamera().position.set(w/2, h/2, 0);
-        Gdx.input.setInputProcessor(stage);
+        stageBack.getCamera().position.set(w/2, h/2, 0);
+        stageFront.getCamera().position.set(w/2, h/2, 0);
+        Gdx.input.setInputProcessor(stageFront);
         skin = new Skin(Gdx.files.internal(skinFile));
         skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         skin.getFont("default-font").getData().markupEnabled = true;
@@ -338,7 +350,11 @@ public class Config {
         character = new SpineActor(spineActorConfigs.get("character"), skeletonRenderer);
         wormseg = new SpineActor(spineActorConfigs.get("wormseg"), skeletonRenderer);
         wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"), skeletonRenderer);
+        wormlvl1 = new SpineActor(spineActorConfigs.get("wormlvl1"), skeletonRenderer);
         wormlvl2 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
+        wormlvl3 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
+        wormlvl4 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
+        wormlvl5 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
         dialogueBox = new Dialogue(this);
         timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
         redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);
@@ -365,7 +381,8 @@ public class Config {
     }
 
     public void dispose() {
-        stage.dispose();
+        stageBack.dispose();
+        stageFront.dispose();
         skin.dispose();
         dialogueBackgroundTexture.dispose();
         menuBackgroundTexture.dispose();

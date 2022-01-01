@@ -8,8 +8,8 @@ public class Level2 extends Scenario {
         super(config);
         config.character.animationState.setAnimation(0, "idle", true);
         config.background.animationState.setAnimation(0, "idle", true);
-        if (config.background.getStage() == null) config.stage.addActor(config.background);
-        if (config.character.getStage() == null) config.stage.addActor(config.character);
+        if (config.background.getStage() == null) config.stageBack.addActor(config.background);
+        if (config.character.getStage() == null) config.stageBack.addActor(config.character);
         config.wormOne = config.wormhurt;
 
         events.add(new Event(config, "intro_dialogue") {

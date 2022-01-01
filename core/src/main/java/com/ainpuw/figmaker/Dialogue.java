@@ -68,9 +68,9 @@ public class Dialogue {
     }
 
     public void addToStage() {
-        config.stage.addActor(background);
-        config.stage.addActor(portrait);
-        config.stage.addActor(label);
+        config.stageFront.addActor(background);
+        config.stageFront.addActor(portrait);
+        config.stageFront.addActor(label);
     }
 
     public void removeFromStage() {

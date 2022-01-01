@@ -16,7 +16,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create () {
         config = new Config();
-        scenario = new Level1(config);
+        scenario = new Intro(config);
     }
 
     @Override
@@ -48,12 +48,11 @@ public class Main extends ApplicationAdapter {
         /////////////////////////////////////////////
 
         config.amanager.update(deltaTime);  // FIXME: We shouldn't always run this.
-        config.menu.ready(false);
-        config.stage.act(Math.min(deltaTime, config.maxStageUpdateDelta));
-        config.stage.getViewport().apply();
-        config.spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
-        config.shapeRenderer.setProjectionMatrix(config.stage.getCamera().combined);
-        config.stage.draw();
+        config.stageBack.act(Math.min(deltaTime, config.maxStageUpdateDelta));
+        config.stageBack.getViewport().apply();
+        config.spriteBatch.setProjectionMatrix(config.stageBack.getCamera().combined);
+        config.shapeRenderer.setProjectionMatrix(config.stageBack.getCamera().combined);
+        config.stageBack.draw();
 
         /////////////////////////////////////////////
         // Box2D
@@ -67,6 +66,15 @@ public class Main extends ApplicationAdapter {
         Worm.drawWorm(deltaTime, config);
 
         /////////////////////////////////////////////
+        // Scene2D cont.
+        /////////////////////////////////////////////
+
+        config.menu.ready(false);
+        config.stageFront.act(Math.min(deltaTime, config.maxStageUpdateDelta));
+        config.stageFront.getViewport().apply();
+        config.stageFront.draw();
+
+        /////////////////////////////////////////////
         // Debug
         /////////////////////////////////////////////
 
@@ -77,14 +85,18 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize (int width, int height) {
         // It is very important to set centerCamera to "false" for ExtendViewport.
-        config.stage.getViewport().update(width, height, false);
+        config.stageBack.getViewport().update(width, height, false);
+        config.stageFront.getViewport().update(width, height, false);
 
         // Stick the menu to the right always.
-        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stage.getWidth() - config.w) / 2);
+        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stageBack.getWidth() - config.w) / 2);
+        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stageFront.getWidth() - config.w) / 2);
         for (Menu.ToolActor tool : config.menu.segTools) tool.alignDisplayAndDrag();
 
         // Update worm textures.
-        config.spriteBatch.setProjectionMatrix(config.stage.getCamera().combined);
+        config.spriteBatch.setProjectionMatrix(config.stageBack.getCamera().combined);
+        config.spriteBatch.setProjectionMatrix(config.stageFront.getCamera().combined);
+
     }
 
     @Override

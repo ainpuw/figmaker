@@ -119,8 +119,8 @@ public class WormSegment {
             rightEnd.setRotation(angle * 57.2958f);
 
             // Add the actors to stage.
-            config.stage.addActor(leftEnd);
-            config.stage.addActor(rightEnd);
+            config.stageBack.addActor(leftEnd);
+            config.stageBack.addActor(rightEnd);
 
             // FIXME: For debug, show Scene2D debug bounding boxes.
             leftEnd.debug();

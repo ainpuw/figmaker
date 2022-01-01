@@ -151,7 +151,7 @@ public class Menu {
                     contents.addActor(tabWorm);
                     for (ToolActor tool : segTools)  {
                         // Add to stage directly to avoid dealing with local vs. stage coordinates.
-                        config.stage.addActor(tool);
+                        config.stageBack.addActor(tool);
                     }
                     tabTagWorm.toFront();
                     tabTagWorm.setScale(config.tabTagScaleLarge);

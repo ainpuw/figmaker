@@ -10,7 +10,7 @@ public class Intro extends Scenario {
 
     public Intro(Config config) {
         super(config);
-        config.stage.clear();
+        config.stageBack.clear();
         logoActor = new SpineActor(config.spineActorConfigs.get("logo"), config.skeletonRenderer);
         logoActor.animationState.setAnimation(0, "grow", false);
         introActor = new SpineActor(config.spineActorConfigs.get("intro"), config.skeletonRenderer);
@@ -21,15 +21,15 @@ public class Intro extends Scenario {
                 logoActor.animationState.update(0.01f);
                 logoActor.animationState.apply(logoActor.skeleton);
 
-                config.stage.addActor(logoActor);
+                config.stageBack.addActor(logoActor);
             }
             public void step(float deltaTime) {
                 String animationName = logoActor.animationState.getTracks().get(0).toString();
 
                 if (introActor.getStage() != null) {
                     if (Gdx.input.justTouched() || introActor.animationState.getTracks().get(0).isComplete()) {
-                        config.stage.addActor(config.background);
-                        config.stage.addActor(config.character);
+                        config.stageBack.addActor(config.background);
+                        config.stageBack.addActor(config.character);
                         introActor.remove();
                     }
                 } else if (config.background.getStage() != null) {
@@ -47,7 +47,7 @@ public class Intro extends Scenario {
                 } else if (animationName.equals("death")) {
                     if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete()) {
                         logoActor.remove();
-                        config.stage.addActor(introActor);
+                        config.stageBack.addActor(introActor);
                     }
                 }
             }
