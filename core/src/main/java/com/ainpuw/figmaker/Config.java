@@ -58,8 +58,6 @@ public class Config {
     public SpineActor wormlvl4;
     public SpineActor wormlvl5;
     public Dialogue dialogueBox;
-    public ProgressActor timeTillNext;
-    public ProgressActor redProbability;
 
     // Draw the Spine animation of the initial single worm segment.
     public SpineActor wormOne = null;
@@ -134,18 +132,6 @@ public class Config {
     public final Texture dialogueBackgroundTexture = new Texture("texture/dialogue_background.png");
     public final Vector2 dialogueOffset = new Vector2(210, 330);
     public final float dialogueScale = 0.8f;
-
-    // Progress bar parameters.
-    public final HashMap<String, ProgressConfig> progressActorConfigs = new HashMap<String, ProgressConfig>() {{
-        put("timeTillNext", new ProgressConfig(
-                100, 10, 800, 200, "timeTillNext",
-                0, 100, 1, false,
-                0));
-        put("redProbability", new ProgressConfig(
-                100, 10, 800, 150, "redProbability",
-                0, 100, 1, false,
-                0));
-    }};
 
     ////////////////////////////////////////////////////
     // General Box2D parameters
@@ -245,34 +231,6 @@ public class Config {
         }
     }
 
-    public class ProgressConfig {
-        public final float w;
-        public final float h;
-        public final float x;
-        public final float y;
-        public final String name;
-        public final float min;
-        public final float max;
-        public final float stepSize;
-        public final boolean vertical;
-        public final float startValue;
-
-        public ProgressConfig(float w, float h, float x, float y, String name,
-                              float min, float max, float stepSize, boolean vertical,
-                              float startValue) {
-            this.w = w;  // May remove.
-            this.h = h;  // May remove.
-            this.x = x;
-            this.y = y;
-            this.name = name;
-            this.min = min;
-            this.max = max;
-            this.stepSize = stepSize;
-            this.vertical = vertical;
-            this.startValue = startValue;
-        }
-    }
-
     ////////////////////////////////////////////////////
     // Class functions
     ////////////////////////////////////////////////////
@@ -302,8 +260,6 @@ public class Config {
         wormlvl4 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
         wormlvl5 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
         dialogueBox = new Dialogue(this);
-        timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
-        redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);
         amanager = new AnimationManager(character);
 
         // Initialize assets to be reused when generating worm segments.
