@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Level1 extends Scenario {
     SpineActor wormlvl;
+    boolean playReady = false;
     boolean wormAnimationFinished = false;
 
     public Level1(Config config) {
@@ -20,7 +21,7 @@ public class Level1 extends Scenario {
             public void init() {
                 config.dialogueBox.reset();
                 config.dialogueBox.dialogueLines =
-                        Gdx.files.internal("dialogues/level1_intro.txt").readString().split("\\r?\\n");
+                        Gdx.files.internal("dialogue/level1_intro.txt").readString().split("\\r?\\n");
                 config.dialogueBox.addToStage();
 
                 // Skip the first frame that has the coordinates of the setup mode.
@@ -43,13 +44,16 @@ public class Level1 extends Scenario {
                     config.wormOne = null;
                     config.wormSkeleton = wormlvl;
                 }
+                if (trigger.equals("4")) {
+                    playReady = true;
+                }
                 if (wormAnimationFinished && config.wormSkeleton != null) {
                     if (!wormlvl.animationState.getTracks().get(0).getAnimation().getName().equals("idle")) {
                         wormlvl.animationState.setAnimation(0, "idle", true);
                     }
-                    if (trigger.equals("4")) {
+                    if (playReady) {
                         config.wormSkeleton = null;
-                        config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
+                        config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone(), null);
                         config.evolveWorld = true;
                     }
                 }

@@ -69,7 +69,6 @@ public class Main extends ApplicationAdapter {
         // Scene2D cont.
         /////////////////////////////////////////////
 
-        config.menu.ready(false);
         config.stageFront.act(Math.min(deltaTime, config.maxStageUpdateDelta));
         config.stageFront.getViewport().apply();
         config.stageFront.draw();
@@ -87,11 +86,6 @@ public class Main extends ApplicationAdapter {
         // It is very important to set centerCamera to "false" for ExtendViewport.
         config.stageBack.getViewport().update(width, height, false);
         config.stageFront.getViewport().update(width, height, false);
-
-        // Stick the menu to the right always.
-        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stageBack.getWidth() - config.w) / 2);
-        config.menu.contents.setX(config.menuPosX + Math.max(0, config.stageFront.getWidth() - config.w) / 2);
-        for (Menu.ToolActor tool : config.menu.segTools) tool.alignDisplayAndDrag();
 
         // Update worm textures.
         config.spriteBatch.setProjectionMatrix(config.stageBack.getCamera().combined);

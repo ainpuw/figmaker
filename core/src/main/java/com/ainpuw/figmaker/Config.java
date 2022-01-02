@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.esotericsoftware.spine.SkeletonRenderer;
 
@@ -34,7 +33,6 @@ public class Config {
     public Stage stageBack = new Stage(new ExtendViewport(w, h));
     public Stage stageFront = new Stage(new ExtendViewport(w, h));
     public Skin skin;
-    public DragAndDrop toolboxDragAndDrop;
     // At most update at 30 FPS.
     public final float maxStageUpdateDelta = 1 / 30f;
     public AnimationManager amanager = null;
@@ -62,14 +60,11 @@ public class Config {
     public Dialogue dialogueBox;
     public ProgressActor timeTillNext;
     public ProgressActor redProbability;
-    public Menu menu;
 
     // Draw the Spine animation of the initial single worm segment.
     public SpineActor wormOne = null;
     // Only use the skeleton of the Spine animation.
     public SpineActor wormSkeleton = null;
-
-    public final String skinFile = "skin/uiskin.json";
 
     // Spine animation parameters.
     public final HashMap<String, SpineActorConfig> spineActorConfigs = new HashMap<String, SpineActorConfig>() {{
@@ -136,7 +131,7 @@ public class Config {
                 "dialogue",
                 0));
     }};
-    public final Texture dialogueBackgroundTexture = new Texture("dialogue_background.png");
+    public final Texture dialogueBackgroundTexture = new Texture("texture/dialogue_background.png");
     public final Vector2 dialogueOffset = new Vector2(210, 330);
     public final float dialogueScale = 0.8f;
 
@@ -152,26 +147,6 @@ public class Config {
                 0));
     }};
 
-    // Menu parameters.
-    public final float menuPosX = 798;
-    public final float menuPosY = 520;
-    public final float toolboxX = 32;
-    public final float toolboxY = -470;
-    public final float toolboxW = 170;
-    public final float toolboxH = 300;
-    public final float toolboxSpacing = 1;
-    public final float dragActorPositionX = -20;
-    public final float dragActorPositionY = 20;
-    public final float dragAndDropTouchOffsetX = -60;
-    public final float dragAndDropTouchOffsetY = 60;
-    public String dragAndDrogSourceName = "";
-    public final float tabTagScaleSmall = 0.7f;
-    public final float tabTagScaleLarge = 0.8f;
-    public final Texture menuBackgroundTexture = new Texture("tab_background.png");
-    public final Texture menuTabTagWormTexture = new Texture("tab_worm.png");
-    public final Texture menuTabTagStatTexture = new Texture("tab_stat.png");
-    public final Texture menuTabTagUnknownTexture = new Texture("tab_unknown.png");
-
     ////////////////////////////////////////////////////
     // General Box2D parameters
     ////////////////////////////////////////////////////
@@ -186,7 +161,6 @@ public class Config {
     // Used to freeze the world when needed.
     public boolean evolveWorld = false;
     // Decide where to add the next segment.
-    public WormSegment.BasicImgSegment touchingSeg = null;
 
     ////////////////////////////////////////////////////w
     // Worm parameters
@@ -218,20 +192,8 @@ public class Config {
     public final Texture shadowTexture;
     public final TextureRegion[][] segTextureRegions;
     public final TextureRegion[][] shadowTextureRegions;
-    public final Texture segIndicatorLeftTexture;
-    public final Texture segIndicatorRightTexture;
     public final Vector2 segShadowYRange = new Vector2(62, 212);
     public final Vector2 segShadowYRangeRef = new Vector2(62, 576);  // Assumed body Y range.
-
-    public final HashMap<Integer, WormSegConfig> wormSegConfigs = new HashMap<Integer, WormSegConfig>() {{
-        put(0, new WormSegConfig("seg_balloon"));
-        put(1, new WormSegConfig("seg_arm"));
-        put(2, new WormSegConfig("seg_pendulum"));
-        put(3, new WormSegConfig("seg_fan"));
-        put(4, new WormSegConfig("seg_leg"));
-        put(5, new WormSegConfig("seg_wing"));
-    }};
-
     public final float adjacentRepulsiveForceCutoff = 60;
     public final float adjacentRepulsiveForceFactor = 10000000;
 
@@ -311,18 +273,6 @@ public class Config {
         }
     }
 
-    class WormSegConfig {
-        final String name;
-        final String imgPath;
-        final Texture texture;
-
-        public WormSegConfig(String name) {
-            this.name = name;
-            this.imgPath = "worm/" + name + ".png";
-            this.texture = new Texture(this.imgPath);
-        }
-    }
-
     ////////////////////////////////////////////////////
     // Class functions
     ////////////////////////////////////////////////////
@@ -336,14 +286,10 @@ public class Config {
         stageBack.getCamera().position.set(w/2, h/2, 0);
         stageFront.getCamera().position.set(w/2, h/2, 0);
         Gdx.input.setInputProcessor(stageFront);
-        skin = new Skin(Gdx.files.internal(skinFile));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         skin.getFont("default-font").getData().markupEnabled = true;
         skin.getFont("default-font").getData().setScale(scale);
-        toolboxDragAndDrop = new DragAndDrop();
-        // Drag and drop offsets for touch screen inputs.
-        toolboxDragAndDrop.setDragActorPosition(dragActorPositionX, dragActorPositionY);
-        toolboxDragAndDrop.setTouchOffset(dragAndDropTouchOffsetX, dragAndDropTouchOffsetY);
 
         // Initialize actors.
         background = new SpineActor(spineActorConfigs.get("background"), skeletonRenderer);
@@ -358,7 +304,6 @@ public class Config {
         dialogueBox = new Dialogue(this);
         timeTillNext = new ProgressActor(progressActorConfigs.get("timeTillNext"), skin);
         redProbability = new ProgressActor(progressActorConfigs.get("redProbability"), skin);
-        menu = new Menu(this);
         amanager = new AnimationManager(character);
 
         // Initialize assets to be reused when generating worm segments.
@@ -371,12 +316,10 @@ public class Config {
         segFixtureDefR.density = segDensity;
         segFixtureDefM.shape = segShapeM;
         segFixtureDefM.density = segDensity;
-        segTexture = new Texture(Gdx.files.internal("worm/seg_balloon.png"));  // FIXME: Debug.
+        segTexture = new Texture(Gdx.files.internal("texture/wormseg.png"));
         segTextureRegions = TextureRegion.split(segTexture, segTexture.getWidth(), segTexture.getHeight());
-        shadowTexture = new Texture(Gdx.files.internal("worm/shadow.png"));  // FIXME: Debug.
+        shadowTexture = new Texture(Gdx.files.internal("texture/shadow.png"));
         shadowTextureRegions = TextureRegion.split(shadowTexture, shadowTexture.getWidth(), shadowTexture.getHeight());
-        segIndicatorLeftTexture = new Texture(Gdx.files.internal("worm/indicator_left.png"));
-        segIndicatorRightTexture = new Texture(Gdx.files.internal("worm/indicator_right.png"));
         worm = new Worm(this);
     }
 
@@ -385,10 +328,6 @@ public class Config {
         stageFront.dispose();
         skin.dispose();
         dialogueBackgroundTexture.dispose();
-        menuBackgroundTexture.dispose();
-        menuTabTagWormTexture.dispose();
-        menuTabTagStatTexture.dispose();
-        menuTabTagUnknownTexture.dispose();
 
         world.dispose();
         segShapeL.dispose();
@@ -396,12 +335,6 @@ public class Config {
         segShapeM.dispose();
         segTexture.dispose();
         shadowTexture.dispose();
-        segIndicatorLeftTexture.dispose();
-        segIndicatorRightTexture.dispose();
-
-        for (int i = 0; i < wormSegConfigs.size(); i++) {
-            wormSegConfigs.get(i).texture.dispose();
-        }
     }
 }
 

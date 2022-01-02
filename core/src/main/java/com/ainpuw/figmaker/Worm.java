@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Bone;
 
@@ -22,10 +21,11 @@ public class Worm {
         createPen();
     }
 
-    public void createBox2dWorm(Bone bone) {
+    public void createBox2dWorm(Bone bone, WormSegment parent) {
         for (Bone childBone : bone.getChildren()) {
-            segs.add(new WormSegment(config, childBone.getWorldX(), childBone.getWorldY(), childBone.getWorldRotationX()));
-            createBox2dWorm(childBone);
+            WormSegment newWormSegment = new WormSegment(config, childBone.getWorldX(), childBone.getWorldY(), childBone.getWorldRotationX());
+            segs.add(newWormSegment);
+            createBox2dWorm(childBone, newWormSegment);
         }
     }
 
@@ -92,52 +92,6 @@ public class Worm {
             Vector2 two2one = new Vector2(-one2two.x, -one2two.y);
             body1.applyLinearImpulse(two2one, body1.getPosition(), true);
             body2.applyLinearImpulse(one2two, body2.getPosition(), true);
-        }
-    }
-
-    public static void joinSegments(WormSegment newSeg, WormSegment.BasicSegment joinSeg,
-                                    boolean isLeft, Array<Body> repulsivePairs) {
-        // FIXME: We now always use the first element in the basicSegs list.
-        Body bodyNew = newSeg.basicSegs.get(0).body;
-        Body bodyOld = joinSeg.body;
-
-        DistanceJointDef distanceJointDef = new DistanceJointDef();
-        distanceJointDef.collideConnected = newSeg.config.collideConnected;
-        distanceJointDef.length = newSeg.config.jointLen;
-        distanceJointDef.bodyA = bodyNew;
-        distanceJointDef.bodyB = bodyOld;
-        distanceJointDef.frequencyHz = 1f;  // Spring strength - higher the stronger.
-        distanceJointDef.dampingRatio = 1;  // How bouncy - 1 is stiff.
-        // Add top joint.
-        if (isLeft) {
-            // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, newSeg.config.segMidH / 2);
-            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, newSeg.config.segMidH / 2);
-        } else {
-            // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, newSeg.config.segMidH / 2);
-            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, newSeg.config.segMidH / 2);
-        }
-        newSeg.config.world.createJoint(distanceJointDef);
-        // Add bottom joint.
-        if (isLeft) {
-            // Join right side of newSeg to the left side of joinSeg.
-            distanceJointDef.localAnchorA.set(newSeg.config.joinPos, -newSeg.config.segMidH / 2);
-            distanceJointDef.localAnchorB.set(-newSeg.config.joinPos, -newSeg.config.segMidH / 2);
-        } else {
-            // Join left side of newSeg to the right side of joinSeg.
-            distanceJointDef.localAnchorA.set(-newSeg.config.joinPos, -newSeg.config.segMidH / 2);
-            distanceJointDef.localAnchorB.set(newSeg.config.joinPos, -newSeg.config.segMidH / 2);
-        }
-        newSeg.config.world.createJoint(distanceJointDef);
-
-        // Adjacent segments are repulsive to each other. This gives the worm a stiffer feel.
-        if (isLeft) {
-            repulsivePairs.add(bodyNew);
-            repulsivePairs.add(bodyOld);
-        } else {
-            repulsivePairs.add(bodyOld);
-            repulsivePairs.add(bodyNew);
         }
     }
 
@@ -287,34 +241,33 @@ public class Worm {
         // Draw shadow.
         config.spriteBatch.begin();
         for (WormSegment seg : config.worm.segs) {
-            for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
-                // Basic segment angle.
-                float angle = basicSeg.body.getAngle() * 57.2958f;
-                if (angle > 180) angle -= 180;
-                // Center and actual width.
-                Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
-                Vector2 segW = new Vector2(config.segTexture.getWidth(), 0);
-                segW.rotateDeg(angle);
-                // Calculate shadow relative Y percent position.
-                float shadowYPercent = (ctrPos.y - config.segShadowYRangeRef.x) / (config.segShadowYRangeRef.y - config.segShadowYRangeRef.x);
-                shadowYPercent = Math.min(shadowYPercent, 1);
-                shadowYPercent = Math.max(shadowYPercent, 0);
-                // Calculate shadow size.
-                float shadowW = Math.abs(segW.x) * (1 - shadowYPercent);
-                float shadowH = config.shadowTextureRegions[0][0].getRegionHeight() * (1 - shadowYPercent);
-                shadowW = Math.max(20, shadowW);
-                shadowH = Math.max(6.67f, shadowH);
-                // Calculate shadow center position.
-                float shadowX = ctrPos.x - shadowW / 2;
-                float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH / 2;
+            // Segment angle.
+            float angle = seg.body.getAngle() * 57.2958f;
+            if (angle > 180) angle -= 180;
+            // Center and actual width.
+            Vector2 ctrPos = new Vector2(seg.body.getPosition().x, seg.body.getPosition().y);
+            Vector2 segW = new Vector2(config.segTexture.getWidth(), 0);
+            segW.rotateDeg(angle);
+            // Calculate shadow relative Y percent position.
+            float shadowYPercent = (ctrPos.y - config.segShadowYRangeRef.x) / (config.segShadowYRangeRef.y - config.segShadowYRangeRef.x);
+            shadowYPercent = Math.min(shadowYPercent, 1);
+            shadowYPercent = Math.max(shadowYPercent, 0);
+            // Calculate shadow size.
+            float shadowW = Math.abs(segW.x) * (1 - shadowYPercent);
+            float shadowH = config.shadowTextureRegions[0][0].getRegionHeight() * (1 - shadowYPercent);
+            shadowW = Math.max(20, shadowW);
+            shadowH = Math.max(6.67f, shadowH);
+            // Calculate shadow center position.
+            float shadowX = ctrPos.x - shadowW / 2;
+            float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH / 2;
 
-                config.spriteBatch.draw(config.shadowTextureRegions[0][0],
-                        shadowX, shadowY,
-                        0, 0,
-                        shadowW, shadowH,
-                        1, 1,
-                        0);
-            }
+            config.spriteBatch.draw(config.shadowTextureRegions[0][0],
+                    shadowX, shadowY,
+                    0, 0,
+                    shadowW, shadowH,
+                    1, 1,
+                    0);
+
         }
         config.spriteBatch.end();
 
@@ -344,17 +297,15 @@ public class Worm {
         // Draw segments.
         config.spriteBatch.begin();
         for (WormSegment seg : config.worm.segs) {
-            for (WormSegment.BasicSegment basicSeg : seg.basicSegs) {
-                float angle = basicSeg.body.getAngle() * 57.2958f;
-                Vector2 ctrPos = new Vector2(basicSeg.body.getPosition().x, basicSeg.body.getPosition().y);
-                basicSeg.skeleton.getRootBone().setX(ctrPos.x);
-                basicSeg.skeleton.getRootBone().setY(ctrPos.y);
-                basicSeg.skeleton.getRootBone().setRotation(angle);
-                basicSeg.skeleton.updateWorldTransform();
-                basicSeg.animationState.update(delta);
-                basicSeg.animationState.apply(basicSeg.skeleton);
-                config.skeletonRenderer.draw(config.spriteBatch, basicSeg.skeleton);
-            }
+            float angle = seg.body.getAngle() * 57.2958f;
+            Vector2 ctrPos = new Vector2(seg.body.getPosition().x, seg.body.getPosition().y);
+            seg.skeleton.getRootBone().setX(ctrPos.x);
+            seg.skeleton.getRootBone().setY(ctrPos.y);
+            seg.skeleton.getRootBone().setRotation(angle);
+            seg.skeleton.updateWorldTransform();
+            seg.animationState.update(delta);
+            seg.animationState.apply(seg.skeleton);
+            config.skeletonRenderer.draw(config.spriteBatch, seg.skeleton);
         }
         config.spriteBatch.end();
     }

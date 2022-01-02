@@ -16,7 +16,7 @@ public class Level2 extends Scenario {
             public void init() {
                 config.dialogueBox.reset();
                 config.dialogueBox.dialogueLines =
-                        Gdx.files.internal("dialogues/level1_intro.txt").readString().split("\\r?\\n");
+                        Gdx.files.internal("dialogue/level1_intro.txt").readString().split("\\r?\\n");
                 config.dialogueBox.addToStage();
 
                 // Skip the first frame that has the coordinates of the setup mode.
@@ -38,7 +38,7 @@ public class Level2 extends Scenario {
                 }
                 else if (wormAnimationFinished && config.wormSkeleton != null) {
                     config.wormSkeleton = null;
-                    config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone());
+                    config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone(), null);
                     config.evolveWorld = true;
                 }
                 else if (trigger.equals("done") && wormSetupFinished) {
