@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 public class Level1 extends Scenario {
     SpineActor wormlvl;
     boolean playReady = false;
-    boolean wormAnimationFinished = false;
+    boolean growAnimationFinished = false;
 
     public Level1(Config config) {
         super(config);
@@ -31,7 +31,7 @@ public class Level1 extends Scenario {
 
             public void step(float deltaTime) {
                 String trigger = config.dialogueBox.step();
-                wormAnimationFinished = wormAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
+                growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
                 boolean wormSetupFinished = true;
 
                 if (trigger.equals("1")) {
@@ -47,11 +47,12 @@ public class Level1 extends Scenario {
                 if (trigger.equals("4")) {
                     playReady = true;
                 }
-                if (wormAnimationFinished && config.wormSkeleton != null) {
+                if (growAnimationFinished && config.wormSkeleton != null) {
                     if (!wormlvl.animationState.getTracks().get(0).getAnimation().getName().equals("idle")) {
                         wormlvl.animationState.setAnimation(0, "idle", true);
                     }
-                    if (playReady) {
+                    // FIXME: getAnimationTime() > 2 maybe buggy.
+                    else if (wormlvl.animationState.getTracks().get(0).getAnimationTime() > 2 && playReady) {
                         config.wormSkeleton = null;
                         config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone(), null);
                         config.evolveWorld = true;

@@ -16,7 +16,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create () {
         config = new Config();
-        scenario = new Intro(config);
+        scenario = new Level1(config);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class Main extends ApplicationAdapter {
         // Debug
         /////////////////////////////////////////////
 
-        // config.debugRenderer.render(config.world, config.stage.getCamera().combined);
+        // config.debugRenderer.render(config.world, config.stageBack.getCamera().combined);
         // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 

@@ -1,12 +1,10 @@
 package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
@@ -38,11 +36,6 @@ public class WormSegment {
         this.body.createFixture(config.segFixtureDefR);
         this.body.createFixture(config.segFixtureDefM);
 
-        // Init for stage.
-        float segMidW = config.segMidW;
-        float segMidH = config.segMidH;
-        float segEndW = config.segEndW;
-
         // Spine animation setup.
         Config.SpineActorConfig spineConfig = config.spineActorConfigs.get("wormseg");
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(spineConfig.atlas));
@@ -59,15 +52,15 @@ public class WormSegment {
     }
 
     public void step() {
-        // FIXME: This is just for debug.
-        // Given different segments, different forces should be applied, even periodically.
-        // FIXME: Need to put force values into game config.
-        if (Math.random() > 0.5)
-            body.applyLinearImpulse(new Vector2(0, 10000), body.getPosition(), true);
+        double randNum = Math.random();
+        if (randNum > 0.75)
+            body.applyLinearImpulse(new Vector2(0, config.randomImpulse), body.getPosition(), true);
+        else if (randNum > 0.5)
+            body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), body.getPosition(), true);
+        else if (randNum > 0.25)
+            body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), body.getPosition(), true);
         else
-            body.applyLinearImpulse(new Vector2(0, -10000), body.getPosition(), true);
-
-
+            body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), body.getPosition(), true);
     }
 
 }
