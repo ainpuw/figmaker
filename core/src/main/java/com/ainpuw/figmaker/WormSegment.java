@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Skeleton;
@@ -16,6 +19,19 @@ public class WormSegment {
     public Body body;
     public Skeleton skeleton;
     public AnimationState animationState;
+
+    // Connectivity information.
+    public WormSegment parent = null;
+    public Array<WormSegment> children = new Array<>();
+    public Joint anchorJoint = null;  // Segment center to the segment center in the animation.
+    public DistanceJointDef anchorJointDef = null;
+    public Joint parentCJoint = null;  // Center to parent center.
+    public DistanceJointDef parentCJointDef = null;
+    public Joint parentE1Joint = null;  // The shortest end to end joint.
+    public DistanceJointDef parentE1JointDef = null;
+    public Joint parentE2Joint = null;  // The longest end to end joint.
+    public DistanceJointDef parentE2JointDef = null;
+    public boolean boneUnderRepair = false;
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -51,7 +67,17 @@ public class WormSegment {
         animationState.apply(skeleton);
     }
 
+    public boolean boneVisuallyBroken() {
+        if (parent == null) return true;
+
+        if (body.getPosition().dst(parent.body.getPosition()) <
+            parentCJointDef.length * config.boneBrokenVisualMargin)
+            return false;
+        return true;
+    }
+
     public void step() {
+        // Apply a random impulse to the segment.
         double randNum = Math.random();
         if (randNum > 0.75)
             body.applyLinearImpulse(new Vector2(0, config.randomImpulse), body.getPosition(), true);

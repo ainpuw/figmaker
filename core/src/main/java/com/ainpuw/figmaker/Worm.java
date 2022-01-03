@@ -17,28 +17,13 @@ public class Worm {
     private Array<Body> pen = new Array<>();
     public Array<WormSegment> segs = new Array<>();
     public Array<Body> anchors = new Array<>();
-    public Array<Body> repulsivePairs = new Array<>();
+    public Array<WormSegment> repulsivePairs = new Array<>();
     public Array<Joint> segJoints = new Array<>();
     public Array<Joint> anchorJoints = new Array<>();
 
     public Worm(Config config) {
         this.config = config;
         createPen();
-    }
-
-    public void createBox2dWorm(Bone bone, WormSegment parent) {
-        for (Bone childBone : bone.getChildren()) {
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(childBone.getWorldX(), childBone.getWorldY());
-            Body anchorBody = config.world.createBody(bodyDef);
-            anchors.add(anchorBody);
-
-            WormSegment newWormSegment = new WormSegment(config, childBone.getWorldX(), childBone.getWorldY(), childBone.getWorldRotationX());
-            segs.add(newWormSegment);
-            joinSegments(anchorBody, parent, newWormSegment);
-            createBox2dWorm(childBone, newWormSegment);
-        }
     }
 
     private void createPen() {
@@ -79,44 +64,59 @@ public class Worm {
         shape.dispose();
     }
 
+    public void createBox2dWormSegNJoint(Bone bone, WormSegment parent) {
+        for (Bone childBone : bone.getChildren()) {
+            // Create a new worm segment.
+            WormSegment newWormSegment = new WormSegment(config, childBone.getWorldX(), childBone.getWorldY(), childBone.getWorldRotationX());
+            newWormSegment.parent = parent;
+            segs.add(newWormSegment);
+
+            // Create anchor body for anchor joint.
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+            bodyDef.position.set(childBone.getWorldX(), childBone.getWorldY());
+            Body anchorBody = config.world.createBody(bodyDef);
+            anchors.add(anchorBody);
+
+            // Create all joints between the child segment and the parent segment.
+            joinSegments(anchorBody, parent, newWormSegment);
+
+            // Recursion.
+            createBox2dWormSegNJoint(childBone, newWormSegment);
+        }
+    }
 
     public void joinSegments(Body anchorBody, WormSegment parent, WormSegment child) {
         // Create anchor joint.
-
-        DistanceJointDef distanceJointDef = new DistanceJointDef();
-        distanceJointDef.collideConnected = child.config.collideConnected;
-        distanceJointDef.frequencyHz = child.config.frequencyHz;
-        distanceJointDef.dampingRatio = child.config.dampingRatio;
-        distanceJointDef.bodyA = anchorBody;
-        distanceJointDef.bodyB = child.body;
-        distanceJointDef.length = 0;
-        distanceJointDef.localAnchorA.set(0, 0);
-        distanceJointDef.localAnchorB.set(0, 0);
-        anchorJoints.add(child.config.world.createJoint(distanceJointDef));
-
+        DistanceJointDef anchorJointDef = Utils.createDistanceJointDef(config, anchorBody, child.body);
+        anchorJointDef.length = 0;
+        anchorJointDef.localAnchorA.set(0, 0);
+        anchorJointDef.localAnchorB.set(0, 0);
+        //Joint anchorJoint = config.world.createJoint(anchorJointDef);  // FIXME: Remove me.
+        child.anchorJointDef = anchorJointDef;
         if (parent == null) return;
 
         // Create segment to segment joints.
-
-        distanceJointDef.bodyA = parent.body;
-        distanceJointDef.bodyB = child.body;
-        // Center to center.
-        Vector2 bodyACtr = distanceJointDef.bodyA.getPosition();
-        Vector2 bodyBCtr = distanceJointDef.bodyB.getPosition();
-        distanceJointDef.length = bodyACtr.dst(bodyBCtr);
-        distanceJointDef.localAnchorA.set(0, 0);
-        distanceJointDef.localAnchorB.set(0, 0);
-        segJoints.add(parent.config.world.createJoint(distanceJointDef));
+        // Center to center joint.
+        DistanceJointDef parentCJointDef = Utils.createDistanceJointDef(config, parent.body, child.body);
+        Vector2 bodyACtr = parentCJointDef.bodyA.getPosition();
+        Vector2 bodyBCtr = parentCJointDef.bodyB.getPosition();
+        parentCJointDef.length = bodyACtr.dst(bodyBCtr);
+        parentCJointDef.localAnchorA.set(0, 0);
+        parentCJointDef.localAnchorB.set(0, 0);
+        child.parentCJointDef = parentCJointDef;
         // End to end.
         // Connect the shortest ends of both, then the furthest ends of both.
-        Vector2 bodyAEndUR = new Vector2(parent.config.joinPos, parent.config.segMidH);
-        Vector2 bodyAEndLL = new Vector2(-parent.config.joinPos, -parent.config.segMidH);
-        Vector2 bodyBEndUR = new Vector2(parent.config.joinPos, parent.config.segMidH);
-        Vector2 bodyBEndLL = new Vector2(-parent.config.joinPos, -parent.config.segMidH);
-        bodyAEndUR.rotateRad(distanceJointDef.bodyA.getAngle());
-        bodyAEndLL.rotateRad(distanceJointDef.bodyA.getAngle());
-        bodyBEndUR.rotateRad(distanceJointDef.bodyB.getAngle());
-        bodyBEndLL.rotateRad(distanceJointDef.bodyB.getAngle());
+        DistanceJointDef parentE1JointDef = Utils.createDistanceJointDef(config, parent.body, child.body);
+        DistanceJointDef parentE2JointDef = Utils.createDistanceJointDef(config, parent.body, child.body);
+        Vector2 bodyAEndUR = new Vector2(config.joinPos, config.segMidH);
+        Vector2 bodyAEndLL = new Vector2(-config.joinPos, -config.segMidH);
+        Vector2 bodyBEndUR = new Vector2(config.joinPos, config.segMidH);
+        Vector2 bodyBEndLL = new Vector2(-config.joinPos, -config.segMidH);
+        bodyAEndUR.rotateRad(parentE1JointDef.bodyA.getAngle());
+        bodyAEndLL.rotateRad(parentE1JointDef.bodyA.getAngle());
+        bodyBEndUR.rotateRad(parentE1JointDef.bodyB.getAngle());
+        bodyBEndLL.rotateRad(parentE1JointDef.bodyB.getAngle());
         bodyAEndUR.add(bodyACtr);
         bodyAEndLL.add(bodyACtr);
         bodyBEndUR.add(bodyBCtr);
@@ -127,50 +127,51 @@ public class Worm {
         float ALLBLL = bodyAEndLL.dst(bodyBEndLL);
         if (AURBUR < Math.min(Math.min(AURBLL, ALLBUR), ALLBLL) ||
             ALLBLL < Math.min(Math.min(AURBLL, ALLBUR), AURBUR)) {
-            distanceJointDef.length = AURBUR;
-            distanceJointDef.localAnchorA.set(parent.config.joinPos, parent.config.segMidH);
-            distanceJointDef.localAnchorB.set(parent.config.joinPos, parent.config.segMidH);
-            segJoints.add(parent.config.world.createJoint(distanceJointDef));
-            distanceJointDef.length = ALLBLL;
-            distanceJointDef.localAnchorA.set(-parent.config.joinPos, -parent.config.segMidH);
-            distanceJointDef.localAnchorB.set(-parent.config.joinPos, -parent.config.segMidH);
-            segJoints.add(parent.config.world.createJoint(distanceJointDef));
+            parentE1JointDef.length = AURBUR;
+            parentE1JointDef.localAnchorA.set(config.joinPos, config.segMidH);
+            parentE1JointDef.localAnchorB.set(config.joinPos, config.segMidH);
+            parentE2JointDef.length = ALLBLL;
+            parentE2JointDef.localAnchorA.set(-config.joinPos, -config.segMidH);
+            parentE2JointDef.localAnchorB.set(-config.joinPos, -config.segMidH);
         } else {
-            distanceJointDef.length = AURBLL;
-            distanceJointDef.localAnchorA.set(parent.config.joinPos, parent.config.segMidH);
-            distanceJointDef.localAnchorB.set(-parent.config.joinPos, -parent.config.segMidH);
-            segJoints.add(parent.config.world.createJoint(distanceJointDef));
-            distanceJointDef.length = ALLBUR;
-            distanceJointDef.localAnchorA.set(-parent.config.joinPos, -parent.config.segMidH);
-            distanceJointDef.localAnchorB.set(parent.config.joinPos, parent.config.segMidH);
-            segJoints.add(parent.config.world.createJoint(distanceJointDef));
+            parentE1JointDef.length = AURBLL;
+            parentE1JointDef.localAnchorA.set(config.joinPos, config.segMidH);
+            parentE1JointDef.localAnchorB.set(-config.joinPos, -config.segMidH);
+            parentE2JointDef.length = ALLBUR;
+            parentE2JointDef.localAnchorA.set(-config.joinPos, -config.segMidH);
+            parentE2JointDef.localAnchorB.set(config.joinPos, config.segMidH);
         }
+        child.parentE1JointDef = parentE1JointDef;
+        child.parentE2JointDef = parentE2JointDef;
 
         // Update repulsive body array.
-
         if (bodyACtr.x < bodyBCtr.x) {
-            repulsivePairs.add(parent.body);
-            repulsivePairs.add(child.body);
+            repulsivePairs.add(parent);
+            repulsivePairs.add(child);
         } else {
-            repulsivePairs.add(child.body);
-            repulsivePairs.add(parent.body);
+            repulsivePairs.add(child);
+            repulsivePairs.add(parent);
+        }
+    }
+
+    public void createBox2dWorm(Bone rootBone) {
+        createBox2dWormSegNJoint(rootBone, null);
+
+        for (WormSegment seg : segs) {
+            if (seg.parent == null) continue;
+            seg.parent.children.add(seg);
         }
     }
 
     public void step() {
-        for (Joint j : segJoints) {
-            System.out.println(j.getAnchorA());
-            
-            break;
-        }
         for (WormSegment seg : segs) {
             seg.step();
         }
 
         for (int i = 0; i < repulsivePairs.size / 2; i++) {
             // Odd indices are pairs of even indices.
-            Body body1 = repulsivePairs.get(2 * i);
-            Body body2 = repulsivePairs.get(2 * i + 1);
+            Body body1 = repulsivePairs.get(2 * i).body;
+            Body body2 = repulsivePairs.get(2 * i + 1).body;
             // v2 - v1.
             Vector2 body1Pos = new Vector2(body1.getPosition());
             body1Pos.x = -body1Pos.x;
@@ -346,14 +347,15 @@ public class Worm {
             shadowYPercent = Math.min(shadowYPercent, 1);
             shadowYPercent = Math.max(shadowYPercent, 0);
             // Calculate shadow size.
-            float shadowW = Math.abs(segW.x) * (1 - shadowYPercent);
-            float shadowH = config.shadowTextureRegions[0][0].getRegionHeight() * (1 - shadowYPercent);
+            float shadowW = Math.abs(segW.x) * (1 - shadowYPercent * 0.5f);
+            float shadowH = config.shadowTextureRegions[0][0].getRegionHeight() * (1 - shadowYPercent * 0.5f);
             shadowW = Math.max(20, shadowW);
             shadowH = Math.max(6.67f, shadowH);
             // Calculate shadow center position.
             float shadowX = ctrPos.x - shadowW / 2;
             float shadowY = shadowYPercent * (config.segShadowYRange.y - config.segShadowYRange.x) + config.segShadowYRange.x - shadowH / 2;
 
+            config.spriteBatch.setColor(0, 0, 0, 1 - shadowYPercent);
             config.spriteBatch.draw(config.shadowTextureRegions[0][0],
                     shadowX, shadowY,
                     0, 0,
@@ -367,23 +369,26 @@ public class Worm {
         // Draw joints.
         config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < config.worm.repulsivePairs.size / 2; i++) {
-            // Odd indices are pairs of even indices.
-            Body body1 = config.worm.repulsivePairs.get(2 * i);
-            Body body2 = config.worm.repulsivePairs.get(2 * i + 1);
-            Vector2 body1Ctr = body1.getPosition();
-            Vector2 body2Ctr = body2.getPosition();
-            config.shapeRenderer.rectLine(body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
+            WormSegment seg1 = config.worm.repulsivePairs.get(2 * i);
+            WormSegment seg2 = config.worm.repulsivePairs.get(2 * i + 1);
+            boolean broken = seg1.boneVisuallyBroken();
+            if (seg2.parent == seg1)
+                broken = seg2.boneVisuallyBroken();
 
-            float angle1 = body1.getAngle() * 57.2958f;
-            float angle2 = body2.getAngle() * 57.2958f;
+            // Center to center bone.
+            Vector2 body1Ctr = seg1.body.getPosition();
+            Vector2 body2Ctr = seg2.body.getPosition();
+            Utils.drawBone(config.shapeRenderer, broken, config.boneDashDrawLen, body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y);
+            // End to end bone.
+            float angle1 = seg1.body.getAngle() * 57.2958f;
+            float angle2 = seg2.body.getAngle() * 57.2958f;
             Vector2 disp1 = new Vector2(config.segTexture.getWidth() / 2.2f, 0);
             Vector2 disp2 = new Vector2(-config.segTexture.getWidth() / 2.2f, 0);
             disp1.rotateDeg(angle1);
             disp2.rotateDeg(angle2);
             Vector2 ctrDisp1 = body1Ctr.add(disp1);
             Vector2 ctrDisp2 = body2Ctr.add(disp2);
-            config.shapeRenderer.rectLine(ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
-
+            Utils.drawBone(config.shapeRenderer, broken, config.boneDashDrawLen, ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y);
         }
         config.shapeRenderer.end();
 

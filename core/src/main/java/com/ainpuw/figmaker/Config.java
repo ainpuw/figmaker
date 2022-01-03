@@ -168,13 +168,15 @@ public class Config {
     public final float joinPos = segMidW/2 + segEndW;
     public final float frequencyHz = 0.5f;  // Spring strength - higher the stronger.
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
+    public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
+    public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
     public PolygonShape segShapeM;  // Middle piece.
     public FixtureDef segFixtureDefL = new FixtureDef();
     public FixtureDef segFixtureDefR = new FixtureDef();
     public FixtureDef segFixtureDefM = new FixtureDef();
-    public final float randomImpulse = 1000000;
+    public final float randomImpulse = 10000;
 
     public final Texture segTexture;
     public final Texture shadowTexture;
@@ -183,7 +185,7 @@ public class Config {
     public final Vector2 segShadowYRange = new Vector2(62, 212);
     public final Vector2 segShadowYRangeRef = new Vector2(62, 576);  // Assumed body Y range.
     public final float adjacentRepulsiveForceCutoff = 250;
-    public final float adjacentRepulsiveForceFactor = 1000000000;
+    public final float adjacentRepulsiveForceFactor = 10000;
 
     ////////////////////////////////////////////////////
     // Subclass definitions

@@ -54,7 +54,7 @@ public class Level1 extends Scenario {
                     // FIXME: getAnimationTime() > 2 maybe buggy.
                     else if (wormlvl.animationState.getTracks().get(0).getAnimationTime() > 2 && playReady) {
                         config.wormSkeleton = null;
-                        config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone(), null);
+                        config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                         config.evolveWorld = true;
                     }
                 }

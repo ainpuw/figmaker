@@ -38,7 +38,7 @@ public class Level2 extends Scenario {
                 }
                 else if (wormAnimationFinished && config.wormSkeleton != null) {
                     config.wormSkeleton = null;
-                    config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone(), null);
+                    config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone());
                     config.evolveWorld = true;
                 }
                 else if (trigger.equals("done") && wormSetupFinished) {
