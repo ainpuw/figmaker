@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
+import java.util.Comparator;
+
 public class Utils {
     public static void drawGameBoundingBox (Config config, SpriteBatch spriteBatch,
                                             ShapeRenderer shapeRenderer) {
@@ -44,8 +46,8 @@ public class Utils {
         return jointDef;
     }
 
-    public static void drawBone(ShapeRenderer shapeRenderer, boolean broken, float dashLen,
-                         float x1, float y1, float x2, float y2) {
+    public static void drawBone(ShapeRenderer shapeRenderer, boolean broken, boolean stable,
+                                float dashLen, float x1, float y1, float x2, float y2) {
         // Draw dashed line.
         if (broken) {
             Vector2 p3 = new Vector2(x2 - x1, y2 - y1);
@@ -61,7 +63,11 @@ public class Utils {
                         x2d = x2;
                         y2d = y2;
                     }
-                    shapeRenderer.rectLine(x1d, y1d, x2d, y2d, 1, Color.RED, Color.RED);
+
+                    if (stable)
+                        shapeRenderer.rectLine(x1d, y1d, x2d, y2d, 1f, Color.ORANGE, Color.ORANGE);
+                    else
+                        shapeRenderer.rectLine(x1d, y1d, x2d, y2d, 1f, Color.RED, Color.RED);
                 }
             }
         }
@@ -70,4 +76,13 @@ public class Utils {
             shapeRenderer.rectLine(x1, y1, x2, y2, 4, Color.LIGHT_GRAY, Color.LIGHT_GRAY);
         }
     }
+
+    public static Comparator stableBoneComparator = new Comparator<WormSegment>() {
+        public int compare (WormSegment s1, WormSegment s2) {
+            float diff = s1.stabilizationCountDown - s1.stabilizationCountDown;
+            if (diff < 0) return -1;
+            else if (diff > 0) return 1;
+            else return 0;
+        }
+    };
 }

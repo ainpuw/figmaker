@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -49,6 +50,7 @@ public class Worm {
         fixture.shape = shape;
         fixture.friction = config.friction;
         fixture.density = 0.0f;
+        fixture.filter.categoryBits = config.collisionWall;
         // The floor.
         shape.setAsBox(config.w * 0.6f, config.penThickness / 2, new Vector2(0, -config.penThickness / 2), 0);
         pen.get(0).createFixture(fixture);
@@ -92,7 +94,6 @@ public class Worm {
         anchorJointDef.length = 0;
         anchorJointDef.localAnchorA.set(0, 0);
         anchorJointDef.localAnchorB.set(0, 0);
-        //Joint anchorJoint = config.world.createJoint(anchorJointDef);  // FIXME: Remove me.
         child.anchorJointDef = anchorJointDef;
         if (parent == null) return;
 
@@ -187,6 +188,38 @@ public class Worm {
             Vector2 two2one = new Vector2(-one2two.x, -one2two.y);
             body1.applyLinearImpulse(two2one, body1.getPosition(), true);
             body2.applyLinearImpulse(one2two, body2.getPosition(), true);
+        }
+    }
+
+    public void updateBones(Vector2 touchPos) {
+        Array<WormSegment> stableSegs = new Array<>();
+        for (WormSegment seg: segs) {
+            // Add currently stable segments.
+            if (seg.stabilizationCountDown >= 0) {
+                stableSegs.add(seg);
+                continue;
+            }
+            // Add new stable segments that are touched.
+            for (Fixture fix : seg.body.getFixtureList()) {
+                if (fix.testPoint(touchPos)) {
+                    stableSegs.add(seg);
+                    seg.stabilizationCountDown = config.boneStabilizationTime;
+                    break;
+                }
+            }
+        }
+
+        // Sort stable segments by their age in ascending order.
+        stableSegs.sort(Utils.stableBoneComparator);
+        // Destroy the older bones exceeding maxStabilizedSegs.
+        for (int i = 0; i < stableSegs.size - config.maxStabilizedSegs; i++) {
+            // Make them expire and delete them.
+            stableSegs.get(i).updateBoneStabilization(config.boneStabilizationTime + 1);
+        }
+        // Add new joints if needed.
+        for (int i = stableSegs.size - 1; i >= Math.max(0, stableSegs.size - config.maxStabilizedSegs); i--) {
+            // Make them expire and delete them.
+            stableSegs.get(i).createAllJoints();
         }
     }
 
@@ -374,11 +407,12 @@ public class Worm {
             boolean broken = seg1.boneVisuallyBroken();
             if (seg2.parent == seg1)
                 broken = seg2.boneVisuallyBroken();
+            boolean stable = seg1.stabilizationCountDown >= 0 || seg2.stabilizationCountDown >= 0;
 
             // Center to center bone.
             Vector2 body1Ctr = seg1.body.getPosition();
             Vector2 body2Ctr = seg2.body.getPosition();
-            Utils.drawBone(config.shapeRenderer, broken, config.boneDashDrawLen, body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y);
+            Utils.drawBone(config.shapeRenderer, broken, stable, config.boneDashDrawLen, body1Ctr.x, body1Ctr.y, body2Ctr.x, body2Ctr.y);
             // End to end bone.
             float angle1 = seg1.body.getAngle() * 57.2958f;
             float angle2 = seg2.body.getAngle() * 57.2958f;
@@ -388,7 +422,7 @@ public class Worm {
             disp2.rotateDeg(angle2);
             Vector2 ctrDisp1 = body1Ctr.add(disp1);
             Vector2 ctrDisp2 = body2Ctr.add(disp2);
-            Utils.drawBone(config.shapeRenderer, broken, config.boneDashDrawLen, ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y);
+            Utils.drawBone(config.shapeRenderer, broken, stable, config.boneDashDrawLen, ctrDisp1.x, ctrDisp1.y, ctrDisp2.x, ctrDisp2.y);
         }
         config.shapeRenderer.end();
 

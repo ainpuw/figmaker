@@ -32,6 +32,7 @@ public class WormSegment {
     public Joint parentE2Joint = null;  // The longest end to end joint.
     public DistanceJointDef parentE2JointDef = null;
     public boolean boneUnderRepair = false;
+    public float stabilizationCountDown = -0.001f;
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -68,13 +69,81 @@ public class WormSegment {
     }
 
     public boolean boneVisuallyBroken() {
-        if (parent == null) return true;
+        if (parent == null) return false;
 
         if (body.getPosition().dst(parent.body.getPosition()) <
             parentCJointDef.length * config.boneBrokenVisualMargin)
             return false;
         return true;
     }
+
+    public void updateBoneStabilization(float deltaTime) {
+        stabilizationCountDown = Math.max(-0.001f, stabilizationCountDown - deltaTime);
+        // Destroy joint to its original Spine animation locatin.
+        if (stabilizationCountDown < 0 && anchorJoint != null) {
+            config.world.destroyJoint(anchorJoint);
+            anchorJoint = null;
+        }
+        // Allow one frame of parent-child asynchronization.
+        // Handle this to parent bones.
+        if (parent != null && stabilizationCountDown < 0 && parent.stabilizationCountDown < 0) {
+            if (parentCJoint != null) {
+                config.world.destroyJoint(parentCJoint);
+                parentCJoint = null;
+            }
+            if (parentE1Joint != null) {
+                config.world.destroyJoint(parentE1Joint);
+                parentE1Joint = null;
+            }
+            if (parentE2Joint != null) {
+                config.world.destroyJoint(parentE2Joint);
+                parentE2Joint = null;
+            }
+        }
+        // Handle this to children bones.
+        for (WormSegment child : children) {
+            if (stabilizationCountDown < 0 && child.stabilizationCountDown < 0) {
+
+                if (child.parentCJoint != null) {
+                    config.world.destroyJoint(child.parentCJoint);
+                    child.parentCJoint = null;
+                }
+                if (child.parentE1Joint != null) {
+                    config.world.destroyJoint(child.parentE1Joint);
+                    child.parentE1Joint = null;
+                }
+                if (child.parentE2Joint != null) {
+                    config.world.destroyJoint(child.parentE2Joint);
+                    child.parentE2Joint = null;
+                }
+            }
+        }
+    }
+
+    public void createAllJoints() {
+        // Create joint to original Spine animation location.
+        if (anchorJoint == null)
+            anchorJoint = config.world.createJoint(anchorJointDef);
+        // Create this to parent joints.
+        if (parent != null) {
+            if (parentCJoint == null)
+                parentCJoint = config.world.createJoint(parentCJointDef);
+            if (parentE1Joint == null)
+                parentE1Joint = config.world.createJoint(parentE1JointDef);
+            if (parentE2Joint == null)
+                parentE2Joint = config.world.createJoint(parentE2JointDef);
+        }
+        // Create this to children joints.
+        for (WormSegment child : children) {
+            if (child.parentCJoint == null)
+                child.parentCJoint = config.world.createJoint(child.parentCJointDef);
+            if (child.parentE1Joint == null)
+                child.parentE1Joint = config.world.createJoint(child.parentE1JointDef);
+            if (child.parentE2Joint == null)
+                child.parentE2Joint = config.world.createJoint(child.parentE2JointDef);
+        }
+    }
+
 
     public void step() {
         // Apply a random impulse to the segment.

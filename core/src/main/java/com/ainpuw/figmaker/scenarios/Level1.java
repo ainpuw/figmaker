@@ -58,7 +58,10 @@ public class Level1 extends Scenario {
                         config.evolveWorld = true;
                     }
                 }
-                if (trigger.equals("done") && wormSetupFinished) {
+                if (trigger.equals("done")) {
+                    config.dialogueBox.removeFromStage();
+                }
+                if (trigger.equals("done1") && wormSetupFinished) {
                     active = false;
                     ended = true;
                     dispose();

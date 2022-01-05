@@ -1,10 +1,10 @@
 package com.ainpuw.figmaker;
 
-import com.ainpuw.figmaker.scenarios.Intro;
 import com.ainpuw.figmaker.scenarios.Level1;
 import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends ApplicationAdapter {
@@ -74,10 +74,24 @@ public class Main extends ApplicationAdapter {
         config.stageFront.draw();
 
         /////////////////////////////////////////////
+        // Gameplay
+        /////////////////////////////////////////////
+
+        // TODO: This can be put inside worm step.
+        // Update bone countdowns. Delete bones/joints when they expire.
+        for (WormSegment seg : config.worm.segs)
+            seg.updateBoneStabilization(deltaTime);
+        // Detect inputs and update bones/joints.
+        if (Gdx.input.justTouched()) {
+            Vector2 touchPos = config.stageBack.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            config.worm.updateBones(touchPos);
+        }
+
+        /////////////////////////////////////////////
         // Debug
         /////////////////////////////////////////////
 
-        // config.debugRenderer.render(config.world, config.stageBack.getCamera().combined);
+        config.debugRenderer.render(config.world, config.stageBack.getCamera().combined);
         // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 

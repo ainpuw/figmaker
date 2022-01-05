@@ -165,11 +165,15 @@ public class Config {
     public final float segEndH = 10;
     public final float segDensity = 1;
     public final boolean collideConnected = false;
+    public final short collisionSeg = 0x0001;  // 0000000000000001 in binary
+    public final short collisionWall = 0x0002; // 0000000000000010 in binary
     public final float joinPos = segMidW/2 + segEndW;
     public final float frequencyHz = 0.5f;  // Spring strength - higher the stronger.
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
+    public final int maxStabilizedSegs = 10;  // At most this no. of segments can be stabilized.
+    public final float boneStabilizationTime = 100f;  // Stabilize the bone for this amount of seconds.
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
     public PolygonShape segShapeM;  // Middle piece.
@@ -272,10 +276,16 @@ public class Config {
         segShapeM = new PolygonShape();  // Middle piece.
         segFixtureDefL.shape = segShapeL;
         segFixtureDefL.density = segDensity;
+        segFixtureDefL.filter.categoryBits = collisionSeg;
+        segFixtureDefL.filter.maskBits = collisionWall;
         segFixtureDefR.shape = segShapeR;
         segFixtureDefR.density = segDensity;
+        segFixtureDefR.filter.categoryBits = collisionSeg;
+        segFixtureDefR.filter.maskBits = collisionWall;
         segFixtureDefM.shape = segShapeM;
         segFixtureDefM.density = segDensity;
+        segFixtureDefM.filter.categoryBits = collisionSeg;
+        segFixtureDefM.filter.maskBits = collisionWall;
         segTexture = new Texture(Gdx.files.internal("texture/wormseg.png"));
         segTextureRegions = TextureRegion.split(segTexture, segTexture.getWidth(), segTexture.getHeight());
         shadowTexture = new Texture(Gdx.files.internal("texture/shadow.png"));
