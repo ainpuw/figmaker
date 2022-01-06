@@ -17,14 +17,10 @@ public class Worm {
     private Config config;
     private Array<Body> pen = new Array<>();
     public Array<WormSegment> segs = new Array<>();
-    public Array<Body> anchors = new Array<>();
     public Array<WormSegment> repulsivePairs = new Array<>();
-    public Array<Joint> segJoints = new Array<>();
-    public Array<Joint> anchorJoints = new Array<>();
 
     public Worm(Config config) {
         this.config = config;
-        createPen();
     }
 
     private void createPen() {
@@ -73,28 +69,40 @@ public class Worm {
             newWormSegment.parent = parent;
             segs.add(newWormSegment);
 
-            // Create anchor body for anchor joint.
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(childBone.getWorldX(), childBone.getWorldY());
-            Body anchorBody = config.world.createBody(bodyDef);
-            anchors.add(anchorBody);
+            // Create anchor body for center anchor joint.
+            BodyDef bodyCDef = new BodyDef();
+            bodyCDef.type = BodyDef.BodyType.StaticBody;
+            bodyCDef.position.set(childBone.getWorldX(), childBone.getWorldY());
+            Body anchorCBody = config.world.createBody(bodyCDef);
+
+            // Create anchor body for end anchor joint.
+            BodyDef bodyEDef = new BodyDef();
+            bodyEDef.type = BodyDef.BodyType.StaticBody;
+            Vector2 r = new Vector2(config.segMidW / 2 + config.segEndW, 0);
+            r.rotateDeg(childBone.getWorldRotationX());
+            bodyEDef.position.set(childBone.getWorldX() + r.x, childBone.getWorldY() + r.y);
+            Body anchorEBody = config.world.createBody(bodyEDef);
 
             // Create all joints between the child segment and the parent segment.
-            joinSegments(anchorBody, parent, newWormSegment);
+            creatJointDefs(anchorCBody, anchorEBody, parent, newWormSegment);
 
             // Recursion.
             createBox2dWormSegNJoint(childBone, newWormSegment);
         }
     }
 
-    public void joinSegments(Body anchorBody, WormSegment parent, WormSegment child) {
-        // Create anchor joint.
-        DistanceJointDef anchorJointDef = Utils.createDistanceJointDef(config, anchorBody, child.body);
-        anchorJointDef.length = 0;
-        anchorJointDef.localAnchorA.set(0, 0);
-        anchorJointDef.localAnchorB.set(0, 0);
-        child.anchorJointDef = anchorJointDef;
+    public void creatJointDefs(Body anchorCBody, Body anchorEBody, WormSegment parent, WormSegment child) {
+        // Create anchor joints.
+        DistanceJointDef anchorCJointDef = Utils.createDistanceJointDef(config, anchorCBody, child.body);
+        anchorCJointDef.length = 0;
+        anchorCJointDef.localAnchorA.set(0, 0);
+        anchorCJointDef.localAnchorB.set(0, 0);
+        child.anchorCJointDef = anchorCJointDef;
+        DistanceJointDef anchorEJointDef = Utils.createDistanceJointDef(config, anchorEBody, child.body);
+        anchorEJointDef.length = 0;
+        anchorEJointDef.localAnchorA.set(0, 0);
+        anchorEJointDef.localAnchorB.set(config.segMidW / 2 + config.segEndW, 0);
+        child.anchorEJointDef = anchorEJointDef;
         if (parent == null) return;
 
         // Create segment to segment joints.
@@ -156,11 +164,26 @@ public class Worm {
     }
 
     public void createBox2dWorm(Bone rootBone) {
+        // createPen();
         createBox2dWormSegNJoint(rootBone, null);
 
         for (WormSegment seg : segs) {
             if (seg.parent == null) continue;
             seg.parent.children.add(seg);
+        }
+    }
+
+    public void destroyBox2dWorm() {
+        Array<Joint> allJoints = new Array<>();
+        config.world.getJoints(allJoints);
+        for (Joint j : allJoints) {
+            config.world.destroyJoint(j);
+        }
+
+        Array<Body> allBodies = new Array<>();
+        config.world.getBodies(allBodies);
+        for (Body b : allBodies) {
+            config.world.destroyBody(b);
         }
     }
 
@@ -223,16 +246,16 @@ public class Worm {
         }
     }
 
-    public static void drawWorm(float delta, Config config) {
+    public static void drawWorm(float deltaTime, Config config) {
         if (config.wormOne != null)
-            drawWormOne(delta, config);
+            drawWormOne(deltaTime, config);
         else if (config.wormSkeleton != null)
-            drawWormSkeleton(delta, config);
+            drawWormSkeleton(deltaTime, config);
         else
-            drawWormBox2d(delta, config);
+            drawWormBox2d(deltaTime, config);
     }
 
-    public static void drawWormOne(float delta, Config config) {
+    public static void drawWormOne(float deltaTime, Config config) {
         config.wormOne.skeleton.getRootBone().setX(config.wormOne.getX());
         config.wormOne.skeleton.getRootBone().setY(config.wormOne.getY());
 
@@ -271,7 +294,7 @@ public class Worm {
         // Draw the worm Spine animation.
         config.spriteBatch.begin();
         config.wormOne.skeleton.updateWorldTransform();
-        config.wormOne.animationState.update(delta);
+        config.wormOne.animationState.update(deltaTime);
         config.wormOne.animationState.apply(config.wormOne.skeleton);
         config.skeletonRenderer.draw(config.spriteBatch, config.wormOne.skeleton);
         config.spriteBatch.end();
@@ -337,7 +360,7 @@ public class Worm {
         }
     }
 
-    public static void drawWormSkeleton(float delta, Config config) {
+    public static void drawWormSkeleton(float deltaTime, Config config) {
         config.wormSkeleton.skeleton.getRootBone().setX(config.wormSkeleton.getX());
         config.wormSkeleton.skeleton.getRootBone().setY(config.wormSkeleton.getY());
 
@@ -358,13 +381,13 @@ public class Worm {
         // Draw the worm Spine animation.
         config.spriteBatch.begin();
         config.wormSkeleton.skeleton.updateWorldTransform();
-        config.wormSkeleton.animationState.update(delta);
+        config.wormSkeleton.animationState.update(deltaTime);
         config.wormSkeleton.animationState.apply(config.wormSkeleton.skeleton);
         config.skeletonRenderer.draw(config.spriteBatch, config.wormSkeleton.skeleton);
         config.spriteBatch.end();
     }
 
-    public static void drawWormBox2d(float delta, Config config) {
+    public static void drawWormBox2d(float deltaTime, Config config) {
         // Draw shadow.
         config.spriteBatch.begin();
         for (WormSegment seg : config.worm.segs) {
@@ -435,11 +458,14 @@ public class Worm {
             seg.skeleton.getRootBone().setY(ctrPos.y);
             seg.skeleton.getRootBone().setRotation(angle);
             seg.skeleton.updateWorldTransform();
-            seg.animationState.update(delta);
+            seg.animationState.update(deltaTime);
             seg.animationState.apply(seg.skeleton);
             config.skeletonRenderer.draw(config.spriteBatch, seg.skeleton);
         }
         config.spriteBatch.end();
+
+        if (config.worm.segs.size > 0)
+            Utils.drawTouch(config, deltaTime);
     }
 }
 

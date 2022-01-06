@@ -41,7 +41,10 @@ public class Level2 extends Scenario {
                     config.worm.createBox2dWorm(config.wormlvl2.skeleton.getRootBone());
                     config.evolveWorld = true;
                 }
-                else if (trigger.equals("done") && wormSetupFinished) {
+                if (trigger.equals("done")) {
+                    config.dialogueBox.removeFromStage();
+                }
+                else if (trigger.equals("done1") && wormSetupFinished) {
                     active = false;
                     ended = true;
                     dispose();

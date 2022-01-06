@@ -1,5 +1,6 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,8 +11,8 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import java.util.Comparator;
 
 public class Utils {
-    public static void drawGameBoundingBox (Config config, SpriteBatch spriteBatch,
-                                            ShapeRenderer shapeRenderer) {
+    public static void drawGameBoundingBox(Config config, SpriteBatch spriteBatch,
+                                           ShapeRenderer shapeRenderer) {
         shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.line(0, 0, config.w, config.h);
@@ -57,8 +58,8 @@ public class Utils {
                 if (i % 2 == 0) {
                     float x1d = x1 + i * p3.x / iMaxF;
                     float y1d = y1 + i * p3.y / iMaxF;
-                    float x2d = x1 + (i+1) * p3.x / iMaxF;
-                    float y2d = y1 + (i+1) * p3.y / iMaxF;
+                    float x2d = x1 + (i + 1) * p3.x / iMaxF;
+                    float y2d = y1 + (i + 1) * p3.y / iMaxF;
                     if (i == iMax - 1) {
                         x2d = x2;
                         y2d = y2;
@@ -78,11 +79,37 @@ public class Utils {
     }
 
     public static Comparator stableBoneComparator = new Comparator<WormSegment>() {
-        public int compare (WormSegment s1, WormSegment s2) {
+        public int compare(WormSegment s1, WormSegment s2) {
             float diff = s1.stabilizationCountDown - s1.stabilizationCountDown;
             if (diff < 0) return -1;
             else if (diff > 0) return 1;
             else return 0;
         }
     };
+
+    public static void drawTouch(Config config, float deltaTime) {
+        // Add new touch points.
+        if (Gdx.input.justTouched() && config.touchPos.size < config.maxNoOfTouch) {
+            Vector2 touchPos = config.stageBack.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            config.touchPos.add(touchPos);
+            config.touchCountDown.add(config.touchCountDownInit);
+        }
+
+        // Draw existing touch points
+        config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = config.touchPos.size - 1; i >= 0; i--) {
+            if (config.touchCountDown.get(i) <= 0) {
+                config.touchPos.removeIndex(i);
+                config.touchCountDown.removeIndex(i);
+            }
+            else {
+                Vector2 v = config.touchPos.get(i);
+                float timeLeft = config.touchCountDown.get(i);
+                config.shapeRenderer.setColor(0, 0, 0, 0.3f);
+                config.shapeRenderer.circle(v.x, v.y, 40*(config.touchCountDownInit-timeLeft)/config.touchCountDownInit);
+                config.touchCountDown.set(i, timeLeft - deltaTime);
+            }
+        }
+        config.shapeRenderer.end();
+    }
 }

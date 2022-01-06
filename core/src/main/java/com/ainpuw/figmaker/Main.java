@@ -21,6 +21,12 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render () {
+        /*
+          TODO:
+          1. Play the animation 1 loop then convert to Box2d worm.
+          2. Debug why it cannot maintain only maxStabilizedSegs number of segments.
+          3. Make it visually better. The touch.
+         */
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(config.screenR, config.screenG, config.screenB, config.screenA);
 
@@ -91,7 +97,7 @@ public class Main extends ApplicationAdapter {
         // Debug
         /////////////////////////////////////////////
 
-        config.debugRenderer.render(config.world, config.stageBack.getCamera().combined);
+        // config.debugRenderer.render(config.world, config.stageBack.getCamera().combined);
         // Utils.drawGameBoundingBox(uiConfig, spriteBatch, shapeRenderer);
     }
 

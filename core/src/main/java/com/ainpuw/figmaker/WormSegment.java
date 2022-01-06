@@ -23,15 +23,16 @@ public class WormSegment {
     // Connectivity information.
     public WormSegment parent = null;
     public Array<WormSegment> children = new Array<>();
-    public Joint anchorJoint = null;  // Segment center to the segment center in the animation.
-    public DistanceJointDef anchorJointDef = null;
+    public Joint anchorCJoint = null;  // Segment center to the segment center in the animation.
+    public DistanceJointDef anchorCJointDef = null;
+    public Joint anchorEJoint = null;  // Segment right end to the segment right end in the animation.
+    public DistanceJointDef anchorEJointDef = null;
     public Joint parentCJoint = null;  // Center to parent center.
     public DistanceJointDef parentCJointDef = null;
     public Joint parentE1Joint = null;  // The shortest end to end joint.
     public DistanceJointDef parentE1JointDef = null;
     public Joint parentE2Joint = null;  // The longest end to end joint.
     public DistanceJointDef parentE2JointDef = null;
-    public boolean boneUnderRepair = false;
     public float stabilizationCountDown = -0.001f;
 
     public WormSegment(Config config, float x, float y, float angle) {
@@ -80,9 +81,15 @@ public class WormSegment {
     public void updateBoneStabilization(float deltaTime) {
         stabilizationCountDown = Math.max(-0.001f, stabilizationCountDown - deltaTime);
         // Destroy joint to its original Spine animation locatin.
-        if (stabilizationCountDown < 0 && anchorJoint != null) {
-            config.world.destroyJoint(anchorJoint);
-            anchorJoint = null;
+        if (stabilizationCountDown < 0) {
+            if (anchorCJoint != null) {
+                config.world.destroyJoint(anchorCJoint);
+                anchorCJoint = null;
+            }
+            if (anchorEJoint != null) {
+                config.world.destroyJoint(anchorEJoint);
+                anchorEJoint = null;
+            }
         }
         // Allow one frame of parent-child asynchronization.
         // Handle this to parent bones.
@@ -122,25 +129,31 @@ public class WormSegment {
 
     public void createAllJoints() {
         // Create joint to original Spine animation location.
-        if (anchorJoint == null)
-            anchorJoint = config.world.createJoint(anchorJointDef);
+        if (anchorCJoint == null)
+            anchorCJoint = config.world.createJoint(anchorCJointDef);
+        if (anchorEJoint == null)
+            anchorEJoint = config.world.createJoint(anchorEJointDef);
         // Create this to parent joints.
         if (parent != null) {
             if (parentCJoint == null)
                 parentCJoint = config.world.createJoint(parentCJointDef);
+            /* These joints lock segments in.
             if (parentE1Joint == null)
                 parentE1Joint = config.world.createJoint(parentE1JointDef);
             if (parentE2Joint == null)
                 parentE2Joint = config.world.createJoint(parentE2JointDef);
+             */
         }
         // Create this to children joints.
         for (WormSegment child : children) {
             if (child.parentCJoint == null)
                 child.parentCJoint = config.world.createJoint(child.parentCJointDef);
+            /* These joints lock segments in.
             if (child.parentE1Joint == null)
                 child.parentE1Joint = config.world.createJoint(child.parentE1JointDef);
             if (child.parentE2Joint == null)
                 child.parentE2Joint = config.world.createJoint(child.parentE2JointDef);
+             */
         }
     }
 
@@ -148,14 +161,23 @@ public class WormSegment {
     public void step() {
         // Apply a random impulse to the segment.
         double randNum = Math.random();
-        if (randNum > 0.75)
-            body.applyLinearImpulse(new Vector2(0, config.randomImpulse), body.getPosition(), true);
-        else if (randNum > 0.5)
-            body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), body.getPosition(), true);
-        else if (randNum > 0.25)
-            body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), body.getPosition(), true);
-        else
-            body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), body.getPosition(), true);
+        Vector2 pos = body.getPosition();
+        if (randNum > 0.75) {
+            if (pos.y < config.h)
+                body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
+        }
+        else if (randNum > 0.5) {
+            if (pos.y > 0)
+                body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), pos, true);
+        }
+        else if (randNum > 0.25) {
+            if (pos.x < config.w)
+                body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), pos, true);
+        }
+        else {
+            if (pos.x > 0)
+                body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), pos, true);
+        }
     }
 
 }

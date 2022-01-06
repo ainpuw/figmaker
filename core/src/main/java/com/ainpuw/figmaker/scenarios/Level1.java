@@ -11,7 +11,7 @@ public class Level1 extends Scenario {
 
     public Level1(Config config) {
         super(config);
-        wormlvl = config.wormlvl1;
+        wormlvl = config.wormlvl2;
         config.character.animationState.setAnimation(0, "idle", true);
         config.background.animationState.setAnimation(0, "idle", true);
         if (config.background.getStage() == null) config.stageBack.addActor(config.background);
@@ -52,7 +52,7 @@ public class Level1 extends Scenario {
                         wormlvl.animationState.setAnimation(0, "idle", true);
                     }
                     // FIXME: getAnimationTime() > 2 maybe buggy.
-                    else if (wormlvl.animationState.getTracks().get(0).getAnimationTime() > 2 && playReady) {
+                    else if (wormlvl.animationState.getTracks().get(0).getAnimationTime() > 0.5f && playReady) {
                         config.wormSkeleton = null;
                         config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                         config.evolveWorld = true;
@@ -62,6 +62,7 @@ public class Level1 extends Scenario {
                     config.dialogueBox.removeFromStage();
                 }
                 if (trigger.equals("done1") && wormSetupFinished) {
+                    config.worm.destroyBox2dWorm();
                     active = false;
                     ended = true;
                     dispose();
