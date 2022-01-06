@@ -47,10 +47,20 @@ public class Utils {
         return jointDef;
     }
 
+    public static Comparator stableBoneComparator = new Comparator<WormSegment>() {
+        public int compare(WormSegment s1, WormSegment s2) {
+            float diff = s1.stabilizationCountdown - s1.stabilizationCountdown;
+            if (diff < 0) return -1;
+            else if (diff > 0) return 1;
+            else return 0;
+        }
+    };
+
     public static void drawBone(ShapeRenderer shapeRenderer, boolean broken, boolean stable,
                                 float dashLen, float x1, float y1, float x2, float y2) {
         // Draw dashed line.
         if (broken) {
+            /* Disable drawing broken bones.
             Vector2 p3 = new Vector2(x2 - x1, y2 - y1);
             float iMaxF = p3.len() / dashLen;
             int iMax = (int) Math.ceil(iMaxF);
@@ -71,6 +81,7 @@ public class Utils {
                         shapeRenderer.rectLine(x1d, y1d, x2d, y2d, 1f, Color.RED, Color.RED);
                 }
             }
+            */
         }
         // Draw a single line.
         else {
@@ -78,14 +89,26 @@ public class Utils {
         }
     }
 
-    public static Comparator stableBoneComparator = new Comparator<WormSegment>() {
-        public int compare(WormSegment s1, WormSegment s2) {
-            float diff = s1.stabilizationCountDown - s1.stabilizationCountDown;
-            if (diff < 0) return -1;
-            else if (diff > 0) return 1;
-            else return 0;
+    public static void drawInstabilities(Config config, float deltaTime) {
+        Gdx.gl.glEnable(Gdx.gl20.GL_BLEND);
+        config.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (WormSegment seg : config.worm.segs) {
+            if (seg.isStable()) {
+                seg.instabilityAnimationCountdown = config.segInstabilityAnimationTime;
+            }
+            else {
+                config.shapeRenderer.setColor(171, 11, 0, seg.instabilityAnimationCountdown / config.segInstabilityAnimationTime);
+                Vector2 pos = seg.body.getPosition();
+                config.shapeRenderer.circle(pos.x, pos.y,
+                        40 * (config.segInstabilityAnimationTime - seg.instabilityAnimationCountdown) / config.segInstabilityAnimationTime);
+                seg.instabilityAnimationCountdown -= deltaTime;
+                if (seg.instabilityAnimationCountdown < 0)
+                    seg.instabilityAnimationCountdown = config.segInstabilityAnimationTime;
+            }
         }
-    };
+        config.shapeRenderer.end();
+        Gdx.gl.glDisable(Gdx.gl20.GL_BLEND);
+    }
 
     public static void drawTouch(Config config, float deltaTime) {
         // Add new touch points.
@@ -96,6 +119,7 @@ public class Utils {
         }
 
         // Draw existing touch points
+        Gdx.gl.glEnable(Gdx.gl20.GL_BLEND);
         config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = config.touchPos.size - 1; i >= 0; i--) {
             if (config.touchCountDown.get(i) <= 0) {
@@ -105,11 +129,12 @@ public class Utils {
             else {
                 Vector2 v = config.touchPos.get(i);
                 float timeLeft = config.touchCountDown.get(i);
-                config.shapeRenderer.setColor(0, 0, 0, 0.3f);
+                config.shapeRenderer.setColor(0, 0, 0, timeLeft/config.touchCountDownInit);
                 config.shapeRenderer.circle(v.x, v.y, 40*(config.touchCountDownInit-timeLeft)/config.touchCountDownInit);
                 config.touchCountDown.set(i, timeLeft - deltaTime);
             }
         }
         config.shapeRenderer.end();
+        Gdx.gl.glDisable(Gdx.gl20.GL_BLEND);
     }
 }

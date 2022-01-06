@@ -179,8 +179,9 @@ public class Config {
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
-    public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.
-    public final float boneStabilizationTime = 100f;  // Stabilize the bone for this amount of seconds.
+    public final int maxStabilizedSegs = 10;  // At most this no. of segments can be stabilized.
+    public final float boneStabilizationTime = 10f;  // Stabilize the bone for this amount of seconds.
+    public final float segInstabilityAnimationTime = 1f; // Instability animation takes this number of seconds.
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
     public PolygonShape segShapeM;  // Middle piece.

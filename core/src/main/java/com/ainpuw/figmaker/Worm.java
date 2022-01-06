@@ -218,7 +218,7 @@ public class Worm {
         Array<WormSegment> stableSegs = new Array<>();
         for (WormSegment seg: segs) {
             // Add currently stable segments.
-            if (seg.stabilizationCountDown >= 0) {
+            if (seg.isStable()) {
                 stableSegs.add(seg);
                 continue;
             }
@@ -226,7 +226,7 @@ public class Worm {
             for (Fixture fix : seg.body.getFixtureList()) {
                 if (fix.testPoint(touchPos)) {
                     stableSegs.add(seg);
-                    seg.stabilizationCountDown = config.boneStabilizationTime;
+                    seg.stabilizationCountdown = config.boneStabilizationTime;
                     break;
                 }
             }
@@ -430,7 +430,7 @@ public class Worm {
             boolean broken = seg1.boneVisuallyBroken();
             if (seg2.parent == seg1)
                 broken = seg2.boneVisuallyBroken();
-            boolean stable = seg1.stabilizationCountDown >= 0 || seg2.stabilizationCountDown >= 0;
+            boolean stable = seg1.isStable()|| seg2.isStable();
 
             // Center to center bone.
             Vector2 body1Ctr = seg1.body.getPosition();
@@ -463,6 +463,9 @@ public class Worm {
             config.skeletonRenderer.draw(config.spriteBatch, seg.skeleton);
         }
         config.spriteBatch.end();
+
+        // Game play aids.
+        Utils.drawInstabilities(config, deltaTime);
 
         if (config.worm.segs.size > 0)
             Utils.drawTouch(config, deltaTime);

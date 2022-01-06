@@ -25,7 +25,6 @@ public class Main extends ApplicationAdapter {
           TODO:
           1. Play the animation 1 loop then convert to Box2d worm.
           2. Debug why it cannot maintain only maxStabilizedSegs number of segments.
-          3. Make it visually better. The touch.
          */
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(config.screenR, config.screenG, config.screenB, config.screenA);

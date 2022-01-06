@@ -33,7 +33,8 @@ public class WormSegment {
     public DistanceJointDef parentE1JointDef = null;
     public Joint parentE2Joint = null;  // The longest end to end joint.
     public DistanceJointDef parentE2JointDef = null;
-    public float stabilizationCountDown = -0.001f;
+    public float stabilizationCountdown = -0.001f;
+    public float instabilityAnimationCountdown;
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -67,6 +68,9 @@ public class WormSegment {
         this.animationState.setAnimation(0, spineConfig.defaultAnimation, true);
         animationState.update((float) Math.random());  // Random offset.
         animationState.apply(skeleton);
+
+        // Other.
+        instabilityAnimationCountdown = (float) Math.random() * config.segInstabilityAnimationTime;
     }
 
     public boolean boneVisuallyBroken() {
@@ -79,9 +83,9 @@ public class WormSegment {
     }
 
     public void updateBoneStabilization(float deltaTime) {
-        stabilizationCountDown = Math.max(-0.001f, stabilizationCountDown - deltaTime);
-        // Destroy joint to its original Spine animation locatin.
-        if (stabilizationCountDown < 0) {
+        stabilizationCountdown = Math.max(-0.001f, stabilizationCountdown - deltaTime);
+        // Destroy joint to its original Spine animation location.
+        if (!isStable()) {
             if (anchorCJoint != null) {
                 config.world.destroyJoint(anchorCJoint);
                 anchorCJoint = null;
@@ -93,7 +97,7 @@ public class WormSegment {
         }
         // Allow one frame of parent-child asynchronization.
         // Handle this to parent bones.
-        if (parent != null && stabilizationCountDown < 0 && parent.stabilizationCountDown < 0) {
+        if (parent != null && !isStable() && !parent.isStable()) {
             if (parentCJoint != null) {
                 config.world.destroyJoint(parentCJoint);
                 parentCJoint = null;
@@ -109,7 +113,7 @@ public class WormSegment {
         }
         // Handle this to children bones.
         for (WormSegment child : children) {
-            if (stabilizationCountDown < 0 && child.stabilizationCountDown < 0) {
+            if (!isStable() && !child.isStable()) {
 
                 if (child.parentCJoint != null) {
                     config.world.destroyJoint(child.parentCJoint);
@@ -142,7 +146,7 @@ public class WormSegment {
                 parentE1Joint = config.world.createJoint(parentE1JointDef);
             if (parentE2Joint == null)
                 parentE2Joint = config.world.createJoint(parentE2JointDef);
-             */
+            */
         }
         // Create this to children joints.
         for (WormSegment child : children) {
@@ -153,29 +157,47 @@ public class WormSegment {
                 child.parentE1Joint = config.world.createJoint(child.parentE1JointDef);
             if (child.parentE2Joint == null)
                 child.parentE2Joint = config.world.createJoint(child.parentE2JointDef);
-             */
+            */
         }
     }
 
+    public boolean isStable() {
+        return stabilizationCountdown >= 0;
+    }
 
     public void step() {
-        // Apply a random impulse to the segment.
-        double randNum = Math.random();
         Vector2 pos = body.getPosition();
-        if (randNum > 0.75) {
-            if (pos.y < config.h)
+        boolean useRand = true;
+        // Make sure the worm stays in the game play area.
+        if (pos.y > config.h) {
+            body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), pos, true);
+            useRand = false;
+        }
+        if (pos.y < config.segShadowYRangeRef.x + config.segMidW) {
+            body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
+            useRand = false;
+        }
+        if (pos.x > config.w) {
+            body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), pos, true);
+            useRand = false;
+        }
+        if (pos.x < 0) {
+            body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), pos, true);
+            useRand = false;
+        }
+
+        // Apply a random impulse to the segment.
+        if (useRand) {
+            double randNum = Math.random();
+            // Random offset.
+            pos.x += Math.random();
+            if (randNum > 0.75)
                 body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
-        }
-        else if (randNum > 0.5) {
-            if (pos.y > 0)
+            else if (randNum > 0.5)
                 body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), pos, true);
-        }
-        else if (randNum > 0.25) {
-            if (pos.x < config.w)
+            else if (randNum > 0.25)
                 body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), pos, true);
-        }
-        else {
-            if (pos.x > 0)
+            else
                 body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), pos, true);
         }
     }
