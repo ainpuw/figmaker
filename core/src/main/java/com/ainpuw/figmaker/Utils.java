@@ -96,13 +96,22 @@ public class Utils {
             if (seg.isStable()) {
                 seg.instabilityAnimationCountdown = config.segInstabilityAnimationTime;
             }
+            else if (!seg.isStable() && seg.noOfStabilizations >= config.segMaxStabilizationChances) {
+                // The segment is dead, do nothing.
+                continue;
+            }
             else {
-                float rColor = 1 * Math.max(0f, config.segMaxStabilizationChances - seg.noOfStabilizations) / config.segMaxStabilizationChances;
+                float rColor = Math.max(0f, config.segMaxStabilizationChances - seg.noOfStabilizations) / config.segMaxStabilizationChances;
+                // Use black color earlier as a warning.
+                if (seg.noOfStabilizations >= config.segMaxStabilizationChances - 1)
+                    rColor = 0;
                 config.shapeRenderer.setColor(rColor, 0, 0, seg.instabilityAnimationCountdown / config.segInstabilityAnimationTime);
                 Vector2 pos = seg.body.getPosition();
                 float r = 30 * (config.segInstabilityAnimationTime - seg.instabilityAnimationCountdown) / config.segInstabilityAnimationTime;
                 config.shapeRenderer.circle(pos.x, pos.y, r);
-                config.shapeRenderer.circle(pos.x, pos.y, r+1);  // Fake line width.
+                config.shapeRenderer.circle(pos.x, pos.y, r+0.5f);  // Fake line width.
+                config.shapeRenderer.circle(pos.x, pos.y, r+1);
+                config.shapeRenderer.circle(pos.x, pos.y, r+1.5f);
                 config.shapeRenderer.circle(pos.x, pos.y, r+2);
                 seg.instabilityAnimationCountdown -= deltaTime;
                 if (seg.instabilityAnimationCountdown < 0)

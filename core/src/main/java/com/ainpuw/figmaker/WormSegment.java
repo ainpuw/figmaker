@@ -95,6 +95,13 @@ public class WormSegment {
                 config.world.destroyJoint(anchorEJoint);
                 anchorEJoint = null;
             }
+            // Segment darkens.
+            float rColor = 1f * (config.segMaxStabilizationChances - noOfStabilizations) / config.segMaxStabilizationChances;
+            if (noOfStabilizations >= config.segMaxStabilizationChances)
+                rColor = 0.3f;
+            else
+                rColor = 0.4f + rColor * 0.6f;
+            skeleton.setColor(rColor, rColor, rColor, 1);
         }
         // Allow one frame of parent-child asynchronization.
         // Handle this to parent bones.
