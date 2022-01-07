@@ -35,6 +35,7 @@ public class WormSegment {
     public DistanceJointDef parentE2JointDef = null;
     public float stabilizationCountdown = -0.001f;
     public float instabilityAnimationCountdown;
+    public int noOfStabilizations = 0;
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -174,7 +175,11 @@ public class WormSegment {
             useRand = false;
         }
         if (pos.y < config.segShadowYRangeRef.x + config.segMidW) {
-            body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
+            if (noOfStabilizations < config.segMaxStabilizationChances) {
+                body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
+            } else {
+                body.applyLinearImpulse(new Vector2(0, config.randomImpulse/100), pos, true);
+            }
             useRand = false;
         }
         if (pos.x > config.w) {
@@ -187,18 +192,19 @@ public class WormSegment {
         }
 
         // Apply a random impulse to the segment.
-        if (useRand) {
+        if (useRand && noOfStabilizations < config.segMaxStabilizationChances) {
             double randNum = Math.random();
             // Random offset.
-            pos.x += Math.random();
+            pos.x += Math.random() * 2 - 1;
+            float force = config.randomImpulse / (float) Math.pow(10, noOfStabilizations);
             if (randNum > 0.75)
-                body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
+                body.applyLinearImpulse(new Vector2(0, force), pos, true);
             else if (randNum > 0.5)
-                body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), pos, true);
+                body.applyLinearImpulse(new Vector2(0, -force), pos, true);
             else if (randNum > 0.25)
-                body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), pos, true);
+                body.applyLinearImpulse(new Vector2(force, 0), pos, true);
             else
-                body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), pos, true);
+                body.applyLinearImpulse(new Vector2(-force, 0), pos, true);
         }
     }
 

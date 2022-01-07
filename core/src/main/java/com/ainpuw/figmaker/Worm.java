@@ -164,7 +164,7 @@ public class Worm {
     }
 
     public void createBox2dWorm(Bone rootBone) {
-        // createPen();
+        createPen();
         createBox2dWormSegNJoint(rootBone, null);
 
         for (WormSegment seg : segs) {
@@ -222,11 +222,17 @@ public class Worm {
                 stableSegs.add(seg);
                 continue;
             }
+
+            // Can no longer stablize even if touched.
+            if (seg.noOfStabilizations >= config.segMaxStabilizationChances)
+                continue;
+
             // Add new stable segments that are touched.
             for (Fixture fix : seg.body.getFixtureList()) {
                 if (fix.testPoint(touchPos)) {
                     stableSegs.add(seg);
                     seg.stabilizationCountdown = config.boneStabilizationTime;
+                    seg.noOfStabilizations += 1;
                     break;
                 }
             }

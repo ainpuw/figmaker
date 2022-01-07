@@ -97,10 +97,13 @@ public class Utils {
                 seg.instabilityAnimationCountdown = config.segInstabilityAnimationTime;
             }
             else {
-                config.shapeRenderer.setColor(171, 11, 0, seg.instabilityAnimationCountdown / config.segInstabilityAnimationTime);
+                float rColor = 1 * Math.max(0f, config.segMaxStabilizationChances - seg.noOfStabilizations) / config.segMaxStabilizationChances;
+                config.shapeRenderer.setColor(rColor, 0, 0, seg.instabilityAnimationCountdown / config.segInstabilityAnimationTime);
                 Vector2 pos = seg.body.getPosition();
-                config.shapeRenderer.circle(pos.x, pos.y,
-                        40 * (config.segInstabilityAnimationTime - seg.instabilityAnimationCountdown) / config.segInstabilityAnimationTime);
+                float r = 30 * (config.segInstabilityAnimationTime - seg.instabilityAnimationCountdown) / config.segInstabilityAnimationTime;
+                config.shapeRenderer.circle(pos.x, pos.y, r);
+                config.shapeRenderer.circle(pos.x, pos.y, r+1);  // Fake line width.
+                config.shapeRenderer.circle(pos.x, pos.y, r+2);
                 seg.instabilityAnimationCountdown -= deltaTime;
                 if (seg.instabilityAnimationCountdown < 0)
                     seg.instabilityAnimationCountdown = config.segInstabilityAnimationTime;
