@@ -34,25 +34,25 @@ public class Level1 extends Scenario {
                 growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
                 boolean wormSetupFinished = true;
 
-                if (trigger.equals("1")) {
+                if (trigger.equals("showDSeg")) {
                     config.wormOne = config.wormhurt;
                 }
-                if (trigger.equals("2")) {
+                if (trigger.equals("showNSeg")) {
                     config.wormOne = config.wormseg;
                 }
-                if (trigger.equals("3")) {
+                if (trigger.equals("playGrow")) {
                     config.wormOne = null;
                     config.wormSkeleton = wormlvl;
                 }
-                if (trigger.equals("4")) {
+                if (trigger.equals("genB2DWorm")) {
                     playReady = true;
                 }
                 if (growAnimationFinished && config.wormSkeleton != null) {
+                    float noPeriods = wormlvl.animationState.getTracks().get(0).getAnimationTime()/wormlvl.animationState.getTracks().get(0).getAnimation().getDuration();
                     if (!wormlvl.animationState.getTracks().get(0).getAnimation().getName().equals("idle")) {
                         wormlvl.animationState.setAnimation(0, "idle", true);
                     }
-                    // FIXME: getAnimationTime() > 2 maybe buggy.
-                    else if (wormlvl.animationState.getTracks().get(0).getAnimationTime() > 0.5f && playReady) {
+                    else if (Math.abs(noPeriods - (int)noPeriods) < 0.05 && playReady) {
                         config.wormSkeleton = null;
                         config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                         config.evolveWorld = true;

@@ -36,6 +36,7 @@ public class WormSegment {
     public float stabilizationCountdown = -0.001f;
     public float instabilityAnimationCountdown;
     public int noOfStabilizations = 0;
+    public boolean spreadoutPhase = true;
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -174,12 +175,13 @@ public class WormSegment {
     }
 
     public void step() {
-        Vector2 pos = body.getPosition();
+        Vector2 pos = new Vector2(body.getPosition());
         boolean useRand = true;
         // Make sure the worm stays in the game play area.
         if (pos.y > config.h) {
             body.applyLinearImpulse(new Vector2(0, -config.randomImpulse), pos, true);
             useRand = false;
+            spreadoutPhase = false;
         }
         if (pos.y < config.segShadowYRangeRef.x + config.segMidW) {
             if (noOfStabilizations < config.segMaxStabilizationChances) {
@@ -188,18 +190,31 @@ public class WormSegment {
                 body.applyLinearImpulse(new Vector2(0, config.randomImpulse/100), pos, true);
             }
             useRand = false;
+            spreadoutPhase = false;
         }
         if (pos.x > config.w) {
             body.applyLinearImpulse(new Vector2(-config.randomImpulse, 0), pos, true);
             useRand = false;
+            spreadoutPhase = false;
         }
         if (pos.x < 0) {
             body.applyLinearImpulse(new Vector2(config.randomImpulse, 0), pos, true);
             useRand = false;
+            spreadoutPhase = false;
         }
 
         // Apply a random impulse to the segment.
-        if (useRand && noOfStabilizations < config.segMaxStabilizationChances) {
+        if (spreadoutPhase) {
+            // Give each segment a force to spread them out.
+            Vector2 screenCenter = new Vector2(config.w/2, config.h/2);
+            Vector2 force = new Vector2(pos);
+            force.sub(screenCenter);
+            force.nor();
+            force.scl(config.randomImpulse);
+            force.scl(1000);
+            body.applyLinearImpulse(force, body.getPosition(), true);
+        }
+        else if (useRand && noOfStabilizations < config.segMaxStabilizationChances) {
             double randNum = Math.random();
             // Random offset.
             pos.x += Math.random() * 2 - 1;

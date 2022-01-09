@@ -142,7 +142,7 @@ public class Utils {
                 Vector2 v = config.touchPos.get(i);
                 float timeLeft = config.touchCountDown.get(i);
                 config.shapeRenderer.setColor(0, 0, 0, timeLeft/config.touchCountDownInit);
-                config.shapeRenderer.circle(v.x, v.y, 40*(config.touchCountDownInit-timeLeft)/config.touchCountDownInit);
+                config.shapeRenderer.circle(v.x, v.y, config.touchRadius*(config.touchCountDownInit-timeLeft)/config.touchCountDownInit);
                 config.touchCountDown.set(i, timeLeft - deltaTime);
             }
         }

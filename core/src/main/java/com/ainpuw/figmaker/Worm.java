@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -18,6 +17,7 @@ public class Worm {
     private Array<Body> pen = new Array<>();
     public Array<WormSegment> segs = new Array<>();
     public Array<WormSegment> repulsivePairs = new Array<>();
+    public boolean enableInputs = false;
 
     public Worm(Config config) {
         this.config = config;
@@ -164,7 +164,7 @@ public class Worm {
     }
 
     public void createBox2dWorm(Bone rootBone) {
-        createPen();
+        // createPen();
         createBox2dWormSegNJoint(rootBone, null);
 
         for (WormSegment seg : segs) {
@@ -208,6 +208,10 @@ public class Worm {
             one2two.nor();
             one2two.x *= config.adjacentRepulsiveForceFactor / dist / dist;  // 1/r^2 force.
             one2two.y *= config.adjacentRepulsiveForceFactor / dist / dist;
+            if (repulsivePairs.get(2 * i).spreadoutPhase || (repulsivePairs.get(2 * i + 1).spreadoutPhase)) {
+                one2two.x *= 1000;
+                one2two.y *= 1000;
+            }
             Vector2 two2one = new Vector2(-one2two.x, -one2two.y);
             body1.applyLinearImpulse(two2one, body1.getPosition(), true);
             body2.applyLinearImpulse(one2two, body2.getPosition(), true);
@@ -215,6 +219,8 @@ public class Worm {
     }
 
     public void updateBones(Vector2 touchPos) {
+        if (!enableInputs) return;
+
         Array<WormSegment> stableSegs = new Array<>();
         for (WormSegment seg: segs) {
             // Add currently stable segments.
@@ -228,14 +234,12 @@ public class Worm {
                 continue;
 
             // Add new stable segments that are touched.
-            for (Fixture fix : seg.body.getFixtureList()) {
-                if (fix.testPoint(touchPos)) {
-                    stableSegs.add(seg);
-                    seg.stabilizationCountdown = config.boneStabilizationTime;
-                    seg.noOfStabilizations += 1;
-                    break;
-                }
+            if (seg.body.getPosition().dst(touchPos) <= config.touchRadius) {
+                stableSegs.add(seg);
+                seg.stabilizationCountdown = config.boneStabilizationTime;
+                seg.noOfStabilizations += 1;
             }
+
         }
 
         // Sort stable segments by their age in ascending order.
@@ -471,10 +475,13 @@ public class Worm {
         config.spriteBatch.end();
 
         // Game play aids.
-        Utils.drawInstabilities(config, deltaTime);
+        if (config.worm.segs.size > 0) {
+            if (config.drawInstabilities)
+                Utils.drawInstabilities(config, deltaTime);
 
-        if (config.worm.segs.size > 0)
-            Utils.drawTouch(config, deltaTime);
+            if (config.drawTouch)
+                Utils.drawTouch(config, deltaTime);
+        }
     }
 }
 
