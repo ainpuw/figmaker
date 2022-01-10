@@ -184,8 +184,9 @@ public class Config {
     public final float touchRadius = 60;  // Stabilize all segment withing radius.
     public final float segInstabilityAnimationTime = 1f; // Instability animation takes this number of seconds.
     public final int segMaxStabilizationChances = 3;
-    public final boolean drawInstabilities = false;
-    public final boolean drawTouch = false;
+    public boolean drawInstabilities = false;
+    public boolean drawTouch = false;
+    public boolean enableInputs = false;
     public PolygonShape segShapeL;  // End left.
     public PolygonShape segShapeR;  // End right.
     public PolygonShape segShapeM;  // Middle piece.

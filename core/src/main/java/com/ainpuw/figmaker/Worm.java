@@ -17,7 +17,6 @@ public class Worm {
     private Array<Body> pen = new Array<>();
     public Array<WormSegment> segs = new Array<>();
     public Array<WormSegment> repulsivePairs = new Array<>();
-    public boolean enableInputs = false;
 
     public Worm(Config config) {
         this.config = config;
@@ -31,14 +30,14 @@ public class Worm {
         bodyDef.position.set(config.w / 2, config.penCenterY - config.penH / 2);
         pen.add(config.world.createBody(bodyDef));
         // The left wall.
-        bodyDef.position.set(config.penCenterX - config.penW / 2, config.penCenterY);
-        pen.add(config.world.createBody(bodyDef));
+        //bodyDef.position.set(config.penCenterX - config.penW / 2, config.penCenterY);
+        //pen.add(config.world.createBody(bodyDef));
         // The right wall.
-        bodyDef.position.set(config.penCenterX + config.penW / 2, config.penCenterY);
-        pen.add(config.world.createBody(bodyDef));
+        //bodyDef.position.set(config.penCenterX + config.penW / 2, config.penCenterY);
+        //pen.add(config.world.createBody(bodyDef));
         // The ceiling.
-        bodyDef.position.set(config.w / 2, config.penCenterY + config.penH / 2 + config.penThickness);
-        pen.add(config.world.createBody(bodyDef));
+        //bodyDef.position.set(config.w / 2, config.penCenterY + config.penH / 2 + config.penThickness);
+        //pen.add(config.world.createBody(bodyDef));
 
         // Set pen wall shape.
         FixtureDef fixture = new FixtureDef();
@@ -51,14 +50,14 @@ public class Worm {
         shape.setAsBox(config.w * 0.6f, config.penThickness / 2, new Vector2(0, -config.penThickness / 2), 0);
         pen.get(0).createFixture(fixture);
         // The left wall.
-        shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(-config.penThickness / 2, 0), 0);
-        pen.get(1).createFixture(fixture);
+        //shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(-config.penThickness / 2, 0), 0);
+        //pen.get(1).createFixture(fixture);
         // The right wall.
-        shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(config.penThickness / 2, 0), 0);
-        pen.get(2).createFixture(fixture);
+        //shape.setAsBox(config.penThickness / 2, config.penH / 2, new Vector2(config.penThickness / 2, 0), 0);
+        //pen.get(2).createFixture(fixture);
         // The ceiling.
-        shape.setAsBox(config.w * 0.6f, config.penThickness / 2, new Vector2(0, -config.penThickness / 2), 0);
-        pen.get(3).createFixture(fixture);
+        //shape.setAsBox(config.w * 0.6f, config.penThickness / 2, new Vector2(0, -config.penThickness / 2), 0);
+        //pen.get(3).createFixture(fixture);
         shape.dispose();
     }
 
@@ -164,7 +163,7 @@ public class Worm {
     }
 
     public void createBox2dWorm(Bone rootBone) {
-        // createPen();
+        createPen();
         createBox2dWormSegNJoint(rootBone, null);
 
         for (WormSegment seg : segs) {
@@ -191,35 +190,10 @@ public class Worm {
         for (WormSegment seg : segs) {
             seg.step();
         }
-
-        for (int i = 0; i < repulsivePairs.size / 2; i++) {
-            // Odd indices are pairs of even indices.
-            Body body1 = repulsivePairs.get(2 * i).body;
-            Body body2 = repulsivePairs.get(2 * i + 1).body;
-            // v2 - v1.
-            Vector2 body1Pos = new Vector2(body1.getPosition());
-            body1Pos.x = -body1Pos.x;
-            body1Pos.y = -body1Pos.y;
-            Vector2 one2two = new Vector2(body2.getPosition());
-            one2two.add(body1Pos);
-            // Apply repulsion.
-            float dist = one2two.len();
-            if (dist > config.adjacentRepulsiveForceCutoff) continue;
-            one2two.nor();
-            one2two.x *= config.adjacentRepulsiveForceFactor / dist / dist;  // 1/r^2 force.
-            one2two.y *= config.adjacentRepulsiveForceFactor / dist / dist;
-            if (repulsivePairs.get(2 * i).spreadoutPhase || (repulsivePairs.get(2 * i + 1).spreadoutPhase)) {
-                one2two.x *= 1000;
-                one2two.y *= 1000;
-            }
-            Vector2 two2one = new Vector2(-one2two.x, -one2two.y);
-            body1.applyLinearImpulse(two2one, body1.getPosition(), true);
-            body2.applyLinearImpulse(one2two, body2.getPosition(), true);
-        }
     }
 
     public void updateBones(Vector2 touchPos) {
-        if (!enableInputs) return;
+        if (!config.enableInputs) return;
 
         Array<WormSegment> stableSegs = new Array<>();
         for (WormSegment seg: segs) {
@@ -237,6 +211,7 @@ public class Worm {
             if (seg.body.getPosition().dst(touchPos) <= config.touchRadius) {
                 stableSegs.add(seg);
                 seg.stabilizationCountdown = config.boneStabilizationTime;
+                seg.spreadoutPhase = false;
                 seg.noOfStabilizations += 1;
             }
 

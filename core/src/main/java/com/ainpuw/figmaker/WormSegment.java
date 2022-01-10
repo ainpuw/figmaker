@@ -175,7 +175,7 @@ public class WormSegment {
     }
 
     public void step() {
-        Vector2 pos = new Vector2(body.getPosition());
+        Vector2 pos = body.getPosition();
         boolean useRand = true;
         // Make sure the worm stays in the game play area.
         if (pos.y > config.h) {
@@ -186,9 +186,10 @@ public class WormSegment {
         if (pos.y < config.segShadowYRangeRef.x + config.segMidW) {
             if (noOfStabilizations < config.segMaxStabilizationChances) {
                 body.applyLinearImpulse(new Vector2(0, config.randomImpulse), pos, true);
-            } else {
-                body.applyLinearImpulse(new Vector2(0, config.randomImpulse/100), pos, true);
             }
+            //else {
+            //    body.applyLinearImpulse(new Vector2(0, config.randomImpulse/100), pos, true);
+            //}
             useRand = false;
             spreadoutPhase = false;
         }
@@ -204,7 +205,7 @@ public class WormSegment {
         }
 
         // Apply a random impulse to the segment.
-        if (spreadoutPhase) {
+        if (spreadoutPhase && noOfStabilizations < config.segMaxStabilizationChances) {
             // Give each segment a force to spread them out.
             Vector2 screenCenter = new Vector2(config.w/2, config.h/2);
             Vector2 force = new Vector2(pos);

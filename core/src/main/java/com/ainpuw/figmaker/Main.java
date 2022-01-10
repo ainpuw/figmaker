@@ -1,5 +1,6 @@
 package com.ainpuw.figmaker;
 
+import com.ainpuw.figmaker.scenarios.Intro;
 import com.ainpuw.figmaker.scenarios.Level1;
 import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;

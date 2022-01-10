@@ -1,4 +1,4 @@
-package com.ainpuw.figmaker.scenarios;
+package com.ainpuw.figmaker.scenarios.events;
 
 import com.ainpuw.figmaker.Config;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,11 +11,12 @@ public abstract class Event {
     public boolean ended = false;
     public Array<FileHandle> files;
 
+    public Event() {}
+
     public Event(Config config, String name) {
         this.config = config;
         this.name = name;
         files = new Array<>();
-        init();
     }
 
     public abstract void init();

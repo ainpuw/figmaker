@@ -1,6 +1,7 @@
 package com.ainpuw.figmaker.scenarios;
 
 import com.ainpuw.figmaker.Config;
+import com.ainpuw.figmaker.scenarios.events.Event;
 import com.badlogic.gdx.utils.Array;
 
 public abstract class Scenario {
