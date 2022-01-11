@@ -1,5 +1,6 @@
 package com.ainpuw.figmaker;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -192,9 +193,17 @@ public class Worm {
         }
     }
 
-    public void updateBones(Vector2 touchPos) {
-        if (!config.enableInputs) return;
+    public void updateBones(float deltaTime) {
+        if (!config.enableInputsNBoneUpdate) return;
 
+        // Update bone countdowns. Delete bones/joints when they expire.
+        for (WormSegment seg : config.worm.segs)
+            seg.updateBoneStabilization(deltaTime);
+
+        // Detect inputs and update bones/joints.
+        if (!Gdx.input.justTouched()) return;
+
+        Vector2 touchPos = config.stageBack.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
         Array<WormSegment> stableSegs = new Array<>();
         for (WormSegment seg: segs) {
             // Add currently stable segments.
@@ -218,7 +227,7 @@ public class Worm {
         }
 
         // Sort stable segments by their age in ascending order.
-        stableSegs.sort(Utils.stableBoneComparator);
+        //stableSegs.sort(Utils.stableBoneComparator);
         // Destroy the older bones exceeding maxStabilizedSegs.
         for (int i = 0; i < stableSegs.size - config.maxStabilizedSegs; i++) {
             // Make them expire and delete them.
@@ -412,9 +421,9 @@ public class Worm {
         for (int i = 0; i < config.worm.repulsivePairs.size / 2; i++) {
             WormSegment seg1 = config.worm.repulsivePairs.get(2 * i);
             WormSegment seg2 = config.worm.repulsivePairs.get(2 * i + 1);
-            boolean broken = seg1.boneVisuallyBroken();
+            boolean broken = seg1.parentBoneVisuallyBroken();
             if (seg2.parent == seg1)
-                broken = seg2.boneVisuallyBroken();
+                broken = seg2.parentBoneVisuallyBroken();
             boolean stable = seg1.isStable()|| seg2.isStable();
 
             // Center to center bone.

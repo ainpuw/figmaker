@@ -22,11 +22,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render () {
-        /*
-          TODO:
-          1. Play the animation 1 loop then convert to Box2d worm.
-          2. Debug why it cannot maintain only maxStabilizedSegs number of segments.
-         */
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(config.screenR, config.screenG, config.screenB, config.screenA);
 
@@ -83,15 +78,7 @@ public class Main extends ApplicationAdapter {
         // Gameplay
         /////////////////////////////////////////////
 
-        // TODO: This can be put inside worm step.
-        // Update bone countdowns. Delete bones/joints when they expire.
-        for (WormSegment seg : config.worm.segs)
-            seg.updateBoneStabilization(deltaTime);
-        // Detect inputs and update bones/joints.
-        if (Gdx.input.justTouched()) {
-            Vector2 touchPos = config.stageBack.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            config.worm.updateBones(touchPos);
-        }
+        config.worm.updateBones(deltaTime);
 
         /////////////////////////////////////////////
         // Debug

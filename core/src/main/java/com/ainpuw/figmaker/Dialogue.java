@@ -49,8 +49,8 @@ public class Dialogue {
             if (dialogueCurrentLine >= dialogueLines.length) return "done";
 
             String lineSplit[] = dialogueLines[dialogueCurrentLine].split("###");
-            String currentCharacter = lineSplit[0];  // TODO: Utilize this attribute.
-            String emote = lineSplit[1];  // TODO: Utilize this attribute.
+            String currentCharacter = lineSplit[0];
+            String emote = lineSplit[1];
             String trigger = lineSplit[2];
             String words = lineSplit[3];
 
@@ -88,5 +88,7 @@ public class Dialogue {
 
     public void reset() {
         dialogueCurrentLine = 0;
+        label.setText("");
+        label.restart();
     }
 }

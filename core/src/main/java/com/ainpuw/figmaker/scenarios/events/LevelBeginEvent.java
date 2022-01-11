@@ -5,12 +5,16 @@ import com.ainpuw.figmaker.SpineActor;
 import com.badlogic.gdx.Gdx;
 
 public class LevelBeginEvent extends Event {
-    SpineActor wormlvl;
-    boolean playReady = false;
-    boolean growAnimationFinished = false;
+    private SpineActor wormlvl;
+    private String dialogueFile;
+    private boolean waitToAdvance = false;
+    private String trigger = "";
+    private boolean playReady = false;
+    private boolean growAnimationFinished = false;
 
-    public LevelBeginEvent(Config config, String name, SpineActor wormlvl) {
+    public LevelBeginEvent(Config config, String name, String dialogueFile, SpineActor wormlvl) {
         super(config, name);
+        this.dialogueFile = dialogueFile;
         this.wormlvl = wormlvl;
         init();
     }
@@ -18,7 +22,7 @@ public class LevelBeginEvent extends Event {
     public void init() {
         config.dialogueBox.reset();
         config.dialogueBox.dialogueLines =
-                Gdx.files.internal("dialogue/level1_intro.txt").readString().split("\\r?\\n");
+                Gdx.files.internal(dialogueFile).readString().split("\\r?\\n");
         config.dialogueBox.addToStage();
 
         // Skip the first frame that has the coordinates of the setup mode.
@@ -27,9 +31,8 @@ public class LevelBeginEvent extends Event {
     }
 
     public void step(float deltaTime) {
-        String trigger = config.dialogueBox.step();
+        if (!waitToAdvance) trigger = config.dialogueBox.step();
         growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
-        boolean wormSetupFinished = true;
 
         if (trigger.equals("showDSeg")) {
             config.wormOne = config.wormhurt;
@@ -43,6 +46,7 @@ public class LevelBeginEvent extends Event {
         }
         if (trigger.equals("genB2DWorm")) {
             playReady = true;
+            waitToAdvance = true;
         }
         if (growAnimationFinished && config.wormSkeleton != null) {
             float noPeriods = wormlvl.animationState.getTracks().get(0).getAnimationTime()/wormlvl.animationState.getTracks().get(0).getAnimation().getDuration();
@@ -53,28 +57,25 @@ public class LevelBeginEvent extends Event {
                 config.wormSkeleton = null;
                 config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                 config.evolveWorld = true;
+                waitToAdvance = false;
             }
         }
         if (trigger.equals("showInsta")) {
             config.drawInstabilities = true;
         }
         if (trigger.equals("allowInput")) {
-            config.enableInputs = true;
+            config.enableInputsNBoneUpdate = true;
             config.drawTouch = true;
         }
         if (trigger.equals("done")) {
             config.dialogueBox.removeFromStage();
-        }
-        if (trigger.equals("done1") && wormSetupFinished) {
-            config.worm.destroyBox2dWorm();
+            config.wormOne = null;
+            config.wormSkeleton = null;
             active = false;
             ended = true;
             dispose();
         }
     }
 
-    public void dispose() {
-        config.wormOne = null;
-        config.dialogueBox.removeFromStage();
-    }
+    public void dispose() {}
 }

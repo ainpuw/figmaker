@@ -8,9 +8,6 @@ public abstract class Scenario {
     public Config config;
     public Array<Event> events;
 
-    public int spawnAnimation; // Not int.
-    public int wormCoords;  // Not int.
-
     public Scenario(Config config) {
         this.config = config;
         this.events = new Array<>();

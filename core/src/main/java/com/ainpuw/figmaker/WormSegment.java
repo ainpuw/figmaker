@@ -75,11 +75,18 @@ public class WormSegment {
         instabilityAnimationCountdown = (float) Math.random() * config.segInstabilityAnimationTime;
     }
 
-    public boolean boneVisuallyBroken() {
+    public boolean parentBoneVisuallyBroken() {
         if (parent == null) return false;
+        return boneBroken(parentCJointDef.length * config.boneBrokenVisualMargin);
+    }
 
-        if (body.getPosition().dst(parent.body.getPosition()) <
-            parentCJointDef.length * config.boneBrokenVisualMargin)
+    public boolean parentBoneStrictBroken() {
+        if (parent == null) return false;
+        return boneBroken(parentCJointDef.length * config.boneBrokenStrictMargin);
+    }
+
+    public boolean boneBroken(float cutoff) {
+        if (body.getPosition().dst(parent.body.getPosition()) < cutoff)
             return false;
         return true;
     }
@@ -172,6 +179,11 @@ public class WormSegment {
 
     public boolean isStable() {
         return stabilizationCountdown >= 0;
+    }
+
+    public boolean isDead() {
+        // Stabilized for the max number of times and the effect of the last time has worn off.
+        return noOfStabilizations >= config.segMaxStabilizationChances && !isStable();
     }
 
     public void step() {
