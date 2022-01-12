@@ -26,25 +26,6 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(config.screenR, config.screenG, config.screenB, config.screenA);
 
         /////////////////////////////////////////////
-        // Scenario management
-        /////////////////////////////////////////////
-
-        if (scenario != null) {
-            // Get the next scenario if the scenario is over.
-            if (scenario.isOver()) {
-                scenario = scenario.nextScenario();
-            }
-            // Advance the scenario by one step.
-            else {
-                scenario.step(deltaTime);
-            }
-        }
-        else {
-            // Do nothing.
-            // System.out.println("No more scenarios.");
-        }
-
-        /////////////////////////////////////////////
         // Scene2D
         /////////////////////////////////////////////
 
@@ -65,6 +46,25 @@ public class Main extends ApplicationAdapter {
             config.worm.step();  // Apply forces to worm to be evolved next rendering.
         }
         Worm.drawWorm(deltaTime, config);
+
+        /////////////////////////////////////////////
+        // Scenario management
+        /////////////////////////////////////////////
+
+        if (scenario != null) {
+            // Get the next scenario if the scenario is over.
+            if (scenario.isOver()) {
+                scenario = scenario.nextScenario();
+            }
+            // Advance the scenario by one step.
+            else {
+                scenario.step(deltaTime);
+            }
+        }
+        else {
+            // Do nothing.
+            // System.out.println("No more scenarios.");
+        }
 
         /////////////////////////////////////////////
         // Scene2D cont.

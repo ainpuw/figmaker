@@ -186,6 +186,12 @@ public class Worm {
         for (Body b : allBodies) {
             config.world.destroyBody(b);
         }
+
+        while (!segs.isEmpty())
+            segs.pop();
+
+        while (!repulsivePairs.isEmpty())
+            repulsivePairs.pop();
     }
 
     public void kill() {

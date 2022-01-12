@@ -67,7 +67,9 @@ public class Dialogue {
             }
 
             updateText(words + endMarker);
-            portrait.animationState.setAnimation(1, emote, true);
+            if (!currentCharacter.equals("0"))  // No character.
+                portrait.animationState.setAnimation(1, emote, true);
+
             return trigger;
         }
         else if (Gdx.input.justTouched()) {
@@ -80,6 +82,10 @@ public class Dialogue {
     public void addToStage() {
         config.stageFront.addActor(background);
         config.stageFront.addActor(portrait);
+        config.stageFront.addActor(label);
+    }
+
+    public void addToStageTextOnly() {
         config.stageFront.addActor(label);
     }
 

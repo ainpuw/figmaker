@@ -14,26 +14,17 @@ public class LevelBeginEvent extends Event {
 
     public LevelBeginEvent(Config config, String name, int expId) {
         super(config, name, expId);
-        if (expId == 2) {
-            this.dialogueFile = "dialogue/level2_intro.txt";
+        this.dialogueFile = "dialogue/level" + expId + "_intro.txt";
+        if (expId == 2)
             this.wormlvl = config.wormlvl2;
-        }
-        else if (expId == 3) {
-            this.dialogueFile = "dialogue/level3_intro.txt";
+        else if (expId == 3)
             this.wormlvl = config.wormlvl3;
-        }
-        else if (expId == 4) {
-            this.dialogueFile = "dialogue/level4_intro.txt";
+        else if (expId == 4)
             this.wormlvl = config.wormlvl4;
-        }
-        else if (expId == 5) {
-            this.dialogueFile = "dialogue/level5_intro.txt";
+        else if (expId == 5)
             this.wormlvl = config.wormlvl5;
-        }
-        else {  // Default to use level 1.
-            this.dialogueFile = "dialogue/level1_intro.txt";
+        else  // Default to use level 1.
             this.wormlvl = config.wormlvl1;
-        }
 
         config.dialogueBox.reset();
         config.dialogueBox.dialogueLines =

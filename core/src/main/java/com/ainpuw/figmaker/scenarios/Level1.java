@@ -5,6 +5,7 @@ import com.ainpuw.figmaker.scenarios.events.Event;
 import com.ainpuw.figmaker.scenarios.events.LevelBeginEvent;
 import com.ainpuw.figmaker.scenarios.events.LevelEndEvent;
 import com.ainpuw.figmaker.scenarios.events.LevelListenEvent;
+import com.ainpuw.figmaker.scenarios.events.LevelTransitionEvent;
 
 public class Level1 extends Scenario {
 
@@ -24,15 +25,18 @@ public class Level1 extends Scenario {
 
     public void step(float deltaTime) {
         // TODO: This add new event mechanism isn't the best.
-        for (int i = events.size - 1; i >= 0 ; i--) {
-            Event eventi = events.get(i);
-            if (eventi.ended && eventi.name.equals("levelBeginEvent")) {
-                events.add(new LevelListenEvent(config, "levelListenEvent", 1));
-            }
-            else if (eventi.ended && eventi.name.equals("levelListenEvent")) {
-                events.add(new LevelEndEvent(config, "levelEndEvent", 1));
-            }
+        // Since we know there will be only 1 concurrent event, we directly take index 0.
+        Event currentEvent = events.get(0);
+        if (currentEvent.ended && currentEvent.name.equals("levelBeginEvent")) {
+            events.add(new LevelListenEvent(config, "levelListenEvent", 1));
         }
+        else if (currentEvent.ended && currentEvent.name.equals("levelListenEvent")) {
+            events.add(new LevelEndEvent(config, "levelEndEvent", 1));
+        }
+        else if (currentEvent.ended && currentEvent.name.equals("levelEndEvent")) {
+            events.add(new LevelTransitionEvent(config, "levelTransitionEvent", 1));
+        }
+
 
         super.step(deltaTime);
     }
