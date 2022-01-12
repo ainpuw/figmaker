@@ -12,14 +12,29 @@ public class LevelBeginEvent extends Event {
     private boolean playReady = false;
     private boolean growAnimationFinished = false;
 
-    public LevelBeginEvent(Config config, String name, String dialogueFile, SpineActor wormlvl) {
-        super(config, name);
-        this.dialogueFile = dialogueFile;
-        this.wormlvl = wormlvl;
-        init();
-    }
+    public LevelBeginEvent(Config config, String name, int expId) {
+        super(config, name, expId);
+        if (expId == 2) {
+            this.dialogueFile = "dialogue/level2_intro.txt";
+            this.wormlvl = config.wormlvl2;
+        }
+        else if (expId == 3) {
+            this.dialogueFile = "dialogue/level3_intro.txt";
+            this.wormlvl = config.wormlvl3;
+        }
+        else if (expId == 4) {
+            this.dialogueFile = "dialogue/level4_intro.txt";
+            this.wormlvl = config.wormlvl4;
+        }
+        else if (expId == 5) {
+            this.dialogueFile = "dialogue/level5_intro.txt";
+            this.wormlvl = config.wormlvl5;
+        }
+        else {  // Default to use level 1.
+            this.dialogueFile = "dialogue/level1_intro.txt";
+            this.wormlvl = config.wormlvl1;
+        }
 
-    public void init() {
         config.dialogueBox.reset();
         config.dialogueBox.dialogueLines =
                 Gdx.files.internal(dialogueFile).readString().split("\\r?\\n");
@@ -31,7 +46,7 @@ public class LevelBeginEvent extends Event {
     }
 
     public void step(float deltaTime) {
-        if (!waitToAdvance) trigger = config.dialogueBox.step();
+        if (!waitToAdvance) trigger = config.dialogueBox.step(signature);
         growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
 
         if (trigger.equals("showDSeg")) {

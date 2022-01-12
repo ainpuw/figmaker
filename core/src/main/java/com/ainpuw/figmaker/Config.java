@@ -22,6 +22,7 @@ public class Config {
     ////////////////////////////////////////////////////
     // Game general
     ////////////////////////////////////////////////////
+
     // Default screen size, but allows ExtendViewport scaling.
     // 16:9 aspect ratio, a balance between laptop and phone screens.
     public final float w = 1024;
@@ -49,6 +50,10 @@ public class Config {
     public Array<Float> touchCountDown = new Array<Float>();
     public final float touchCountDownInit = 0.2f;  // In seconds.
     public final float maxNoOfTouch = 50;
+
+    // Game progress.
+    public Array<Integer> segsDiedPerExp;
+    public Array<Integer> totalSegsPerExp;
 
     ////////////////////////////////////////////////////
     // Scene2D parameters
@@ -179,7 +184,7 @@ public class Config {
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
-    public final float boneBrokenStrictMargin = 1.05f;
+    public final float segCtrToAnchorMargin = 10f;  // In screen size units.
     public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.
     public final float boneStabilizationTime = 5f;  // Stabilize the bone for this amount of seconds.
     public final float touchRadius = 60;  // Stabilize all segment withing radius.
@@ -271,11 +276,20 @@ public class Config {
         skin.getFont("default-font").getData().markupEnabled = true;
         skin.getFont("default-font").getData().setScale(scale);
 
+        // Game progress.
+        segsDiedPerExp = new Array<>();
+        totalSegsPerExp = new Array<>();
+        for (int i = 0; i < 5; i++) {
+            segsDiedPerExp.add(0);
+            totalSegsPerExp.add(0);
+        }
+
         // Initialize actors.
         background = new SpineActor(spineActorConfigs.get("background"), skeletonRenderer);
         character = new SpineActor(spineActorConfigs.get("character"), skeletonRenderer);
         wormseg = new SpineActor(spineActorConfigs.get("wormseg"), skeletonRenderer);
         wormhurt = new SpineActor(spineActorConfigs.get("wormhurt"), skeletonRenderer);
+        // Preloading all 5 isn't good, but they shouldn't be too big.
         wormlvl1 = new SpineActor(spineActorConfigs.get("wormlvl1"), skeletonRenderer);
         wormlvl2 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
         wormlvl3 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);

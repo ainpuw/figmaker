@@ -42,22 +42,32 @@ public class Dialogue {
         portrait.animationState.setAnimation(2, "armeye", true);
     }
 
-    public String step() {
+    public String step(String signature) {
         if (dialogueLines == null) return "done";
 
         if ((Gdx.input.justTouched() && label.hasEnded()) || label.textEquals("")) {
             if (dialogueCurrentLine >= dialogueLines.length) return "done";
 
-            String lineSplit[] = dialogueLines[dialogueCurrentLine].split("###");
-            String currentCharacter = lineSplit[0];
-            String emote = lineSplit[1];
-            String trigger = lineSplit[2];
-            String words = lineSplit[3];
+            String currentCharacter;
+            String emote;
+            String trigger;
+            String words;
+            while (true) {
+                if (dialogueCurrentLine >= dialogueLines.length) return "done";
+
+                String lineSplit[] = dialogueLines[dialogueCurrentLine].split("###");
+                dialogueCurrentLine++;
+                currentCharacter = lineSplit[0];
+                emote = lineSplit[1];
+                trigger = lineSplit[2];
+                words = lineSplit[3];
+
+                if (!trigger.startsWith("SIG")) break;
+                else if (trigger.equals(signature)) break;
+            }
 
             updateText(words + endMarker);
             portrait.animationState.setAnimation(1, emote, true);
-            dialogueCurrentLine++;
-
             return trigger;
         }
         else if (Gdx.input.justTouched()) {

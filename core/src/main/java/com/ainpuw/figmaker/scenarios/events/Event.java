@@ -7,19 +7,31 @@ import com.badlogic.gdx.utils.Array;
 public abstract class Event {
     public Config config;
     public String name;
+    public int expId;
+    public String expIDStr;
+    public String signature;
     public boolean active = true;
     public boolean ended = false;
-    public Array<FileHandle> files;
 
     public Event() {}
 
-    public Event(Config config, String name) {
+    public Event(Config config, String name, int expId) {
         this.config = config;
         this.name = name;
-        files = new Array<>();
+        this.expId = expId;
+        this.expIDStr = Integer.toString(expId);
+        this.signature = getSignature();
     }
 
-    public abstract void init();
+    public String getSignature() {
+        String sig = "SIG" + expIDStr;
+        int totalFailed = 0;
+        for (int i : config.segsDiedPerExp) {
+            if (i > 0) totalFailed += 1;
+        }
+        sig = sig + totalFailed;
+        return sig;
+    }
 
     public abstract void step(float deltaTime);
 

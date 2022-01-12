@@ -1,4 +1,0 @@
-scientist###normal###showDSeg###Specimen one...{WAIT} it's dying and it's weak, a perfect candidate to test my spectrometer on.
-scientist###serious###showNSeg###...
-scientist###serious###playGrow###Here it goes.
-scientist###serious###genB2DWorm###4s

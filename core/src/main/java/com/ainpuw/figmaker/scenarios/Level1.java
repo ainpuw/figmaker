@@ -15,8 +15,7 @@ public class Level1 extends Scenario {
         if (config.background.getStage() == null) config.stageBack.addActor(config.background);
         if (config.character.getStage() == null) config.stageBack.addActor(config.character);
 
-        events.add(new LevelBeginEvent(config, "levelBeginEvent",
-                "dialogue/level1_intro.txt", config.wormlvl1));
+        events.add(new LevelBeginEvent(config, "levelBeginEvent", 1));
     }
 
     public Scenario nextScenario() {
@@ -28,11 +27,10 @@ public class Level1 extends Scenario {
         for (int i = events.size - 1; i >= 0 ; i--) {
             Event eventi = events.get(i);
             if (eventi.ended && eventi.name.equals("levelBeginEvent")) {
-                events.add(new LevelListenEvent(config, "levelListenEvent"));
+                events.add(new LevelListenEvent(config, "levelListenEvent", 1));
             }
             else if (eventi.ended && eventi.name.equals("levelListenEvent")) {
-                events.add(new LevelEndEvent(config, "levelEndEvent",
-                        "dialogue/level1_intro.txt"));
+                events.add(new LevelEndEvent(config, "levelEndEvent", 1));
             }
         }
 

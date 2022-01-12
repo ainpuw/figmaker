@@ -74,6 +74,7 @@ public class Worm {
             bodyCDef.type = BodyDef.BodyType.StaticBody;
             bodyCDef.position.set(childBone.getWorldX(), childBone.getWorldY());
             Body anchorCBody = config.world.createBody(bodyCDef);
+            newWormSegment.anchorC = anchorCBody;
 
             // Create anchor body for end anchor joint.
             BodyDef bodyEDef = new BodyDef();
@@ -184,6 +185,13 @@ public class Worm {
         config.world.getBodies(allBodies);
         for (Body b : allBodies) {
             config.world.destroyBody(b);
+        }
+    }
+
+    public void kill() {
+        for (WormSegment seg : segs) {
+            seg.noOfStabilizations = config.maxStabilizedSegs;
+            seg.updateBoneStabilization(config.boneStabilizationTime);
         }
     }
 

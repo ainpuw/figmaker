@@ -8,7 +8,7 @@ public class Intro extends Scenario {
         super(config);
         config.stageBack.clear();
 
-        events.add(new IntroEvent(config, "intro_animation"));
+        events.add(new IntroEvent(config, "intro_animation", 1));
     }
 
     public Scenario nextScenario() {

@@ -17,6 +17,7 @@ import com.esotericsoftware.spine.SkeletonJson;
 public class WormSegment {
     public Config config;
     public Body body;
+    public Body anchorC;
     public Skeleton skeleton;
     public AnimationState animationState;
 
@@ -77,18 +78,12 @@ public class WormSegment {
 
     public boolean parentBoneVisuallyBroken() {
         if (parent == null) return false;
-        return boneBroken(parentCJointDef.length * config.boneBrokenVisualMargin);
+        return !(body.getPosition().dst(parent.body.getPosition()) <
+                parentCJointDef.length * config.boneBrokenVisualMargin);
     }
 
-    public boolean parentBoneStrictBroken() {
-        if (parent == null) return false;
-        return boneBroken(parentCJointDef.length * config.boneBrokenStrictMargin);
-    }
-
-    public boolean boneBroken(float cutoff) {
-        if (body.getPosition().dst(parent.body.getPosition()) < cutoff)
-            return false;
-        return true;
+    public boolean segReachedPosition() {
+        return body.getPosition().dst(anchorC.getPosition()) < config.segCtrToAnchorMargin;
     }
 
     public void updateBoneStabilization(float deltaTime) {

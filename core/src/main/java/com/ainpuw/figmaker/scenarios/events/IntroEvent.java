@@ -7,8 +7,8 @@ import com.badlogic.gdx.Gdx;
 public class IntroEvent extends Event {
     SpineActor logoActor;
     SpineActor introActor;
-    public IntroEvent(Config config, String name) {
-        super(config, name);
+    public IntroEvent(Config config, String name, int expId) {
+        super(config, name, expId);
         init();
     }
 
