@@ -2,21 +2,21 @@ scientist###normal###0###{COLOR=#feffcc}"Day 1"{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Arrived at the peninsula."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Located the cave entrance.{WAIT} Ready to head down to the site tomorrow."{CLEARCOLOR}
 scientist###normal###0###...
-scientist###normal###0###Everything is going according to plan.{WAIT} Found the {COLOR=#000000}life obsidian{CLEARCOLOR} faster than I expected.
-scientist###normal###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.
+scientist###smile###0###Everything is going according to plan.{WAIT} Found the {COLOR=#000000}life obsidian{CLEARCOLOR} faster than I expected.
+scientist###smile###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.
 scientist###serious###0###But still,{WAIT} I gotta hurry.
 scientist###serious###0###...
 scientist###normal###showDSeg###Specimen one...{WAIT} it's dying and it's weak, a perfect candidate to test my spectrometer on.
 scientist###normal###0###...
-scientist###serious###0###Releasing the {COLOR=#000000}restraint{CLEARCOLOR}.
+scientist###serious###0###Releasing the {COLOR=#000000}inhibition{CLEARCOLOR}.
 scientist###serious###showNSeg###...
 scientist###serious###0###...
 scientist###serious###playGrow###Here it goes.
 scientist###serious###genB2DWorm###...
-scientist###sad###0###Failed to maintain its form,{WAIT} this is to be expected...
-scientist###serious###0###With the {COLOR=#000000}obsidian{CLEARCOLOR} in place, my spectrometer should be able to detect the instabilities that caused the deformation.
-scientist###normal###showInsta###It worked!
+scientist###serious###0###Failed to maintain its form,{WAIT} this is to be expected...
+scientist###serious###0###With the {COLOR=#000000}life obsidian{CLEARCOLOR} in place, my spectrometer should be able to detect the instabilities that caused the deformation.
+scientist###smile###showInsta###It worked!
 scientist###serious###0###This is worse than I thought,{WAIT} every component of its body is losing control.
 scientist###serious###0###Adjusting the frequencies.
-scientist###serious###0###Sending out of phase waves.
+scientist###serious###0###Sending out-of-phase waves.
 scientist###serious###allowInput###({COLOR=#03cafc}Quickly click on the red circles to stabilize the specimen{CLEARCOLOR})

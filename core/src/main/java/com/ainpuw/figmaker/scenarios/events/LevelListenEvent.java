@@ -4,6 +4,7 @@ import com.ainpuw.figmaker.Config;
 import com.ainpuw.figmaker.WormSegment;
 
 public class LevelListenEvent extends Event {
+    private float eventEndCountdown = 3;  // Can be put into config.
 
     public LevelListenEvent(Config config, String name, int expId) {
         super(config, name, expId);
@@ -19,13 +20,19 @@ public class LevelListenEvent extends Event {
         }
 
         if (wormEventFinished) {
+            eventEndCountdown -= deltaTime;
+
             config.segsDiedPerExp.set(expId - 1, noSegDied);
             config.enableInputsNBoneUpdate = false;
             config.drawTouch = false;
             config.drawInstabilities = false;
-            active = false;
-            ended = true;
-            dispose();
+
+            // Done with the smooth transition.
+            if (eventEndCountdown < 0) {
+                active = false;
+                ended = true;
+                dispose();
+            }
         }
     }
 

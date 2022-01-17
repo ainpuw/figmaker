@@ -130,7 +130,25 @@ public class Config {
                 -1, -1, 512, 75, // Here x and y are center positions!
                 "worm",
                 "spine/worm/worm.atlas",
+                "spine/worm/worm_level2.json",
+                "grow", false));
+        put("wormlvl3", new SpineActorConfig(
+                -1, -1, 512, 75, // Here x and y are center positions!
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_level3.json",
+                "grow", false));
+        put("wormlvl4", new SpineActorConfig(
+                -1, -1, 512, 75, // Here x and y are center positions!
+                "worm",
+                "spine/worm/worm.atlas",
                 "spine/worm/worm_level4.json",
+                "grow", false));
+        put("wormlvl5", new SpineActorConfig(
+                -1, -1, 512, 75, // Here x and y are center positions!
+                "worm",
+                "spine/worm/worm.atlas",
+                "spine/worm/worm_level5.json",
                 "grow", false));
     }};
 
@@ -292,9 +310,9 @@ public class Config {
         // Preloading all 5 isn't good, but they shouldn't be too big.
         wormlvl1 = new SpineActor(spineActorConfigs.get("wormlvl1"), skeletonRenderer);
         wormlvl2 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
-        wormlvl3 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
-        wormlvl4 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
-        wormlvl5 = new SpineActor(spineActorConfigs.get("wormlvl2"), skeletonRenderer);
+        wormlvl3 = new SpineActor(spineActorConfigs.get("wormlvl3"), skeletonRenderer);
+        wormlvl4 = new SpineActor(spineActorConfigs.get("wormlvl4"), skeletonRenderer);
+        wormlvl5 = new SpineActor(spineActorConfigs.get("wormlvl5"), skeletonRenderer);
         dialogueBox = new Dialogue(this);
         amanager = new AnimationManager(character);
 

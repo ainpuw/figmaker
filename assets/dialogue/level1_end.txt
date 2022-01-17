@@ -1,6 +1,12 @@
-scientist###smile###SIG10###Good! Experiment sucess!
-scientist###smile###SIG10###Now I am happy to move forward.
-scientist###sad###SIG11###It died...
-scientist###sad###SIG11###The next one can only be tougher.
-scientist###normal###0###I can try again!
-scientist###normal###0###Next day.
+scientist###smile###SIG10###Successful experiment. The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
+scientist###serious###SIG10###However{WAIT}, the specimen demonstrated a number of properties that I did not anticipate.
+scientist###sad###SIG11###It... died.
+scientist###serious###SIG11###The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed...
+scientist###serious###SIG11###However,{WAIT} I did not anticipate the specimen to behave this way.
+scientist###serious###0###First of all, each of its segments can only be stabilized for about {COLOR=#03cafc}10 seconds{CLEARCOLOR} at time.
+scientist###serious###0###Second, each stabilization severely damages its internal organs.
+scientist###serious###0###Each segment can probably only take {COLOR=#03cafc}3 stabilization{CLEARCOLOR}hits before it dies.
+scientist###serious###0###Last, the specimen can only be saved by {COLOR=#03cafc}spontaneously stabilizing all of its segments{CLEARCOLOR}.
+scientist###serious###0###...
+scientist###smile###0###This is a lot of important findings in one day.
+scientist###smile###0###I should take a rest.{WAIT} Tomorrow's experiment will get more serious.

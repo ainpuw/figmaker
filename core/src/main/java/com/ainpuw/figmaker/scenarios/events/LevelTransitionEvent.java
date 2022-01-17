@@ -8,6 +8,7 @@ public class LevelTransitionEvent  extends Event {
     private final float darkOutLen = 2;  // In seconds. This could be put in the config.
     private float darkOutCounter = 0;
     private boolean darken = true;
+    private float eventEndCountdown = 2;  // Can be put into config.
     private boolean dialogueDone = false;
     private String dialogueFile;
 
@@ -49,6 +50,10 @@ public class LevelTransitionEvent  extends Event {
                     config.enableInputsNBoneUpdate = false;
                     dialogueDone = true;
                 }
+            }
+            // Wait for a bit before a sudden transition.
+            else if (eventEndCountdown > 0) {
+                eventEndCountdown -= deltaTime;
             }
             // Brighten up the screen again.
             else {
