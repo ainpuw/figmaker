@@ -187,17 +187,21 @@ public class Worm {
             config.world.destroyBody(b);
         }
 
-        while (!segs.isEmpty())
-            segs.pop();
-
-        while (!repulsivePairs.isEmpty())
-            repulsivePairs.pop();
+        segs.clear();
+        repulsivePairs.clear();
+        pen.clear();
     }
 
     public void kill() {
         for (WormSegment seg : segs) {
             seg.noOfStabilizations = config.maxStabilizedSegs;
             seg.updateBoneStabilization(config.boneStabilizationTime);
+        }
+
+        Array<Joint> allJoints = new Array<>();
+        config.world.getJoints(allJoints);
+        for (Joint j : allJoints) {
+            config.world.destroyJoint(j);
         }
     }
 

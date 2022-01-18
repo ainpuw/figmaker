@@ -5,7 +5,6 @@ import com.ainpuw.figmaker.scenarios.Level1;
 import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends ApplicationAdapter {
