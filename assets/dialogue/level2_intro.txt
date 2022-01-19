@@ -1,4 +1,8 @@
-scientist###serious###0###...
+scientist###normal###0###{COLOR=#feffcc}"Day 2"{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Attempted to approach the facility."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"The number of hostile mutants in the cave is significantly larger than previously recorded."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"I should be able to clear the path to the facility by tomorrow."{CLEARCOLOR}
+scientist###normal###0###...
 scientist###normal###showDSeg###Specimen one...{WAIT} it's dying and it's weak, a perfect candidate to test my spectrometer on.
 scientist###serious###showNSeg###...
 scientist###serious###playGrow###Here it goes.

@@ -1,6 +1,6 @@
 scientist###normal###0###{COLOR=#feffcc}"Day 1"{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Arrived at the peninsula."{CLEARCOLOR}
-scientist###normal###0###{COLOR=#feffcc}"Located the cave entrance.{WAIT} Ready to head down to the site tomorrow."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Located the cave entrance.{WAIT} Ready to head down to the facility tomorrow."{CLEARCOLOR}
 scientist###normal###0###...
 scientist###smile###0###Everything is going according to plan.{WAIT} Found the {COLOR=#000000}life obsidian{CLEARCOLOR} faster than I expected.
 scientist###smile###0###{COLOR=#d69267}Five specimens{CLEARCOLOR} in a week...{WAIT} that should be plenty of time.

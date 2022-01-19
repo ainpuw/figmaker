@@ -1,4 +1,8 @@
-scientist###serious###0###...
+scientist###normal###0###{COLOR=#feffcc}"Day 3"{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Arrived at the underground facility, however the front entrance was blocked by a cave-in."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Some of our undisposed research subjects were roaming outside of the facility."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"This indicates that there must be an another way in."{CLEARCOLOR}
+scientist###normal###0###...
 scientist###normal###showDSeg###Specimen one...{WAIT} it's dying and it's weak, a perfect candidate to test my spectrometer on.
 scientist###serious###showNSeg###...
 scientist###serious###playGrow###Here it goes.

@@ -1,4 +1,8 @@
-scientist###serious###0###...
+scientist###normal###0###{COLOR=#feffcc}"Day 5"{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Wasn't able to report in yesterday due to an equipment malfunction. Please find the details of the incident in the full report."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"Found a way into the facility and secured the life obsidian."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"The life obsidian seems to calm the mutants. No mutants showed any signs of aggression on the way back."{CLEARCOLOR}
+scientist###normal###0###...
 scientist###normal###showDSeg###Specimen one...{WAIT} it's dying and it's weak, a perfect candidate to test my spectrometer on.
 scientist###serious###showNSeg###...
 scientist###serious###playGrow###Here it goes.
