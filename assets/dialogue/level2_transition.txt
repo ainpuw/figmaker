@@ -1,1 +1,5 @@
-0###0###SIG20###Leave now.
+0###0###SIG2A0###Go.
+0###0###SIG2A0###To where?
+0###0###SIG2A0###...
+0###0###SIG211###I couldn't save you.
+0###0###SIG221###I couldn't save you either.

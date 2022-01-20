@@ -29,7 +29,12 @@ public abstract class Event {
         for (int i : config.segsDiedPerExp) {
             if (i > 0) totalFailed += 1;
         }
-        sig = sig + totalFailed;
+
+        int currentFailed = 0;
+        if (config.segsDiedPerExp.get(expId - 1) > 0)
+            currentFailed = 1;
+
+        sig = sig + totalFailed + currentFailed;
         return sig;
     }
 

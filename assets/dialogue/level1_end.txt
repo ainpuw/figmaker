@@ -1,11 +1,11 @@
-scientist###smile###SIG10###Successful experiment!{WAIT} The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
-scientist###serious###SIG10###However{WAIT}, the specimen demonstrated a number of properties that I did not anticipate.
-scientist###sad###SIG11###It died.
-scientist###serious###SIG11###The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
-scientist###serious###SIG11###However,{WAIT} I did not anticipate the specimen to behave this way.
-scientist###serious###0###First of all, each of its segments can only be stabilized for about {COLOR=#03cafc}10 seconds{CLEARCOLOR} at time.
+scientist###smile###SIG100###Successful experiment!{WAIT} The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
+scientist###serious###SIG100###However{WAIT}, the specimen demonstrated a number of properties that I did not anticipate.
+scientist###sad###SIG111###It died.
+scientist###serious###SIG111###The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
+scientist###serious###SIG111###However,{WAIT} I did not anticipate the specimen to behave this way.
+scientist###serious###0###First of all, each of its body parts can only be stabilized for about {COLOR=#03cafc}10 seconds{CLEARCOLOR} at time.
 scientist###serious###0###Second, each stabilization severely damages its internal organs.
-scientist###serious###0###Based on the damage, each segment can probably only take {COLOR=#03cafc}3 stabilizations{CLEARCOLOR} before it is killed.
+scientist###serious###0###Based on the damage, each body part can probably only take {COLOR=#03cafc}3 stabilizations{CLEARCOLOR} before it is killed.
 scientist###serious###0###Last, the specimen can only be put under control by {COLOR=#03cafc}spontaneously eliminating all of the instabilities{CLEARCOLOR}.
 scientist###serious###0###...
 scientist###serious###0###Very important findings.

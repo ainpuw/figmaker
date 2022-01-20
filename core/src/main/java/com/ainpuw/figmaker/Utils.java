@@ -149,4 +149,19 @@ public class Utils {
         config.shapeRenderer.end();
         Gdx.gl.glDisable(Gdx.gl20.GL_BLEND);
     }
+
+    public static boolean matchTriggerToSignature(String trigger, String signature) {
+        if (trigger.length() != 6 || signature.length() != 6) return false;  // Both 6 characters.
+        if (trigger.charAt(3) != signature.charAt(3)) return false;  // Same expId.
+        if (trigger.charAt(5) != signature.charAt(5)) return false;  // Same current outcome.
+
+        if (signature.charAt(4) == 'N') {  // Not 0 failure.
+            return Character.getNumericValue(trigger.charAt(4)) > 0;
+        }
+        if (signature.charAt(4) == 'A') {  // Any number of failures..
+            return true;
+        }
+
+        return trigger.charAt(4) == signature.charAt(4);
+    }
 }

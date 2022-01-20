@@ -63,7 +63,7 @@ public class Dialogue {
                 words = lineSplit[3];
 
                 if (!trigger.startsWith("SIG")) break;
-                else if (trigger.equals(signature)) break;
+                else if (Utils.matchTriggerToSignature(trigger, signature)) break;
             }
 
             updateText(words + endMarker);

@@ -1,2 +1,2 @@
-0###0###SIG10###Leave now.
-0###0###SIG11###I'm sorry.
+0###0###SIG100###Leave now.
+0###0###SIG111###I'm sorry.
