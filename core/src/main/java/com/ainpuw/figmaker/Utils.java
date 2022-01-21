@@ -155,10 +155,10 @@ public class Utils {
         if (trigger.charAt(3) != signature.charAt(3)) return false;  // Same expId.
         if (trigger.charAt(5) != signature.charAt(5)) return false;  // Same current outcome.
 
-        if (signature.charAt(4) == 'N') {  // Not 0 failure.
+        if (trigger.charAt(4) == 'N') {  // Not 0 failure.
             return Character.getNumericValue(trigger.charAt(4)) > 0;
         }
-        if (signature.charAt(4) == 'A') {  // Any number of failures..
+        else if (trigger.charAt(4) == 'A') {  // Any number of failures..
             return true;
         }
 

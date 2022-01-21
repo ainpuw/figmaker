@@ -59,7 +59,7 @@ public class LevelBeginEvent extends Event {
             if (!wormlvl.animationState.getTracks().get(0).getAnimation().getName().equals("idle")) {
                 wormlvl.animationState.setAnimation(0, "idle", true);
             }
-            else if (Math.abs(noPeriods - (int)noPeriods) < 0.05 && playReady) {
+            else if (Math.abs(noPeriods - Math.round(noPeriods)) < 0.05 && noPeriods >= 0.9f && playReady) {
                 config.wormSkeleton = null;
                 config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                 config.evolveWorld = true;

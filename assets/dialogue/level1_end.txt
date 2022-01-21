@@ -9,5 +9,5 @@ scientist###serious###0###Based on the damage, each body part can probably only 
 scientist###serious###0###Last, the specimen can only be put under control by {COLOR=#03cafc}spontaneously eliminating all of the instabilities{CLEARCOLOR}.
 scientist###serious###0###...
 scientist###serious###0###Very important findings.
-scientist###serious###0###{COLOR=#d69267}Specimen one{CLEARCOLOR} you served your purpose.
-scientist###normal###0###I should rest for the day.{WAIT} Operating the next specimen will only be harder.
+scientist###serious###0###...
+scientist###normal###0###I should rest for the day.{WAIT} The next one will only be harder.

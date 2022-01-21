@@ -202,7 +202,7 @@ public class Config {
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
-    public final float segCtrToAnchorMargin = 10f;  // In screen size units.
+    public final float segCtrToAnchorMargin = 150f;  // In screen size units.
     public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.
     public final float boneStabilizationTime = 5f;  // Stabilize the bone for this amount of seconds.
     public final float touchRadius = 60;  // Stabilize all segment withing radius.

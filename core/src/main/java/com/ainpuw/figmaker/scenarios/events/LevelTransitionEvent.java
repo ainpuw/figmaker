@@ -40,6 +40,7 @@ public class LevelTransitionEvent  extends Event {
             // Play the dialogue.
             if (!dialogueDone) {
                 String trigger = config.dialogueBox.step(signature);
+
                 if (trigger.equals("done")) {
                     config.dialogueBox.removeFromStage();
                     config.wormOne = null;
