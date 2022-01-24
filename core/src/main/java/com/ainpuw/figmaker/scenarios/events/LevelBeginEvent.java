@@ -49,10 +49,20 @@ public class LevelBeginEvent extends Event {
         if (trigger.equals("playGrow")) {
             config.wormOne = null;
             config.wormSkeleton = wormlvl;
-        }
-        if (trigger.equals("genB2DWorm")) {
+            // Special treatment for level 5.
+            if (expId == 5) {
+                config.character.remove();
+                config.dialogueBox.portrait.remove();
+                config.day.stop();
+                config.boss.play();
+            }
+
             playReady = true;
             waitToAdvance = true;
+            config.dialogueBox.removeFromStage();
+        }
+        if (trigger.equals("genB2DWorm")) {
+            // Deprecated flag.
         }
         if (growAnimationFinished && config.wormSkeleton != null) {
             float noPeriods = wormlvl.animationState.getTracks().get(0).getAnimationTime()/wormlvl.animationState.getTracks().get(0).getAnimation().getDuration();
@@ -64,6 +74,7 @@ public class LevelBeginEvent extends Event {
                 config.worm.createBox2dWorm(wormlvl.skeleton.getRootBone());
                 config.evolveWorld = true;
                 waitToAdvance = false;
+                config.dialogueBox.addToStage();
             }
         }
         if (trigger.equals("showInsta")) {

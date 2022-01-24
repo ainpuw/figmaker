@@ -156,7 +156,7 @@ public class Utils {
         if (trigger.charAt(5) != signature.charAt(5)) return false;  // Same current outcome.
 
         if (trigger.charAt(4) == 'N') {  // Not 0 failure.
-            return Character.getNumericValue(trigger.charAt(4)) > 0;
+            return ((int)signature.charAt(4)) - 48 > 0;  // Convert char to int.
         }
         else if (trigger.charAt(4) == 'A') {  // Any number of failures..
             return true;

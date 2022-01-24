@@ -1,29 +1,52 @@
 package com.ainpuw.figmaker.scenarios.events;
 
 import com.ainpuw.figmaker.Config;
+import com.ainpuw.figmaker.SpineActor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public class LevelTransitionEvent  extends Event {
-    private final float darkOutLen = 2;  // In seconds. This could be put in the config.
+public class EndingEvent extends Event {
+    private String dialogueFile;
+    private final float darkOutLen = 2.5f;
     private float darkOutCounter = 0;
     private boolean darken = true;
-    private float eventEndCountdown = 2;  // Can be put into config.
+    private float eventEndCountdown = 3;
     private boolean dialogueDone = false;
-    private String dialogueFile;
+    SpineActor logoActor;
 
-    public LevelTransitionEvent(Config config, String name, int expId) {
+    public EndingEvent(Config config, String name, int expId) {
         super(config, name, expId);
-        this.dialogueFile = "dialogue/level" + expId + "_transition.txt";
+        this.dialogueFile = "dialogue/level" + expId + "_end.txt";
+
         config.dialogueBox.reset();
         config.dialogueBox.dialogueLines =
                 Gdx.files.internal(dialogueFile).readString().split("\\r?\\n");
+        config.dialogueBox.addToStageTextOnly();
+        config.dialogueBox.label.setWidth(config.dialogueBox.labelConfig.w * 2);
+
+        // If the worm isn't completely stabilized.
+        if (config.segsDiedPerExp.get(expId - 1) > 0) {
+            config.worm.kill();
+        }
+        // If the worm is saved.
+        else {
+            config.wormSkeleton = config.wormlvl5;
+            config.wormlvl5.animationState.setAnimation(0, "reverse_grow", false);
+            config.worm.destroyBox2dWorm();
+        }
     }
 
     public void step(float deltaTime) {
+        if (config.segsDiedPerExp.get(expId - 1) == 0 && config.wormSkeleton != null &&
+                config.wormlvl5.animationState.getTracks().get(0).isComplete()) {
+            config.stageBack.addActor(config.character);
+            config.wormSkeleton = null;
+        }
+
+        // Darkening out.
         Gdx.gl.glEnable(Gdx.gl20.GL_BLEND);
         config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        config.shapeRenderer.setColor(0, 0, 0, darkOutCounter/darkOutLen);
+        config.shapeRenderer.setColor(config.screenR, config.screenG, config.screenB, darkOutCounter/darkOutLen);
         config.shapeRenderer.rect(-0.5f*config.w, -0.5f*config.h, 2*config.w, 2*config.h);
         config.shapeRenderer.end();
         Gdx.gl.glDisable(Gdx.gl20.GL_BLEND);
@@ -37,12 +60,16 @@ public class LevelTransitionEvent  extends Event {
             }
         }
         else {
+            config.boss.setVolume(0.5f);
+
             // Play the dialogue.
             if (!dialogueDone) {
                 String trigger = config.dialogueBox.step(signature);
 
                 if (trigger.equals("done")) {
                     config.dialogueBox.removeFromStage();
+                    config.background.remove();
+                    config.character.remove();
                     config.wormOne = null;
                     config.wormSkeleton = null;
                     config.worm.destroyBox2dWorm();
@@ -51,18 +78,10 @@ public class LevelTransitionEvent  extends Event {
                     config.enableInputsNBoneUpdate = false;
                     dialogueDone = true;
 
-                    // Reset color for level 4 only.
-                    if (expId == 3) {
-                        config.background.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
-                        config.character.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
-                    }
-                    else if (expId == 4) {
-                        config.background.skeleton.setColor(1, 1, 1, 1);
-                        config.character.skeleton.setColor(1, 1, 1, 1);
-                        // Set character location for level 5.
-                        config.character.skeleton.setScale(1.9f, 1.9f);
-                        config.character.setPosition(110, 395);
-                    }
+                    logoActor = new SpineActor(config.spineActorConfigs.get("logo"), config.skeletonRenderer);
+                    logoActor.animationState.setAnimation(0, "idle", true);
+                    logoActor.animationState.apply(logoActor.skeleton);
+                    config.stageBack.addActor(logoActor);
                 }
             }
             // Wait for a bit before a sudden transition.
@@ -71,27 +90,22 @@ public class LevelTransitionEvent  extends Event {
             }
             // Brighten up the screen again.
             else {
-                // Start playing audio again.
-                if (expId == 3 && !config.dusk.isPlaying()) {
-                    config.dusk.play();
-                    config.day.stop();
+                if (config.boss.isPlaying()) {
+                    config.boss.stop();
+                    config.theme.play();
                 }
-                else if (!config.day.isPlaying()) {
-                    config.day.play();
-                    config.dusk.stop();
-                }
+
                 darkOutCounter -= deltaTime;
                 // The event is over.
                 if (darkOutCounter < 0) {
-
                     active = false;
                     ended = true;
+                    dispose();
                 }
             }
         }
-
     }
 
-    public void dispose() {}
-
+    public void dispose() {
+    }
 }

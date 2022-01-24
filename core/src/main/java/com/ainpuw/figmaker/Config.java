@@ -1,6 +1,7 @@
 package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -202,11 +203,11 @@ public class Config {
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
-    public final float segCtrToAnchorMargin = 150f;  // In screen size units.
+    public float segCtrToAnchorMargin = 15f;  // In screen size units.
     public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.
-    public final float boneStabilizationTime = 5f;  // Stabilize the bone for this amount of seconds.
+    public final float boneStabilizationTime = 10f;  // Stabilize the bone for this amount of seconds.
     public final float touchRadius = 60;  // Stabilize all segment withing radius.
-    public final float segInstabilityAnimationTime = 1f; // Instability animation takes this number of seconds.
+    public final float segInstabilityAnimationTime = 10f; // Instability animation takes this number of seconds.
     public final int segMaxStabilizationChances = 3;
     public boolean drawInstabilities = false;
     public boolean drawTouch = false;
@@ -217,7 +218,7 @@ public class Config {
     public FixtureDef segFixtureDefL = new FixtureDef();
     public FixtureDef segFixtureDefR = new FixtureDef();
     public FixtureDef segFixtureDefM = new FixtureDef();
-    public final float randomImpulse = 10000;
+    public float randomImpulse = 10000;
 
     public final Texture segTexture;
     public final Texture shadowTexture;
@@ -227,6 +228,16 @@ public class Config {
     public final Vector2 segShadowYRangeRef = new Vector2(62, 576);  // Assumed body Y range.
     public final float adjacentRepulsiveForceCutoff = 250;
     public final float adjacentRepulsiveForceFactor = 10000;
+
+    ////////////////////////////////////////////////////
+    // Audio
+    ////////////////////////////////////////////////////
+
+    public final Music drive;
+    public final Music day;
+    public final Music dusk;
+    public final Music boss;
+    public final Music theme;
 
     ////////////////////////////////////////////////////
     // Subclass definitions
@@ -337,6 +348,20 @@ public class Config {
         shadowTexture = new Texture(Gdx.files.internal("texture/shadow.png"));
         shadowTextureRegions = TextureRegion.split(shadowTexture, shadowTexture.getWidth(), shadowTexture.getHeight());
         worm = new Worm(this);
+
+        // Initialize music.
+        drive = Gdx.audio.newMusic(Gdx.files.internal("audio/drive.mp3"));
+        drive.setLooping(false);
+        day = Gdx.audio.newMusic(Gdx.files.internal("audio/day.mp3"));
+        day.setLooping(true);
+        day.setVolume(0.05f);
+        dusk = Gdx.audio.newMusic(Gdx.files.internal("audio/dusk.mp3"));
+        dusk.setLooping(true);
+        dusk.setVolume(0.05f);
+        boss = Gdx.audio.newMusic(Gdx.files.internal("audio/boss.mp3"));
+        boss.setLooping(true);
+        theme = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
+        theme.setLooping(true);
     }
 
     public void dispose() {
@@ -351,6 +376,12 @@ public class Config {
         segShapeM.dispose();
         segTexture.dispose();
         shadowTexture.dispose();
+
+        drive.dispose();
+        day.dispose();
+        dusk.dispose();
+        boss.dispose();
+        theme.dispose();
     }
 }
 

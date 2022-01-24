@@ -6,7 +6,7 @@ import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 public class Dialogue {
     private Config config;
-    private Config.DialogueConfig labelConfig;
+    public Config.DialogueConfig labelConfig;
     public TypingLabel label;
     public Image background;
     public SpineActor portrait;

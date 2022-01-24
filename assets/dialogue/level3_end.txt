@@ -1,2 +1,6 @@
-scientist###smile###SIG10###Successful experiment. The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
-scientist###serious###0###First of all, each of its segments can only be stabilized for about {COLOR=#03cafc}10 seconds{CLEARCOLOR} at time.
+scientist###normal###SIG3A0###It survived...{WAIT} for now at least.
+scientist###normal###SIG3A0###But it's condition is still poor. There is little chance for it to survive on its own.
+scientist###serious###SIG3A0###Perhaps I should...
+scientist###serious###SIG3A1###It couldn't survive.
+scientist###serious###SIG3A1###Although it was weak to begin with, my skills certainly still need improvement.
+scientist###serious###SIG3A1###I only have one more chance left.

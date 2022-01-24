@@ -37,7 +37,7 @@ public class WormSegment {
     public float stabilizationCountdown = -0.001f;
     public float instabilityAnimationCountdown;
     public int noOfStabilizations = 0;
-    public boolean spreadoutPhase = true;
+    public boolean spreadoutPhase = false;  // Turn this off.
 
     public WormSegment(Config config, float x, float y, float angle) {
         this.config = config;
@@ -219,7 +219,7 @@ public class WormSegment {
             force.sub(screenCenter);
             force.nor();
             force.scl(config.randomImpulse);
-            force.scl(1000);
+            force.scl(1000 * Math.max(1, 100 - screenCenter.dst(pos)));
             body.applyLinearImpulse(force, body.getPosition(), true);
         }
         else if (useRand && noOfStabilizations < config.segMaxStabilizationChances) {

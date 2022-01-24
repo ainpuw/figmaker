@@ -1,2 +1,8 @@
-scientist###smile###SIG10###Successful experiment. The spectrometer is operating the {COLOR=#000000}life obsidian{CLEARCOLOR} as designed.
-scientist###serious###0###First of all, each of its segments can only be stabilized for about {COLOR=#03cafc}10 seconds{CLEARCOLOR} at time.
+scientist###normal###0###{COLOR=#56252e}The forest on the peninsula{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}A place of mysterious powers{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}The death obsidian of mass destruction{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}The life obsidian of resurrection...{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}at the price of another life{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}and more{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}No one that tainted the sacred ground{CLEARCOLOR}
+scientist###normal###0###{COLOR=#56252e}can escape the punishment of the forest{CLEARCOLOR}

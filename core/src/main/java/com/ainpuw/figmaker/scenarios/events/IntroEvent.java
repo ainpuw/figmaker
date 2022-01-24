@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 public class IntroEvent extends Event {
     SpineActor logoActor;
     SpineActor introActor;
+
     public IntroEvent(Config config, String name, int expId) {
         super(config, name, expId);
         init();
@@ -22,33 +23,47 @@ public class IntroEvent extends Event {
         logoActor.animationState.apply(logoActor.skeleton);
 
         config.stageBack.addActor(logoActor);
+
+        // Play music.
+        config.day.play();
     }
 
     public void step(float deltaTime) {
         String animationName = logoActor.animationState.getTracks().get(0).toString();
 
+        // Fade drive audio.
+        if (config.drive.isPlaying()) {
+            config.drive.setVolume(Math.max(0, config.drive.getVolume() - 0.1f * deltaTime));
+        }
+
         if (introActor.getStage() != null) {
-            if (Gdx.input.justTouched() || introActor.animationState.getTracks().get(0).isComplete()) {
+            if (introActor.animationState.getTracks().get(0).isComplete()) {
                 config.stageBack.addActor(config.background);
                 config.stageBack.addActor(config.character);
                 introActor.remove();
+                config.drive.stop();
+                config.day.play();
             }
         } else if (config.background.getStage() != null) {
-            if (Gdx.input.justTouched() || config.background.animationState.getTracks().get(0).isComplete()) {
+            if ( config.background.animationState.getTracks().get(0).isComplete()) {
                 dispose();
                 active = false;
                 ended = true;
             }
         } else if (animationName.equals("grow")) {
-            if (Gdx.input.justTouched() ||  logoActor.animationState.getTracks().get(0).isComplete())
+            if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete())
                 logoActor.animationState.setAnimation(0, "idle", true);
         } else if (animationName.equals("idle")) {
             if (Gdx.input.justTouched())
                 logoActor.animationState.setAnimation(0, "death", false);
         } else if (animationName.equals("death")) {
-            if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete()) {
+            if (logoActor.animationState.getTracks().get(0).isComplete()) {
                 logoActor.remove();
                 config.stageBack.addActor(introActor);
+                // Change to intro animation audio.
+                config.day.pause();
+                config.drive.play();
+                config.drive.setVolume(1);
             }
         }
     }

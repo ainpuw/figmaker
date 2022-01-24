@@ -16,6 +16,12 @@ public class Level4 extends Scenario {
         if (config.background.getStage() == null) config.stageBack.addActor(config.background);
         if (config.character.getStage() == null) config.stageBack.addActor(config.character);
 
+        // Set the "difficulty" for the level.
+        config.segCtrToAnchorMargin = 20f;
+        // This level is near dusk.
+        config.background.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
+        config.character.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
+
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 4));
     }
 

@@ -3,9 +3,8 @@ package com.ainpuw.figmaker.scenarios;
 import com.ainpuw.figmaker.Config;
 import com.ainpuw.figmaker.scenarios.events.Event;
 import com.ainpuw.figmaker.scenarios.events.LevelBeginEvent;
-import com.ainpuw.figmaker.scenarios.events.LevelEndEvent;
+import com.ainpuw.figmaker.scenarios.events.EndingEvent;
 import com.ainpuw.figmaker.scenarios.events.LevelListenEvent;
-import com.ainpuw.figmaker.scenarios.events.LevelTransitionEvent;
 
 public class Level5 extends Scenario {
 
@@ -16,11 +15,18 @@ public class Level5 extends Scenario {
         if (config.background.getStage() == null) config.stageBack.addActor(config.background);
         if (config.character.getStage() == null) config.stageBack.addActor(config.character);
 
+        // Set character location for level 5.
+        config.character.skeleton.setScale(1.9f, 1.9f);
+        config.character.setPosition(110, 395);
+
+        // Set the "difficulty" for the level.
+        config.segCtrToAnchorMargin = 100f;
+
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 5));
     }
 
     public Scenario nextScenario() {
-        return new Ending(config);
+        return null;
     }
 
     public void step(float deltaTime) {
@@ -30,12 +36,8 @@ public class Level5 extends Scenario {
             events.add(new LevelListenEvent(config, "levelListenEvent", 5));
         }
         else if (currentEvent.ended && currentEvent.name.equals("levelListenEvent")) {
-            events.add(new LevelEndEvent(config, "levelEndEvent", 5));
+            events.add(new EndingEvent(config, "ending", 5));
         }
-        else if (currentEvent.ended && currentEvent.name.equals("levelEndEvent")) {
-            events.add(new LevelTransitionEvent(config, "levelTransitionEvent", 5));
-        }
-
 
         super.step(deltaTime);
     }

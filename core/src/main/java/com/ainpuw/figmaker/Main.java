@@ -1,7 +1,7 @@
 package com.ainpuw.figmaker;
 
 import com.ainpuw.figmaker.scenarios.Intro;
-import com.ainpuw.figmaker.scenarios.Level2;
+import com.ainpuw.figmaker.scenarios.Level3;
 import com.ainpuw.figmaker.scenarios.Scenario;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -16,7 +16,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create () {
         config = new Config();
-        scenario = new Level2(config);
+        scenario = new Level3(config);
     }
 
     @Override

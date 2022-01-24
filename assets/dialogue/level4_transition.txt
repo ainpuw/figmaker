@@ -1,1 +1,4 @@
-0###0###SIG20###Leave now.
+0###0###SIG4A0###You are free.
+0###0###SIG4A0###Fly somewhere far away.
+0###0###SIG4A1###Will I meet the same fate
+0###0###SIG4A1###as you...
