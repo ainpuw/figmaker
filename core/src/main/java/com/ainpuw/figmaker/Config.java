@@ -235,7 +235,6 @@ public class Config {
 
     public final Music drive;
     public final Music day;
-    public final Music dusk;
     public final Music boss;
     public final Music theme;
 
@@ -354,10 +353,7 @@ public class Config {
         drive.setLooping(false);
         day = Gdx.audio.newMusic(Gdx.files.internal("audio/day.mp3"));
         day.setLooping(true);
-        day.setVolume(0.05f);
-        dusk = Gdx.audio.newMusic(Gdx.files.internal("audio/dusk.mp3"));
-        dusk.setLooping(true);
-        dusk.setVolume(0.05f);
+        day.setVolume(0.5f);
         boss = Gdx.audio.newMusic(Gdx.files.internal("audio/boss.mp3"));
         boss.setLooping(true);
         theme = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
@@ -379,7 +375,6 @@ public class Config {
 
         drive.dispose();
         day.dispose();
-        dusk.dispose();
         boss.dispose();
         theme.dispose();
     }

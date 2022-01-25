@@ -16,7 +16,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create () {
         config = new Config();
-        scenario = new Level3(config);
+        scenario = new Intro(config);
     }
 
     @Override

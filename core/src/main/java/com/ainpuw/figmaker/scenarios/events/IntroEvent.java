@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
 public class IntroEvent extends Event {
     SpineActor logoActor;
     SpineActor introActor;
+    private boolean tuneDownTheme = false;
+    private float tuneDownThemeTime = 0;
 
     public IntroEvent(Config config, String name, int expId) {
         super(config, name, expId);
@@ -25,7 +27,7 @@ public class IntroEvent extends Event {
         config.stageBack.addActor(logoActor);
 
         // Play music.
-        config.day.play();
+        config.theme.play();
     }
 
     public void step(float deltaTime) {
@@ -34,6 +36,11 @@ public class IntroEvent extends Event {
         // Fade drive audio.
         if (config.drive.isPlaying()) {
             config.drive.setVolume(Math.max(0, config.drive.getVolume() - 0.1f * deltaTime));
+        }
+        if (config.theme.isPlaying() && tuneDownTheme) {
+            tuneDownThemeTime += deltaTime;
+            // The tree death animation is 1.66 seconds.
+            config.theme.setVolume(Math.max(0, 1.6f-tuneDownThemeTime) / 1.6f);
         }
 
         if (introActor.getStage() != null) {
@@ -54,14 +61,16 @@ public class IntroEvent extends Event {
             if (Gdx.input.justTouched() || logoActor.animationState.getTracks().get(0).isComplete())
                 logoActor.animationState.setAnimation(0, "idle", true);
         } else if (animationName.equals("idle")) {
-            if (Gdx.input.justTouched())
+            if (Gdx.input.justTouched()) {
                 logoActor.animationState.setAnimation(0, "death", false);
+                tuneDownTheme = true;
+            }
         } else if (animationName.equals("death")) {
             if (logoActor.animationState.getTracks().get(0).isComplete()) {
                 logoActor.remove();
                 config.stageBack.addActor(introActor);
                 // Change to intro animation audio.
-                config.day.pause();
+                config.theme.stop();
                 config.drive.play();
                 config.drive.setVolume(1);
             }

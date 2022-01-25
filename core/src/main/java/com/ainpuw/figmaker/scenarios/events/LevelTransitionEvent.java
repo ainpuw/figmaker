@@ -71,15 +71,6 @@ public class LevelTransitionEvent  extends Event {
             }
             // Brighten up the screen again.
             else {
-                // Start playing audio again.
-                if (expId == 3 && !config.dusk.isPlaying()) {
-                    config.dusk.play();
-                    config.day.stop();
-                }
-                else if (!config.day.isPlaying()) {
-                    config.day.play();
-                    config.dusk.stop();
-                }
                 darkOutCounter -= deltaTime;
                 // The event is over.
                 if (darkOutCounter < 0) {
