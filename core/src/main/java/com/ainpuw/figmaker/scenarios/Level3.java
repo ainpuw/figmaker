@@ -18,7 +18,7 @@ public class Level3 extends Scenario {
         if (config.character.getStage() == null) config.stageBack.addActor(config.character);
 
         // Set the "difficulty" for the level.
-        config.segCtrToAnchorMargin = 10f;
+        config.segCtrToAnchorMargin = 5f;
         // This worm is weaker.
         config.randomImpulse = config.randomImpulse / randomImpulseWeakenFactor;
 

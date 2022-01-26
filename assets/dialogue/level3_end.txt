@@ -1,6 +1,6 @@
 scientist###normal###SIG3A0###It survived...{WAIT} for now at least.
 scientist###normal###SIG3A0###But it's condition is still poor. There is little chance for it to survive on its own.
-scientist###serious###SIG3A0###Perhaps I should...
+scientist###serious###SIG3A0###Perhaps...
 scientist###serious###SIG3A1###It couldn't survive.
 scientist###serious###SIG3A1###Although it was weak to begin with, my skills certainly still need improvement.
 scientist###serious###SIG3A1###I only have one more chance left.

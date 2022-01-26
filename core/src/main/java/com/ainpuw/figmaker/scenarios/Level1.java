@@ -17,7 +17,7 @@ public class Level1 extends Scenario {
         if (config.character.getStage() == null) config.stageBack.addActor(config.character);
 
         // Set the "difficulty" for the level.
-        config.segCtrToAnchorMargin = 10f;
+        config.segCtrToAnchorMargin = 5f;
 
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 1));
     }

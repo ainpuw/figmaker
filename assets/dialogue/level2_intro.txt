@@ -1,11 +1,11 @@
 scientist###normal###0###{COLOR=#feffcc}"Day 2"{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Attempted to approach the facility."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"The number of hostile mutants inside the cave is significantly larger than previously recorded."{CLEARCOLOR}
-scientist###normal###0###{COLOR=#feffcc}"This will slow down my progress but the path to the facility should be cleared by tomorrow."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"This will slow down my progress but I should be able to clear the path to the facility by tomorrow."{CLEARCOLOR}
 scientist###normal###0###...
 scientist###normal###showDSeg###{COLOR=#d69267}Specimen two{CLEARCOLOR},{WAIT} one with great vitality.
 scientist###normal###0###Even under the excruciating pain from the {COLOR=#000000}inhibition{CLEARCOLOR}, it's parameters are completely healthy.
 scientist###serious###showNSeg###Release.
 scientist###serious###playGrow###...
-scientist###serious###showInsta###Just like specimen one, it cannot control its parts on its own.
+scientist###serious###showInsta###Just like specimen one, it cannot control its components on its own.
 scientist###serious###allowInput###Let's see if I can prevent it from disintegrating in time.

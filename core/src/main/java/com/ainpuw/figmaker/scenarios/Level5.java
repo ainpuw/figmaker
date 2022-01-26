@@ -20,7 +20,7 @@ public class Level5 extends Scenario {
         config.character.setPosition(110, 395);
 
         // Set the "difficulty" for the level.
-        config.segCtrToAnchorMargin = 100f;
+        config.segCtrToAnchorMargin = 25f;
 
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 5));
     }

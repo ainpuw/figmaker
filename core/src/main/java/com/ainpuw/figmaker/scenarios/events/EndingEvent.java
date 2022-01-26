@@ -60,7 +60,7 @@ public class EndingEvent extends Event {
             }
         }
         else {
-            config.boss.setVolume(0.5f);
+            config.boss.setVolume(0.2f);
 
             // Play the dialogue.
             if (!dialogueDone) {
@@ -91,7 +91,9 @@ public class EndingEvent extends Event {
             // Brighten up the screen again.
             else {
                 if (config.boss.isPlaying()) {
+                    config.day.stop();
                     config.boss.stop();
+                    config.theme.setVolume(1);
                     config.theme.play();
                 }
 

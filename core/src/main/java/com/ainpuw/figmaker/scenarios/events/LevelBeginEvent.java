@@ -53,7 +53,7 @@ public class LevelBeginEvent extends Event {
             if (expId == 5) {
                 config.character.remove();
                 config.dialogueBox.portrait.remove();
-                config.day.stop();
+                // config.day.stop();  do not stop the forest sound.
                 config.boss.play();
             }
 
@@ -75,6 +75,9 @@ public class LevelBeginEvent extends Event {
                 config.evolveWorld = true;
                 waitToAdvance = false;
                 config.dialogueBox.addToStage();
+                if (expId == 5) {
+                    config.dialogueBox.portrait.remove();
+                }
             }
         }
         if (trigger.equals("showInsta")) {

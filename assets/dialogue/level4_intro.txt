@@ -2,11 +2,11 @@ scientist###normal###0###{COLOR=#feffcc}"Day 5"{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Wasn't able to report in yesterday due to an equipment malfunction."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Please find the details of the incident in the full report."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Found a way into the facility and secured the life obsidian."{CLEARCOLOR}
-scientist###normal###0###{COLOR=#feffcc}"The life obsidian seems to calm the mutants."{CLEARCOLOR}
-scientist###normal###0###{COLOR=#feffcc}"No mutants showed any signs of aggression on the way back."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"The life obsidian seems to pacify the mutants."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"No mutants showed any sign of aggression on my way back."{CLEARCOLOR}
 scientist###normal###0###...
 scientist###serious###0###It took me a day and a half to recover.
-scientist###serious###0###In my current state, I should still be able to finish my experiments.
+scientist###serious###0###No matter, I still have time.
 scientist###normal###showDSeg###Based on the measurements, {COLOR=#d69267}specimen four{CLEARCOLOR} will be the most challenging yet.
 scientist###serious###showNSeg###Release the {COLOR=#00000}inhibition{CLEARCOLOR}.
 scientist###serious###playGrow###...

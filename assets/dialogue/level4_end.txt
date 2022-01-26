@@ -1,11 +1,10 @@
 scientist###smile###SIG4A0###I succeeded!
 scientist###smile###SIG400###And every experiment so far has been a success.
-scientist###smile###SIG4N0###I wasn't sure if I could do it, but trials and error paid off.
-scientist###serious###SIG4A0###Now it all comes down to tomorrow...
+scientist###serious###SIG4A0###Now I have all of the data I need to program the spectrometer for tomorrow.
 scientist###serious###SIG4A1###I didn't stabilize the specimen in time...
 scientist###sad###SIG441###Not a single successful experiment so far.
 scientist###sad###SIG441###...
 scientist###sad###SIG4A1###...
 scientist###serious###SIG4A1###There is no time dwelling on failure.
-scientist###serious###SIG4A1###Despite the failure, it was a very useful practice.
-scientist###serious###SIG4A1###I just have to give all I have tomorrow!
+scientist###serious###SIG4A1###Despite the failure, it was still a valuable data point.
+scientist###serious###SIG4A1###I just have to use all I have to program the spectrometer for tomorrow.

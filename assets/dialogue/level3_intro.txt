@@ -1,11 +1,11 @@
 scientist###normal###0###{COLOR=#feffcc}"Day 3"{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Arrived at the underground facility, however the front entrance was blocked by a cave-in."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"Some of our undisposed research subjects were roaming outside of the building."{CLEARCOLOR}
-scientist###normal###0###{COLOR=#feffcc}"This indicates that there is another way in. Will search for the alternative entrance tomorrow."{CLEARCOLOR}
+scientist###normal###0###{COLOR=#feffcc}"This indicates that there is another way in. I will search for the alternative entrance tomorrow."{CLEARCOLOR}
 scientist###normal###0###...
 scientist###normal###showDSeg###{COLOR=#d69267}Specimen three{CLEARCOLOR}...{WAIT} it's vitals suddenly declined this morning.
-scientist###normal###0###In its current state, it's unlikely to be a useful practice for me.
+scientist###normal###0###In its current state, it's unlikely to be a useful data point for me.
 scientist###serious###showNSeg###Release.
 scientist###serious###playGrow###...
 scientist###serious###showInsta###It is not standing up.
-scientist###serious###allowInput###Not a useful experiment, nonetheless, I need to proceed.
+scientist###serious###allowInput###Not gonna be a useful experiment. Nonetheless, I need to proceed.
