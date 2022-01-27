@@ -6,7 +6,7 @@ scientist###normal###0###{COLOR=#feffcc}"The life obsidian seems to pacify the m
 scientist###normal###0###{COLOR=#feffcc}"No mutants showed any sign of aggression on my way back."{CLEARCOLOR}
 scientist###normal###0###...
 scientist###serious###0###It took me a day and a half to recover.
-scientist###serious###0###No matter, I still have time.
+scientist###serious###0###No matter,{WAIT} I still have time.
 scientist###normal###showDSeg###Based on the measurements, {COLOR=#d69267}specimen four{CLEARCOLOR} will be the most challenging yet.
 scientist###serious###0###Release the {COLOR=#00000}inhibition{CLEARCOLOR}.
 scientist###serious###showNSeg###...
