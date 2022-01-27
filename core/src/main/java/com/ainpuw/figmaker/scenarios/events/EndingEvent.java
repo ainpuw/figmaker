@@ -61,6 +61,7 @@ public class EndingEvent extends Event {
         }
         else {
             config.boss.setVolume(0.2f);
+            config.day.setVolume(0.1f);
 
             // Play the dialogue.
             if (!dialogueDone) {

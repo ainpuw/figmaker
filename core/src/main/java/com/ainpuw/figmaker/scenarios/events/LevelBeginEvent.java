@@ -44,6 +44,13 @@ public class LevelBeginEvent extends Event {
         if (!waitToAdvance) trigger = config.dialogueBox.step(signature);
         growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
 
+        // For level 5 only.
+        if (trigger.equals("pain")) {
+            config.dialogueBox.portrait.remove();
+        }
+        if (trigger.equals("recover")) {
+            config.dialogueBox.addToStage();
+        }
         if (trigger.equals("showDSeg")) {
             config.wormOne = config.wormhurt;
         }

@@ -20,9 +20,13 @@ public class Level5 extends Scenario {
         config.character.setPosition(110, 395);
 
         // Set the "difficulty" for the level.
-        config.segCtrToAnchorMargin = 30f;
+        config.segCtrToAnchorMargin = 50f;
         config.boneStabilizationTimeCurrent = 10f;
         config.boneStabilizationTimeMin = 10f;
+
+        // Change background color.
+        config.background.skeleton.setColor(1f, 0.85f, 0.85f, 1);
+        config.character.skeleton.setColor(1f, 0.85f, 0.85f, 1);
 
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 5));
     }

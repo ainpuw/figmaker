@@ -53,12 +53,12 @@ public class LevelTransitionEvent  extends Event {
 
                     // Reset color for level 4 only.
                     if (expId == 3) {
-                        config.background.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
-                        config.character.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
+                        config.background.skeleton.setColor(1f, 0.9f, 0.9f, 1);
+                        config.character.skeleton.setColor(1f, 0.9f, 0.9f, 1);
                     }
                     else if (expId == 4) {
-                        config.background.skeleton.setColor(1, 1, 1, 1);
-                        config.character.skeleton.setColor(1, 1, 1, 1);
+                        config.background.skeleton.setColor(1f, 0.85f, 0.85f, 1);
+                        config.character.skeleton.setColor(1f, 0.85f, 0.85f, 1);
                         // Set character location for level 5.
                         config.character.skeleton.setScale(1.9f, 1.9f);
                         config.character.setPosition(110, 395);

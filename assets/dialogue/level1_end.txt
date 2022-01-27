@@ -6,7 +6,7 @@ scientist###serious###SIG111###However,{WAIT} I did not anticipate the specimen 
 scientist###serious###0###First of all, each of its body parts can only be stabilized for about {COLOR=#03cafc}a few seconds{CLEARCOLOR} at time.
 scientist###serious###0###Second, each stabilization severely damages its internal organs.
 scientist###serious###0###Based on the damage, each body part can at most survive {COLOR=#03cafc}3 stabilizations{CLEARCOLOR}.
-scientist###serious###0###Last, the specimen can only be put under control by {COLOR=#03cafc}spontaneously eliminating all of the instabilities{CLEARCOLOR}.
+scientist###serious###0###Last, the specimen can only be put under control by {COLOR=#03cafc}simultaneously eliminating all of the instabilities{CLEARCOLOR}.
 scientist###serious###0###...
 scientist###serious###0###Very important findings.
 scientist###serious###0###...

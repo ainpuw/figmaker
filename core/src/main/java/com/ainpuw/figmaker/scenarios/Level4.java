@@ -19,8 +19,8 @@ public class Level4 extends Scenario {
         // Set the "difficulty" for the level.
         config.segCtrToAnchorMargin = 50f;
         // This level is near dusk.
-        config.background.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
-        config.character.skeleton.setColor(0.9f, 0.85f, 0.9f, 1);
+        config.background.skeleton.setColor(1f, 0.9f, 0.9f, 1);
+        config.character.skeleton.setColor(1f, 0.9f, 0.9f, 1);
 
         events.add(new LevelBeginEvent(config, "levelBeginEvent", 4));
     }
