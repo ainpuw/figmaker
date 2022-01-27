@@ -195,7 +195,7 @@ public class Worm {
     public void kill() {
         for (WormSegment seg : segs) {
             seg.noOfStabilizations = config.maxStabilizedSegs;
-            seg.updateBoneStabilization(config.boneStabilizationTime);
+            seg.updateBoneStabilization(config.boneStabilizationTimeMax);
         }
 
         Array<Joint> allJoints = new Array<>();
@@ -237,7 +237,12 @@ public class Worm {
             // Add new stable segments that are touched.
             if (seg.body.getPosition().dst(touchPos) <= config.touchRadius) {
                 stableSegs.add(seg);
-                seg.stabilizationCountdown = config.boneStabilizationTime;
+                seg.stabilizationCountdown = config.boneStabilizationTimeCurrent;
+                // Manage bone stabilization cycle.
+                config.boneStabilizationTimeCurrent += 1;
+                if (config.boneStabilizationTimeCurrent > config.boneStabilizationTimeMax)
+                    config.boneStabilizationTimeCurrent = config.boneStabilizationTimeMin;
+
                 seg.spreadoutPhase = false;
                 seg.noOfStabilizations += 1;
             }
@@ -249,7 +254,7 @@ public class Worm {
         // Destroy the older bones exceeding maxStabilizedSegs.
         for (int i = 0; i < stableSegs.size - config.maxStabilizedSegs; i++) {
             // Make them expire and delete them.
-            stableSegs.get(i).updateBoneStabilization(config.boneStabilizationTime + 1);
+            stableSegs.get(i).updateBoneStabilization(config.boneStabilizationTimeMax + 1);
         }
         // Add new joints if needed.
         for (int i = stableSegs.size - 1; i >= Math.max(0, stableSegs.size - config.maxStabilizedSegs); i--) {

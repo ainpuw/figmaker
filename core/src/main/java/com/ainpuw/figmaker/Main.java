@@ -27,7 +27,7 @@ public class Main extends ApplicationAdapter {
         // Scene2D
         /////////////////////////////////////////////
 
-        config.amanager.update(deltaTime);  // FIXME: We shouldn't always run this.
+        config.amanager.update(deltaTime);
         config.stageBack.act(Math.min(deltaTime, config.maxStageUpdateDelta));
         config.stageBack.getViewport().apply();
         config.spriteBatch.setProjectionMatrix(config.stageBack.getCamera().combined);

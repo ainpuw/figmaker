@@ -5,7 +5,8 @@ scientist###normal###0###{COLOR=#feffcc}"This indicates that there is another wa
 scientist###normal###0###...
 scientist###normal###showDSeg###{COLOR=#d69267}Specimen three{CLEARCOLOR}...{WAIT} it's vitals suddenly declined this morning.
 scientist###normal###0###In its current state, it's unlikely to be a useful data point for me.
-scientist###serious###showNSeg###Release.
+scientist###serious###...###Release.
+scientist###serious###showNSeg###...
 scientist###serious###playGrow###...
 scientist###serious###showInsta###It is not standing up.
-scientist###serious###allowInput###Not gonna be a useful experiment. Nonetheless, I need to proceed.
+scientist###serious###allowInput###Not gonna be a useful experiment.{WAIT} Nonetheless, I need to proceed.

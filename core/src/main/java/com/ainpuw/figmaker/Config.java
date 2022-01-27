@@ -28,7 +28,6 @@ public class Config {
     // 16:9 aspect ratio, a balance between laptop and phone screens.
     public final float w = 1024;
     public final float h = 576;
-    public final float scale = 1;
     public final float screenR = 246/255f;
     public final float screenG = 255/255f;
     public final float screenB = 240/255f;
@@ -205,7 +204,9 @@ public class Config {
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
     public float segCtrToAnchorMargin = 15f;  // In screen size units.
     public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.
-    public final float boneStabilizationTime = 10f;  // Stabilize the bone for this amount of seconds.
+    public float boneStabilizationTimeCurrent = 8f;  // Stabilize the bone for this amount of seconds.
+    public final float boneStabilizationTimeMax = 10f;
+    public float boneStabilizationTimeMin = 8f;
     public final float touchRadius = 60;  // Stabilize all segment withing radius.
     public final float segInstabilityAnimationTime = 1f; // Instability animation takes this number of seconds.
     public final int segMaxStabilizationChances = 3;
@@ -302,7 +303,7 @@ public class Config {
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         skin.getFont("default-font").getData().markupEnabled = true;
-        skin.getFont("default-font").getData().setScale(scale);
+        skin.getFont("default-font").getData().setScale(1f);
 
         // Game progress.
         segsDiedPerExp = new Array<>();

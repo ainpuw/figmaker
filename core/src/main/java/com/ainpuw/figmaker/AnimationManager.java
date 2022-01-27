@@ -27,12 +27,20 @@ public class AnimationManager {
             add(new Utils.StrStrFloatTriple("null", "s_hip", 0.95f));
         }});
     }};
+    private boolean isRoutine1 = true;
 
     public AnimationManager(SpineActor character) {
         this.character = character;
     }
 
+    public void setRoutine2() {
+        isRoutine1 = false;
+        character.animationState.setAnimation(1, "release", false);
+    }
+
     public void update(float delta) {
+        if (!isRoutine1) return;
+
         characterMCReady = Math.max(-1, characterMCReady - delta);
 
         // If off cooldown.

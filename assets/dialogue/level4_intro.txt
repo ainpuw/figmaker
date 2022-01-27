@@ -8,7 +8,8 @@ scientist###normal###0###...
 scientist###serious###0###It took me a day and a half to recover.
 scientist###serious###0###No matter, I still have time.
 scientist###normal###showDSeg###Based on the measurements, {COLOR=#d69267}specimen four{CLEARCOLOR} will be the most challenging yet.
-scientist###serious###showNSeg###Release the {COLOR=#00000}inhibition{CLEARCOLOR}.
+scientist###serious###0###Release the {COLOR=#00000}inhibition{CLEARCOLOR}.
+scientist###serious###showNSeg###...
 scientist###serious###playGrow###...
 scientist###normal###showInsta###So, this is what it looks like in its full form.
 scientist###serious###allowInput###Now it's all up to me.

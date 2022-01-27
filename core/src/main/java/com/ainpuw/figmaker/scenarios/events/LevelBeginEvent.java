@@ -10,6 +10,7 @@ public class LevelBeginEvent extends Event {
     private boolean waitToAdvance = false;
     private String trigger = "";
     private boolean playReady = false;
+    private boolean releaseReady = false;
     private boolean growAnimationFinished = false;
 
     public LevelBeginEvent(Config config, String name, int expId) {
@@ -34,6 +35,9 @@ public class LevelBeginEvent extends Event {
         // Skip the first frame that has the coordinates of the setup mode.
         wormlvl.animationState.update(0.1f);
         wormlvl.animationState.apply(wormlvl.skeleton);
+
+        // Reset this animation.
+        config.wormhurt.animationState.setAnimation(0, "idle", true);
     }
 
     public void step(float deltaTime) {
@@ -44,7 +48,25 @@ public class LevelBeginEvent extends Event {
             config.wormOne = config.wormhurt;
         }
         if (trigger.equals("showNSeg")) {
-            config.wormOne = config.wormseg;
+            releaseReady = true;
+            config.dialogueBox.removeFromStage();
+            if (expId == 5) {
+                config.amanager.setRoutine2();
+            }
+            else {
+                config.wormhurt.animationState.setAnimation(0, "release", false);
+            }
+        }
+        if (releaseReady) {
+            if (expId != 5 && config.wormhurt.animationState.getTracks().get(0).isComplete()) {
+                config.wormOne = config.wormseg;
+                releaseReady = false;
+                config.dialogueBox.addToStage();
+            }
+            else if (expId == 5 && config.character.animationState.getTracks().get(1).isComplete()) {
+                releaseReady = false;
+                config.dialogueBox.addToStage();
+            }
         }
         if (trigger.equals("playGrow")) {
             config.wormOne = null;
