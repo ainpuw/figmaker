@@ -2,7 +2,10 @@ package com.ainpuw.figmaker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -300,10 +304,23 @@ public class Config {
         stageBack.getCamera().position.set(w/2, h/2, 0);
         stageFront.getCamera().position.set(w/2, h/2, 0);
         Gdx.input.setInputProcessor(stageFront);
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        skin.getAtlas().getTextures().iterator().next().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        skin.getFont("default-font").getData().markupEnabled = true;
-        skin.getFont("default-font").getData().setScale(1f);
+
+        // Setting up the skin.
+        skin = new Skin();
+        FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/DroidSans.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter freeTypeFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        freeTypeFontParameter.size = 30;
+        freeTypeFontParameter.shadowColor = Color.DARK_GRAY;
+        freeTypeFontParameter.shadowOffsetX = 1;
+        freeTypeFontParameter.shadowOffsetY = 1;
+        freeTypeFontParameter.spaceX = -1;
+        BitmapFont bitMapFont = freeTypeFontGenerator.generateFont(freeTypeFontParameter);
+        freeTypeFontGenerator.dispose();
+        skin.add("font", bitMapFont, BitmapFont.class);
+        LabelStyle labelStyle = new LabelStyle();
+        labelStyle.font = bitMapFont;
+        labelStyle.fontColor = Color.WHITE;
+        skin.add("default", labelStyle, LabelStyle.class);
 
         // Game progress.
         segsDiedPerExp = new Array<>();

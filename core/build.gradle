@@ -7,4 +7,5 @@ dependencies {
 	api "com.esotericsoftware.spine:spine-libgdx:$spineRuntimeVersion"
 	api "com.github.tommyettinger:regexodus:$regExodusVersion:sources"
 	api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
+	api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 }

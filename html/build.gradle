@@ -38,6 +38,8 @@ dependencies {
 	implementation "com.esotericsoftware.spine:spine-libgdx:$spineRuntimeVersion:sources"
 	implementation "com.github.tommyettinger:regexodus:$regExodusVersion:sources"
 	implementation "com.rafaskoberg.gdx:typing-label:$typingLabelVersion:sources"
+	implementation "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10.1"
+	implementation "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10.1:sources"
 
 //// You can use the lines below instead of the "com.badlogicgames.gdx:gdx-backend-gwt" dependencies.
 //// If you do, follow the steps at https://github.com/tommyettinger/gdx-backends#gwt-290-support

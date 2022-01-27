@@ -20,7 +20,7 @@ public class Dialogue {
 
         // Label.
         this.label = new TypingLabel("", config.skin);
-        this.label.setFontScale(1.7f);
+        this.label.setFontScaleY(0.95f);
         this.label.setWrap(true);
         this.label.setWidth(this.labelConfig.w);
         this.label.setHeight(this.label.getPrefHeight());
