@@ -33,7 +33,6 @@ public class LevelBeginEvent extends Event {
         config.dialogueBox.addToStage();
 
         // Skip the first frame that has the coordinates of the setup mode.
-        wormlvl.animationState.update(0.1f);
         wormlvl.animationState.apply(wormlvl.skeleton);
 
         // Reset this animation.
@@ -43,6 +42,7 @@ public class LevelBeginEvent extends Event {
     public void step(float deltaTime) {
         if (!waitToAdvance) trigger = config.dialogueBox.step(signature);
         growAnimationFinished = growAnimationFinished || wormlvl.animationState.getTracks().get(0).isComplete();
+        config.drawWormSkeletonJointCounter = Math.min(1, config.drawWormSkeletonJointCounter + deltaTime);
 
         // For level 5 only.
         if (trigger.equals("pain")) {
@@ -76,8 +76,10 @@ public class LevelBeginEvent extends Event {
             }
         }
         if (trigger.equals("playGrow")) {
+            trigger = "";
             config.wormOne = null;
             config.wormSkeleton = wormlvl;
+            config.drawWormSkeletonJointCounter = 0;
             // Special treatment for level 5.
             if (expId == 5) {
                 config.character.remove();

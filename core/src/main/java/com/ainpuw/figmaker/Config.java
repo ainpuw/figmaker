@@ -205,6 +205,7 @@ public class Config {
     public final float frequencyHz = 0.5f;  // Spring strength - higher the stronger.
     public final float dampingRatio = 1;  // How bouncy - 1 is stiff.
     public final float boneDashDrawLen = 8;  // Dash length when drawing broking bones.
+    public float drawWormSkeletonJointCounter = 0;
     public final float boneBrokenVisualMargin = 1.5f;  // Allow 1.5 length of the correct bone len.
     public float segCtrToAnchorMargin = 15f;  // In screen size units.
     public final int maxStabilizedSegs = 100;  // At most this no. of segments can be stabilized.

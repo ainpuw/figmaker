@@ -11,6 +11,8 @@ public class LevelTransitionEvent  extends Event {
     private float eventEndCountdown = 2;  // Can be put into config.
     private boolean dialogueDone = false;
     private String dialogueFile;
+    private final float dayVolumnMax = 0.5f;
+    private final float dayVolumnMin = 0.1f;
 
     public LevelTransitionEvent(Config config, String name, int expId) {
         super(config, name, expId);
@@ -31,8 +33,12 @@ public class LevelTransitionEvent  extends Event {
         // Darken the screen.
         if (darken) {
             darkOutCounter += deltaTime;
+            float newVol = dayVolumnMin + (dayVolumnMax - dayVolumnMin) * (darkOutLen - darkOutCounter)/darkOutLen;
+            config.day.setVolume(newVol);
             if (darkOutCounter >= darkOutLen) {
                 darken = false;
+                darkOutCounter = darkOutLen;
+                config.day.setVolume(dayVolumnMin);
                 config.dialogueBox.addToStageTextOnly();
             }
         }
@@ -72,9 +78,10 @@ public class LevelTransitionEvent  extends Event {
             // Brighten up the screen again.
             else {
                 darkOutCounter -= deltaTime;
+                float newVol = dayVolumnMin + (dayVolumnMax - dayVolumnMin) * (darkOutLen - darkOutCounter)/darkOutLen;
+                config.day.setVolume(newVol);
                 // The event is over.
                 if (darkOutCounter < 0) {
-
                     active = false;
                     ended = true;
                 }

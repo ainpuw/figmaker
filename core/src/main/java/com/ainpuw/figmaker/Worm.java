@@ -381,19 +381,22 @@ public class Worm {
         config.wormSkeleton.skeleton.getRootBone().setX(config.wormSkeleton.getX());
         config.wormSkeleton.skeleton.getRootBone().setY(config.wormSkeleton.getY());
 
-        // Draw shadow.
-        config.spriteBatch.begin();
-        for (Bone bone : config.wormSkeleton.skeleton.getRootBone().getChildren()) {
-            drawWormSkeletonShadow(bone, config);
-        }
-        config.spriteBatch.end();
+        // Add a small delay here because the initial frame of the Spine animation does not seem to have the right coordinates.
+        if (config.drawWormSkeletonJointCounter > 0.1f) {
+            // Draw shadow.
+            config.spriteBatch.begin();
+            for (Bone bone : config.wormSkeleton.skeleton.getRootBone().getChildren()) {
+                drawWormSkeletonShadow(bone, config);
+            }
+            config.spriteBatch.end();
 
-        // Draw joints.
-        config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Bone bone : config.wormSkeleton.skeleton.getRootBone().getChildren()) {
-            drawWormSkeletonJoint(bone, config);
+            // Draw joints.
+            config.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            for (Bone bone : config.wormSkeleton.skeleton.getRootBone().getChildren()) {
+                drawWormSkeletonJoint(bone, config);
+            }
+            config.shapeRenderer.end();
         }
-        config.shapeRenderer.end();
 
         // Draw the worm Spine animation.
         config.spriteBatch.begin();

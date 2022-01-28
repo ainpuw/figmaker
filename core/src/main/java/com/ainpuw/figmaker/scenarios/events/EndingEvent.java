@@ -22,7 +22,7 @@ public class EndingEvent extends Event {
         config.dialogueBox.dialogueLines =
                 Gdx.files.internal(dialogueFile).readString().split("\\r?\\n");
         config.dialogueBox.addToStageTextOnly();
-        config.dialogueBox.label.setWidth(config.dialogueBox.labelConfig.w * 2);
+        config.dialogueBox.label.setWidth(config.dialogueBox.labelConfig.w * 1.3f);
 
         // If the worm isn't completely stabilized.
         if (config.segsDiedPerExp.get(expId - 1) > 0) {

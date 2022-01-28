@@ -14,10 +14,17 @@
 0###0###SIG5A1###...
 0###0###SIG5A1###...
 0###0###0###{COLOR=#56252e}The forest on the peninsula{CLEARCOLOR}
-0###0###0###{COLOR=#56252e}A place of mysterious powers{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}A place of sacred powers{CLEARCOLOR}
 0###0###0###{COLOR=#56252e}The death obsidian of mass destruction{CLEARCOLOR}
-0###0###0###{COLOR=#56252e}The life obsidian of resurrection...{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}The life obsidian of resurrection{CLEARCOLOR}
 0###0###0###{COLOR=#56252e}Resurrecting one life at the cost of another{CLEARCOLOR}
-0###0###0###{COLOR=#56252e}and more{CLEARCOLOR}
-0###0###0###{COLOR=#56252e}No one that has tainted this sacred land{CLEARCOLOR}
-0###0###0###{COLOR=#56252e}ever escaped the punishment of the forest{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}The lives resurrected this way are no longer lives{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}They became the monstrosities that now roam this land{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}As for the one who tried to avert fate{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}Little is known of his whereabouts{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}Some says such a figure is nothing but a made-up legend{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}Some believe that he really existed{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}Science now has a way to treat the victims of the forest{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}It was a breakthrough{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}thanks to some anonymous research notes that were discovered{CLEARCOLOR}
+0###0###0###{COLOR=#56252e}in an abandoned site on the peninsula{CLEARCOLOR}
