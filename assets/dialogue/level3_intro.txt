@@ -3,8 +3,8 @@ scientist###normal###0###{COLOR=#feffcc}"Arrived at the underground facility, ho
 scientist###normal###0###{COLOR=#feffcc}"Some of our undisposed research subjects were roaming outside of the building."{CLEARCOLOR}
 scientist###normal###0###{COLOR=#feffcc}"This indicates that there is another way in. I will search for the alternative entrance tomorrow."{CLEARCOLOR}
 scientist###normal###0###...
-scientist###normal###showDSeg###{COLOR=#d69267}Specimen three{CLEARCOLOR}...{WAIT} it's vitals suddenly declined this morning.
-scientist###normal###0###In its current state, it's unlikely to be a useful data point for me.
+scientist###normal###showDSeg###{COLOR=#d69267}Specimen three{CLEARCOLOR}...{WAIT} its vitals suddenly declined this morning.
+scientist###normal###0###In its current state, it is unlikely to be a useful data point for me.
 scientist###serious###...###Release.
 scientist###serious###showNSeg###...
 scientist###serious###playGrow###...
